@@ -24,7 +24,7 @@ def get_all_field_ids():
     return [{"id": f["id"], "name": f["display_name"]} for f in data.get("results", [])]
 
 
-def fetch_recent(days_back=3, per_field_limit=50):
+def fetch_recent(days_back=3, per_field_limit=100):
     """26개 분야를 돌면서 최근 N일 동안 나온 논문을 가져옵니다."""
     start_date = (date.today() - timedelta(days=days_back)).isoformat()
     fields = get_all_field_ids()
@@ -41,7 +41,9 @@ def fetch_recent(days_back=3, per_field_limit=50):
             resp = requests.get(BASE_URL, params=params, timeout=30)
             resp.raise_for_status()
             data = resp.json()
-            all_results.extend(data.get("results", []))
+            got = data.get("results", [])
+            all_results.extend(got)
+            print(f"[OpenAlex] {field['name']}: {len(got)}건")
         except requests.RequestException as e:
             print(f"[OpenAlex] {field['name']} 분야에서 오류: {e}")
         time.sleep(0.2)

@@ -79,8 +79,8 @@ def _to_db_schema(record):
 if __name__ == "__main__":
     print(f"논문 수집 시작 — {date.today().isoformat()}, 최근 {DAYS_BACK}일 기준")
 
+    run_source(collect_openalex, "openalex")
     run_source(collect_europepmc, "europepmc")
     run_source(collect_semanticscholar, "semanticscholar")
-    run_source(collect_openalex, "openalex")
 
     print("\n전체 완료.")
