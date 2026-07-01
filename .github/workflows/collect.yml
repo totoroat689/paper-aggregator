@@ -20,8 +20,9 @@ jobs:
 
       - name: 수집 실행
         env:
+          PYTHONUNBUFFERED: "1"
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
           OPENALEX_API_KEY: ${{ secrets.OPENALEX_API_KEY }}
           SEMANTICSCHOLAR_API_KEY: ${{ secrets.SEMANTICSCHOLAR_API_KEY }}
-        run: python run_collection.py
+        run: python -u run_collection.py
