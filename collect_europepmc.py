@@ -63,7 +63,7 @@ def normalize(raw):
         "is_retracted": _has_retraction_notice(raw),
         "citation_count": raw.get("citedByCount", 0) or 0,
         "primary_category": None,
-        "journal_name": raw.get("journalInfo", {}).get("journal", {}).get("title"),
+        "journal_name": (raw.get("journalInfo", {}).get("journal") or {}).get("title"),
         "is_open_access": raw.get("isOpenAccess") == "Y",
         "fulltext_url": _best_fulltext_url(raw),
         "source": "europepmc",
