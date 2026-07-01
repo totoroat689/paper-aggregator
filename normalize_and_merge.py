@@ -78,6 +78,13 @@ def _normalize_title(title):
     return re.sub(r"\s+", " ", title).strip()
 
 
+def _rank(source, priority):
+    """출처의 우선순위를 숫자로. 목록에 없으면 맨 뒤(큰 숫자)로 취급."""
+    if source in priority:
+        return priority.index(source)
+    return len(priority)
+
+
 def merge_records(existing, new):
     """같은 논문으로 판정된 두 레코드를 하나로 합칩니다."""
     merged = dict(existing)
@@ -93,9 +100,15 @@ def merge_records(existing, new):
         if not new_value:
             continue
         current_source = existing.get(f"_{field}_source")
-        if current_source is None or priority.index(new["source"]) < priority.index(current_source):
+        if current_source is None:
             merged[field] = new_value
             merged[f"_{field}_source"] = new["source"]
+        else:
+            new_rank = _rank(new["source"], priority)
+            current_rank = _rank(current_source, priority)
+            if new_rank < current_rank:
+                merged[field] = new_value
+                merged[f"_{field}_source"] = new["source"]
 
     merged["is_retracted"] = existing.get("is_retracted", False) or new.get("is_retracted", False)
 
