@@ -19,7 +19,7 @@ import requests
 
 from helpers import (
     blank_paper, deep_get, normalize_doi, classify_study_type,
-    dedupe_and_merge, to_db_row, passes_retention,
+    dedupe_and_merge, to_db_row, passes_retention, strip_html,
 )
 
 DAYS_BACK = int(os.environ.get("COLLECT_DAYS_BACK", "3"))
@@ -76,7 +76,7 @@ def fetch_openalex(days_back):
 def _openalex_to_paper(raw):
     p = blank_paper()
     p["doi"] = normalize_doi(deep_get(raw, "doi"))
-    p["title_en"] = deep_get(raw, "title") or deep_get(raw, "display_name")
+    p["title_en"] = strip_html(deep_get(raw, "title") or deep_get(raw, "display_name"))
     p["abstract_en"] = _rebuild_abstract(deep_get(raw, "abstract_inverted_index"))
 
     authorships = deep_get(raw, "authorships", default=[])
@@ -153,7 +153,7 @@ def _europepmc_to_paper(raw):
     p = blank_paper()
     p["doi"] = normalize_doi(deep_get(raw, "doi"))
     p["pmid"] = deep_get(raw, "pmid")
-    p["title_en"] = (deep_get(raw, "title") or "").rstrip(".") or None
+    p["title_en"] = strip_html((deep_get(raw, "title") or "").rstrip("."))
     p["abstract_en"] = _strip_html(deep_get(raw, "abstractText"))
     p["authors"] = [{"name": a.get("fullName")}
                     for a in deep_get(raw, "authorList", "author", default=[])
@@ -245,7 +245,7 @@ def _s2_to_paper(raw):
     ext = deep_get(raw, "externalIds", default={}) or {}
     p["doi"] = normalize_doi(ext.get("DOI"))
     p["pmid"] = ext.get("PubMed")
-    p["title_en"] = deep_get(raw, "title")
+    p["title_en"] = strip_html(deep_get(raw, "title"))
     p["abstract_en"] = deep_get(raw, "abstract")
     p["authors"] = [{"name": a.get("name")}
                     for a in deep_get(raw, "authors", default=[]) if isinstance(a, dict)]
@@ -339,6 +339,33 @@ def log_run(fetched, saved, skipped, failed):
         pass
 
 
+def enrich_categories(papers):
+    """
+    분야(primary_category)가 빈 논문을, DOI로 OpenAlex에 물어서 채움.
+    OpenAlex만 분야를 제대로 주므로, 다른 출처 논문의 빈 분야를 보완.
+    """
+    need = [p for p in papers if not p.get("primary_category") and p.get("doi")]
+    if not need:
+        return 0
+
+    filled = 0
+    for p in need:
+        url = f"https://api.openalex.org/works/doi:{p['doi']}"
+        try:
+            resp = requests.get(url, params={"api_key": OPENALEX_API_KEY,
+                                             "select": "primary_topic"}, timeout=20)
+            if resp.status_code != 200:
+                continue
+            field = deep_get(resp.json(), "primary_topic", "field", "display_name")
+            if field:
+                p["primary_category"] = field
+                filled += 1
+        except (requests.RequestException, ValueError):
+            continue
+        time.sleep(0.15)
+    return filled
+
+
 def existing_titles_without_doi():
     """
     이미 저장된, DOI 없는 논문들의 제목을 모아옴 (중복 방지용).
@@ -400,6 +427,10 @@ def main():
                 continue
         deduped.append(p)
     print(f"=== DOI없는 중복 제외 뒤: {len(deduped)}건 ===")
+
+    # 분야 빈 논문을 DOI로 OpenAlex 조회해 보완
+    filled = enrich_categories(deduped)
+    print(f"=== 분야 보완: {filled}건 채움 ===")
 
     saved, skipped, failed = save_all(deduped)
     print(f"=== 저장: 성공 {saved} / 건너뜀 {skipped} / 실패 {failed} ===")

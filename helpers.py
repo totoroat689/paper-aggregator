@@ -73,6 +73,17 @@ def safe_int(value):
         return None
 
 
+def strip_html(text):
+    """제목·초록에 섞인 HTML 태그(<i>, <sub>, <h4> 등)를 제거."""
+    if not text or not isinstance(text, str):
+        return None
+    import re as _re
+    text = _re.sub(r"</?h4>", " ", text)
+    text = _re.sub(r"<[^>]+>", "", text)   # 모든 태그 제거
+    text = text.replace("&amp;", "&").replace("&lt;", "<").replace("&gt;", ">")
+    return _re.sub(r"\s+", " ", text).strip() or None
+
+
 # ── 26개 분야 영어 -> 한글 대응표 (번역 없이 무료로 한글화) ──────
 CATEGORY_KO = {
     "Agricultural and Biological Sciences": "농업·생물학",
