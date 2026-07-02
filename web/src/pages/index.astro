@@ -60,7 +60,7 @@ function shortAbstract(p) {
               style={`animation-delay:${Math.min(i * 0.04, 0.5)}s`}>
               <div class="row-tags">
                 <span class="tag" style={`color:${s.fg};background:${s.bg}`}>{s.label}</span>
-                {p.primary_category && <span class="tag-field" style={`color:${s.fg}`}>{p.primary_category}</span>}
+                {p.primary_category && <span class="tag-field">{categoryKo(p.primary_category)}</span>}
                 <i class="ti ti-chevron-right chev"></i>
               </div>
               <h2 class="row-title">{p.title_ko || p.title_en}</h2>
