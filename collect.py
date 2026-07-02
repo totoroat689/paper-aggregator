@@ -54,7 +54,9 @@ def fetch_openalex(days_back):
     for field in fields:
         params = {
             "api_key": OPENALEX_API_KEY,
-            "filter": f"primary_topic.field.id:{field['id']},from_publication_date:{start}",
+            "filter": (f"primary_topic.field.id:{field['id']},"
+                       f"from_publication_date:{start},"
+                       f"type:article|review"),
             "per_page": 100,
             "sort": "publication_date:desc",
         }
@@ -77,7 +79,7 @@ def _openalex_to_paper(raw):
     p = blank_paper()
     p["doi"] = normalize_doi(deep_get(raw, "doi"))
     p["title_en"] = strip_html(deep_get(raw, "title") or deep_get(raw, "display_name"))
-    p["abstract_en"] = _rebuild_abstract(deep_get(raw, "abstract_inverted_index"))
+    p["abstract_en"] = strip_html(_rebuild_abstract(deep_get(raw, "abstract_inverted_index")))
 
     authorships = deep_get(raw, "authorships", default=[])
     p["authors"] = [{"name": deep_get(a, "author", "display_name")}
@@ -154,7 +156,7 @@ def _europepmc_to_paper(raw):
     p["doi"] = normalize_doi(deep_get(raw, "doi"))
     p["pmid"] = deep_get(raw, "pmid")
     p["title_en"] = strip_html((deep_get(raw, "title") or "").rstrip("."))
-    p["abstract_en"] = _strip_html(deep_get(raw, "abstractText"))
+    p["abstract_en"] = strip_html(deep_get(raw, "abstractText"))
     p["authors"] = [{"name": a.get("fullName")}
                     for a in deep_get(raw, "authorList", "author", default=[])
                     if isinstance(a, dict)]
@@ -171,14 +173,6 @@ def _europepmc_to_paper(raw):
     p["sources"] = ["europepmc"]
     p["source_ids"] = {"europepmc": deep_get(raw, "id")}
     return p
-
-
-def _strip_html(text):
-    if not text or not isinstance(text, str):
-        return None
-    text = re.sub(r"</?h4>", " ", text)
-    text = re.sub(r"<[^>]+>", "", text)
-    return re.sub(r"\s+", " ", text).strip() or None
 
 
 def _has_retraction(raw):
@@ -213,6 +207,7 @@ def fetch_semanticscholar(days_back):
             print("[semanticscholar] 시간 상한 도달, 중단")
             break
         params = {"fields": req_fields, "fieldsOfStudy": field,
+                  "publicationTypes": "JournalArticle,Review,Conference",
                   "publicationDateOrYear": f"{start}:{today}", "limit": 50}
         results = _s2_request(base, params, headers)
         papers.extend(_s2_to_paper(raw) for raw in results)
@@ -246,7 +241,7 @@ def _s2_to_paper(raw):
     p["doi"] = normalize_doi(ext.get("DOI"))
     p["pmid"] = ext.get("PubMed")
     p["title_en"] = strip_html(deep_get(raw, "title"))
-    p["abstract_en"] = deep_get(raw, "abstract")
+    p["abstract_en"] = strip_html(deep_get(raw, "abstract"))
     p["authors"] = [{"name": a.get("name")}
                     for a in deep_get(raw, "authors", default=[]) if isinstance(a, dict)]
     p["publication_year"] = deep_get(raw, "year")

@@ -74,13 +74,18 @@ def safe_int(value):
 
 
 def strip_html(text):
-    """제목·초록에 섞인 HTML 태그(<i>, <sub>, <h4> 등)를 제거."""
+    """제목·초록의 HTML 태그와 특수기호를 제거/복원. 이중 인코딩까지 처리."""
     if not text or not isinstance(text, str):
         return None
     import re as _re
-    text = _re.sub(r"</?h4>", " ", text)
-    text = _re.sub(r"<[^>]+>", "", text)   # 모든 태그 제거
-    text = text.replace("&amp;", "&").replace("&lt;", "<").replace("&gt;", ">")
+    import html as _html
+    # 이중 인코딩 대비 두 번 해제 (&amp;quot; -> &quot; -> ")
+    text = _html.unescape(_html.unescape(text))
+    # 태그 제거 (속성 있는 것 포함)
+    text = _re.sub(r"</?h4[^>]*>", " ", text)
+    text = _re.sub(r"<[^>]+>", "", text)
+    # 남은 실체참조·비가시 공백 정리
+    text = text.replace("\u00a0", " ").replace("\xa0", " ")
     return _re.sub(r"\s+", " ", text).strip() or None
 
 
