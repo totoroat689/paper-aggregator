@@ -1,38 +1,51 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { supabase, STUDY_TYPE_LABELS, countryName } from '../lib/supabase.js';
+import { supabase, STUDY_TYPE_LABELS, categoryKo, countryName } from '../lib/supabase.js';
 
-// 정렬 옵션 (주소 뒤 ?sort=cited 로 바뀜)
-const sort = Astro.url.searchParams.get('sort') || 'recent';
+// 정렬 옵션
+const sort = Astro.url.searchParams.get('sort') === 'cited' ? 'cited' : 'recent';
 const orderCol = sort === 'cited' ? 'citation_count' : 'publication_date';
 
-const { data: papers, error } = await supabase
+// 페이지 (한 페이지 30건)
+const PER_PAGE = 30;
+const pageParam = parseInt(Astro.url.searchParams.get('page') || '1', 10);
+const page = Number.isNaN(pageParam) || pageParam < 1 ? 1 : pageParam;
+const from = (page - 1) * PER_PAGE;
+const to = from + PER_PAGE - 1;
+
+const { data: papers, error, count } = await supabase
   .from('papers')
-  .select('id, title_en, title_ko, abstract_en, abstract_ko, study_type, primary_category, citation_count, publication_year, countries, fulltext_url, is_retracted')
+  .select('id, title_en, title_ko, abstract_en, abstract_ko, study_type, primary_category, citation_count, publication_year, countries, fulltext_url, is_retracted', { count: 'exact' })
   .eq('is_retracted', false)
   .order(orderCol, { ascending: false, nullsFirst: false })
-  .limit(60);
+  .range(from, to);
 
 const list = papers || [];
+const total = count || 0;
+const totalPages = Math.max(1, Math.ceil(total / PER_PAGE));
+
 function studyInfo(type) { return STUDY_TYPE_LABELS[type] || STUDY_TYPE_LABELS.unclassified; }
 function shortAbstract(p) {
   const t = p.abstract_ko || p.abstract_en;
   if (!t) return '초록이 제공되지 않는 논문입니다.';
   return t.length > 300 ? t.slice(0, 300) + '…' : t;
 }
+function pageUrl(n) { return `/?sort=${sort}&page=${n}`; }
 ---
 <Layout>
   <header class="topbar">
     <div class="wrap topbar-inner">
-      <div class="brand">연구<span>아카이브</span></div>
+      <a href="/" class="brand">연구<span>아카이브</span><span class="dot"></span></a>
       <div class="sort-tabs">
-        <a href="/?sort=recent" class={`sort-tab ${sort === 'recent' ? 'on' : ''}`}>최신순</a>
-        <a href="/?sort=cited" class={`sort-tab ${sort === 'cited' ? 'on' : ''}`}>인용순</a>
+        <a href={`/?sort=recent&page=1`} class={`sort-tab ${sort === 'recent' ? 'on' : ''}`}>최신순</a>
+        <a href={`/?sort=cited&page=1`} class={`sort-tab ${sort === 'cited' ? 'on' : ''}`}>인용순</a>
       </div>
     </div>
   </header>
 
   <main class="wrap">
+    <div class="count-line">전체 {total.toLocaleString()}편 · {page}/{totalPages} 페이지</div>
+
     <div class="controls">
       <div class="search-box">
         <i class="ti ti-search" style="color:var(--ink-3)"></i>
@@ -70,7 +83,7 @@ function shortAbstract(p) {
                 {country && <span>{country}</span>}
                 <div class="trust">
                   <span style={`color:${s.strength >= 0.6 ? s.fg : 'var(--ink-3)'}`}>신뢰도</span>
-                  <div class="trust-bar"><div class="trust-fill" style={`background:${s.fg};--target:${Math.round(s.strength * 100)}%`}></div></div>
+                  <div class="trust-bar"><div class="trust-fill" data-target={`${Math.round(s.strength * 100)}%`} style={`background:${s.fg}`}></div></div>
                 </div>
               </div>
               <div class="row-detail">
@@ -85,20 +98,42 @@ function shortAbstract(p) {
         })}
       </div>
     )}
+
+    {!error && totalPages > 1 && (
+      <nav class="pager">
+        {page > 1 && <a class="pager-btn" href={pageUrl(page - 1)}><i class="ti ti-chevron-left"></i> 이전</a>}
+        <span class="pager-info">{page} / {totalPages}</span>
+        {page < totalPages && <a class="pager-btn" href={pageUrl(page + 1)}>다음 <i class="ti ti-chevron-right"></i></a>}
+      </nav>
+    )}
   </main>
 
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.0.0/dist/tabler-icons.min.css" />
 
   <script>
     const rows = document.querySelectorAll('.row');
+
+    // 신뢰도 막대: 화면에 보이면 스르륵 차오름 (클릭 불필요)
+    const fills = document.querySelectorAll('.trust-fill');
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((en) => {
+          if (en.isIntersecting) {
+            const f = en.target;
+            f.style.width = f.getAttribute('data-target') || '0%';
+            io.unobserve(f);
+          }
+        });
+      }, { threshold: 0.3 });
+      fills.forEach((f) => io.observe(f));
+    } else {
+      fills.forEach((f) => { f.style.width = f.getAttribute('data-target') || '0%'; });
+    }
+
     rows.forEach((row) => {
       row.addEventListener('click', (e) => {
         if (e.target.closest('a')) return;
         row.classList.toggle('open');
-        const fill = row.querySelector('.trust-fill');
-        if (fill && row.classList.contains('open')) {
-          fill.style.width = getComputedStyle(fill).getPropertyValue('--target');
-        }
       });
     });
 
