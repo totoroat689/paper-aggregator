@@ -317,13 +317,16 @@ def save_all(papers):
     with_doi = [r for r in rows if r.get("doi")]
     without_doi = [r for r in rows if not r.get("doi")]
 
+    print(f"[저장] 시작 — DOI있음 {len(with_doi)}건, DOI없음 {len(without_doi)}건")
     saved = failed = 0
     for i in range(0, len(with_doi), BATCH_SIZE):
         s, f = _save_chunk(with_doi[i:i + BATCH_SIZE], upsert=True)
         saved += s; failed += f
+        print(f"[저장] {min(i+BATCH_SIZE, len(with_doi))}/{len(with_doi)} (DOI있음)")
     for i in range(0, len(without_doi), BATCH_SIZE):
         s, f = _save_chunk(without_doi[i:i + BATCH_SIZE], upsert=False)
         saved += s; failed += f
+        print(f"[저장] {min(i+BATCH_SIZE, len(without_doi))}/{len(without_doi)} (DOI없음)")
 
     return saved, skipped, failed
 
@@ -342,27 +345,47 @@ def log_run(fetched, saved, skipped, failed):
 def enrich_categories(papers):
     """
     분야(primary_category)가 빈 논문을, DOI로 OpenAlex에 물어서 채움.
-    OpenAlex만 분야를 제대로 주므로, 다른 출처 논문의 빈 분야를 보완.
+    50개씩 묶어서 한 번에 조회 -> 하나씩 묻는 것보다 수십 배 빠름.
     """
     need = [p for p in papers if not p.get("primary_category") and p.get("doi")]
-    if not need:
+    total = len(need)
+    if not total:
+        print("[분야보완] 채울 대상 없음")
         return 0
 
+    print(f"[분야보완] 대상 {total}건, 50개씩 묶어서 조회 시작")
+    by_doi = {p["doi"]: p for p in need}
     filled = 0
-    for p in need:
-        url = f"https://api.openalex.org/works/doi:{p['doi']}"
+    dois = list(by_doi.keys())
+
+    for i in range(0, len(dois), 50):
+        chunk = dois[i:i + 50]
+        # OpenAlex: doi:A|B|C 형태로 여러 개를 한 번에 요청
+        filter_val = "doi:" + "|".join(chunk)
+        params = {
+            "api_key": OPENALEX_API_KEY,
+            "filter": filter_val,
+            "select": "doi,primary_topic",
+            "per_page": 50,
+        }
         try:
-            resp = requests.get(url, params={"api_key": OPENALEX_API_KEY,
-                                             "select": "primary_topic"}, timeout=20)
+            resp = requests.get("https://api.openalex.org/works", params=params, timeout=30)
             if resp.status_code != 200:
+                print(f"[분야보완] {i+len(chunk)}/{total} (이 묶음 응답 {resp.status_code}, 건너뜀)")
                 continue
-            field = deep_get(resp.json(), "primary_topic", "field", "display_name")
-            if field:
-                p["primary_category"] = field
-                filled += 1
-        except (requests.RequestException, ValueError):
+            for work in resp.json().get("results", []):
+                doi = normalize_doi(deep_get(work, "doi"))
+                field = deep_get(work, "primary_topic", "field", "display_name")
+                if doi and field and doi in by_doi:
+                    by_doi[doi]["primary_category"] = field
+                    filled += 1
+        except (requests.RequestException, ValueError) as e:
+            print(f"[분야보완] {i+len(chunk)}/{total} 오류(건너뜀): {e}")
             continue
-        time.sleep(0.15)
+        print(f"[분야보완] {min(i+50, total)}/{total} 진행 (누적 {filled}건 채움)")
+        time.sleep(0.2)
+
+    print(f"[분야보완] 완료 — 총 {filled}건 채움")
     return filled
 
 
