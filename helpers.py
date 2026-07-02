@@ -73,34 +73,164 @@ def safe_int(value):
         return None
 
 
+# ── 26개 분야 영어 -> 한글 대응표 (번역 없이 무료로 한글화) ──────
+CATEGORY_KO = {
+    "Agricultural and Biological Sciences": "농업·생물학",
+    "Arts and Humanities": "예술·인문학",
+    "Biochemistry, Genetics and Molecular Biology": "생화학·유전·분자생물학",
+    "Business, Management and Accounting": "경영·회계",
+    "Chemical Engineering": "화학공학",
+    "Chemistry": "화학",
+    "Computer Science": "컴퓨터과학",
+    "Decision Sciences": "의사결정학",
+    "Earth and Planetary Sciences": "지구·행성과학",
+    "Economics, Econometrics and Finance": "경제·금융",
+    "Energy": "에너지",
+    "Engineering": "공학",
+    "Environmental Science": "환경과학",
+    "Immunology and Microbiology": "면역·미생물학",
+    "Materials Science": "재료공학",
+    "Mathematics": "수학",
+    "Medicine": "의학",
+    "Neuroscience": "신경과학",
+    "Nursing": "간호학",
+    "Pharmacology, Toxicology and Pharmaceutics": "약리·독성학",
+    "Physics and Astronomy": "물리·천문학",
+    "Psychology": "심리학",
+    "Social Sciences": "사회과학",
+    "Veterinary": "수의학",
+    "Dentistry": "치의학",
+    "Health Professions": "보건의료",
+    # Semantic Scholar 계열 이름도 흡수
+    "Biology": "생물학", "Sociology": "사회과학", "Business": "경영·회계",
+    "Political Science": "정치학", "Geography": "지리학", "Geology": "지질학",
+    "Art": "예술·인문학", "History": "예술·인문학", "Philosophy": "예술·인문학",
+    "Education": "교육학", "Law": "법학", "Linguistics": "언어학",
+    "Agricultural and Food Sciences": "농업·식품과학",
+}
+
+
+def category_ko(name):
+    """영어 분야명 -> 한글. 대응표에 없으면 원문 그대로, 비었으면 '기타'."""
+    if not name:
+        return "기타"
+    return CATEGORY_KO.get(name, name)
+
+
+def is_future_date(date_str):
+    """오늘보다 미래 날짜인지 (아직 출판 안 된 이상 데이터 거르기용)."""
+    clean = clean_date(date_str)
+    if not clean:
+        return False
+    from datetime import date as _date
+    return clean > _date.today().isoformat()
+
+
+# ── 수명 규칙: 최근 3개월은 전부, 그 이후는 검증된 것만, 너무 오래되면 제외 ──
+STRONG_TYPES = {"meta_analysis", "rct", "experimental_likely"}
+RECENT_DAYS = 90          # 최근 3개월
+MAX_AGE_YEARS = 3         # 3년 넘으면 수집 안 함
+CITATION_THRESHOLD = 20   # 오래된 논문이 통과하려면 필요한 최소 인용수
+
+
+def passes_retention(paper):
+    """
+    이 논문을 저장할 가치가 있는지 판정.
+    - 미래 날짜 / 3년 초과: 제외
+    - 최근 3개월: 전부 통과
+    - 그 이후: 강한 연구유형(실험·메타) 또는 인용수 문턱 넘으면 통과
+    """
+    from datetime import date as _date, timedelta as _td
+
+    pub = clean_date(paper.get("publication_date"))
+    if is_future_date(paper.get("publication_date")):
+        return False
+
+    # 날짜를 모르면 일단 통과(버리기 아까움) — 단 미래 연도는 위에서 이미 거름
+    if not pub:
+        return True
+
+    today = _date.today()
+    pub_date = _date.fromisoformat(pub)
+    age_days = (today - pub_date).days
+
+    if age_days > MAX_AGE_YEARS * 365:
+        return False
+    if age_days <= RECENT_DAYS:
+        return True
+
+    # 3개월~3년: 검증된 것만
+    if paper.get("study_type") in STRONG_TYPES:
+        return True
+    if (paper.get("citation_count") or 0) >= CITATION_THRESHOLD:
+        return True
+    return False
+
+
 # ── 연구유형 판별 ────────────────────────────────────────────────
 _META = ["meta-analysis", "meta analysis", "systematic review"]
 _RCT = ["randomized controlled trial", "randomised controlled trial",
-        "randomized clinical trial", "rct"]
+        "randomized clinical trial", "randomised clinical trial",
+        "double-blind", "placebo-controlled", "rct"]
+
+# 실험 연구임을 시사하는 신호들 (대폭 확장)
 _EXPERIMENT_WORDS = [
     "randomized", "randomised", "randomly assigned", "randomly allocated",
-    "control group", "placebo", "double-blind", "double blind", "single-blind",
+    "control group", "control condition", "placebo", "double-blind", "double blind",
+    "single-blind", "experimental group", "experimental condition",
+    "participants were", "subjects were", "we recruited", "we conducted",
+    "were assigned to", "intervention group", "treatment group",
+    "pre-test", "post-test", "pretest", "posttest", "crossover",
+    "we performed a", "in this experiment", "experimental design",
 ]
+
+# 표본/통계 신호 (실험·정량연구의 강한 단서)
+_QUANT_SIGNALS = [
+    "participants", "subjects", "n =", "n=", "sample of", "p <", "p<",
+    "p =", "p=", "confidence interval", "95% ci", "significant difference",
+    "effect size", "cohen's d", "odds ratio", "regression",
+]
+
+_OBSERVATIONAL = ["cohort study", "case-control", "cross-sectional",
+                  "longitudinal study", "observational study", "survey of"]
 
 
 def classify_study_type(hints, abstract_en):
-    """1) 출처가 준 유형 표시를 먼저 보고, 2) 없으면 초록에서 실험 흔적을 찾음."""
+    """
+    1) 출처가 준 유형 표시를 먼저 봄 (가장 정확).
+    2) 없으면 초록에서 흔적을 찾음 (신호를 넓게 봄).
+    """
     combined = " ".join(str(t).lower() for t in (hints or []) if t)
 
+    # 1단계: 출처 표시
     if any(m in combined for m in _META):
         return "meta_analysis"
     if any(m in combined for m in _RCT):
         return "rct"
 
+    # 2단계: 초록 분석
     if abstract_en and isinstance(abstract_en, str):
         text = abstract_en.lower()
         if any(m in text for m in _META):
             return "meta_analysis"
-        if sum(1 for w in _EXPERIMENT_WORDS if w in text) >= 2:
-            return "experimental_likely"
+        if any(m in text for m in _RCT):
+            return "rct"
 
+        exp_hits = sum(1 for w in _EXPERIMENT_WORDS if w in text)
+        quant_hits = sum(1 for w in _QUANT_SIGNALS if w in text)
+
+        # 실험 신호 1개 + 정량 신호 1개, 또는 실험 신호 2개면 실험으로 추정
+        if (exp_hits >= 1 and quant_hits >= 1) or exp_hits >= 2:
+            return "experimental_likely"
+        # 관찰연구 신호
+        if any(m in text for m in _OBSERVATIONAL):
+            return "observational"
+
+    # 3단계: 유형 표시의 나머지
     if "review" in combined:
         return "review"
+    if any(m in combined for m in ("editorial", "comment", "letter", "news")):
+        return "other"
     return "unclassified"
 
 
@@ -119,8 +249,8 @@ _FILL_FIELDS = [
 ]
 
 _TYPE_STRENGTH = {
-    "meta_analysis": 5, "rct": 4, "experimental_likely": 3,
-    "review": 2, "unclassified": 1, None: 0,
+    "meta_analysis": 6, "rct": 5, "experimental_likely": 4,
+    "observational": 3, "review": 2, "other": 1, "unclassified": 1, None: 0,
 }
 
 

@@ -19,7 +19,7 @@ import requests
 
 from helpers import (
     blank_paper, deep_get, normalize_doi, classify_study_type,
-    dedupe_and_merge, to_db_row,
+    dedupe_and_merge, to_db_row, passes_retention,
 )
 
 DAYS_BACK = int(os.environ.get("COLLECT_DAYS_BACK", "3"))
@@ -339,6 +339,27 @@ def log_run(fetched, saved, skipped, failed):
         pass
 
 
+def existing_titles_without_doi():
+    """
+    이미 저장된, DOI 없는 논문들의 제목을 모아옴 (중복 방지용).
+    DOI 없는 논문은 제목으로만 중복을 판단할 수 있어서 필요함.
+    """
+    import re
+    titles = set()
+    url = (f"{SUPABASE_URL}/rest/v1/papers"
+           f"?select=title_en&doi=is.null&limit=10000")
+    try:
+        resp = requests.get(url, headers=_db_headers(False), timeout=30)
+        resp.raise_for_status()
+        for r in resp.json():
+            t = r.get("title_en")
+            if t:
+                titles.add(re.sub(r"[^a-z0-9]", "", t.lower()))
+    except requests.RequestException:
+        pass
+    return titles
+
+
 # ══════════════════════════════════════════════════════════════════
 #  3) 전체 실행
 # ══════════════════════════════════════════════════════════════════
@@ -364,7 +385,23 @@ def main():
     merged = dedupe_and_merge(all_papers)
     print(f"=== 중복 합친 뒤: {len(merged)}건 ===")
 
-    saved, skipped, failed = save_all(merged)
+    # 수명 규칙: 최근 3개월 전부 / 그 이후 검증된 것만 / 미래·초과 제외
+    kept = [p for p in merged if passes_retention(p)]
+    print(f"=== 수명 규칙 통과: {len(kept)}건 (제외 {len(merged) - len(kept)}건) ===")
+
+    # DOI 없는 논문은 이미 DB에 같은 제목이 있으면 제외 (누적 중복 방지)
+    import re
+    existing = existing_titles_without_doi()
+    deduped = []
+    for p in kept:
+        if not p.get("doi") and p.get("title_en"):
+            norm = re.sub(r"[^a-z0-9]", "", p["title_en"].lower())
+            if norm in existing:
+                continue
+        deduped.append(p)
+    print(f"=== DOI없는 중복 제외 뒤: {len(deduped)}건 ===")
+
+    saved, skipped, failed = save_all(deduped)
     print(f"=== 저장: 성공 {saved} / 건너뜀 {skipped} / 실패 {failed} ===")
 
     log_run(fetched, saved, skipped, failed)
