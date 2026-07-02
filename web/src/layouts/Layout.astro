@@ -1,0 +1,39 @@
+---
+// 모든 페이지가 공유하는 틀. SEO 메타 정보가 여기 들어갑니다.
+const {
+  title = '연구 아카이브',
+  description = '전 세계 최신 실증 연구 논문을 한곳에서. 실험을 거친 신뢰도 높은 연구만 골라 봅니다.',
+  jsonLd = null,
+} = Astro.props;
+---
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+
+    <!-- 검색결과·SNS 공유 미리보기용 -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary" />
+
+    <!-- 한글+영문 어울리는 모던 폰트 -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css"
+    />
+
+    <!-- 구조화 데이터(JSON-LD): 검색엔진이 '학술 논문'으로 이해하게 -->
+    {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
+<style is:global>
+  @import '../styles/global.css';
+</style>

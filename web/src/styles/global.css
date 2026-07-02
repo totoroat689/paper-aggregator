@@ -1,0 +1,107 @@
+:root {
+  --canvas: #F4F4F5;
+  --card: #FFFFFF;
+  --ink-1: #18181B;
+  --ink-2: #71717A;
+  --ink-3: #A1A1AA;
+  --line: #E4E4E7;
+  --line-soft: #EDEDEF;
+  --accent: #3F6B5E;
+  --accent-soft: #E1F0EA;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  background: var(--canvas);
+  color: var(--ink-1);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+
+.wrap { max-width: 720px; margin: 0 auto; padding: 0 16px; }
+
+/* ── 상단 바 ── */
+.topbar {
+  position: sticky; top: 0; z-index: 10;
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: saturate(180%) blur(12px);
+  border-bottom: 0.5px solid var(--line);
+}
+.topbar-inner { display: flex; align-items: center; justify-content: space-between; height: 56px; }
+.brand { font-size: 17px; font-weight: 600; letter-spacing: -0.02em; }
+.brand span { color: var(--accent); }
+
+/* ── 검색/필터 줄 ── */
+.controls { display: flex; gap: 8px; align-items: center; padding: 12px 0; flex-wrap: wrap; }
+.search-box {
+  flex: 1; min-width: 180px; display: flex; align-items: center; gap: 8px;
+  background: var(--card); border: 0.5px solid var(--line); border-radius: 10px;
+  padding: 9px 12px; transition: border-color 0.2s;
+}
+.search-box:focus-within { border-color: var(--accent); }
+.search-box input { border: none; outline: none; flex: 1; font-size: 14px; background: transparent; font-family: inherit; }
+.chip {
+  font-size: 12px; padding: 6px 12px; border-radius: 8px; cursor: pointer;
+  background: var(--card); border: 0.5px solid var(--line); color: var(--ink-2);
+  transition: all 0.18s; white-space: nowrap;
+}
+.chip:hover { border-color: var(--ink-3); }
+.chip.on { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+/* ── 논문 목록 ── */
+.list { background: var(--card); border: 0.5px solid var(--line); border-radius: 14px; overflow: hidden; margin: 8px 0 40px; }
+.row { padding: 16px 20px; border-bottom: 0.5px solid var(--line-soft); cursor: pointer; transition: background 0.2s; }
+.row:last-child { border-bottom: none; }
+.row:hover { background: #FAFAFA; }
+.row:hover .row-title { color: #000; }
+
+.row-tags { display: flex; gap: 8px; align-items: center; margin-bottom: 6px; }
+.tag { font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 4px; }
+.tag-field { font-size: 11px; color: #888780; background: #F1EFE8; padding: 2px 8px; border-radius: 4px; }
+.chev { margin-left: auto; color: #C4C4C8; font-size: 16px; transition: transform 0.3s ease; }
+.row.open .chev { transform: rotate(90deg); }
+
+.row-title { font-size: 15px; font-weight: 500; line-height: 1.4; margin-bottom: 8px; transition: color 0.2s; }
+
+.row-meta { display: flex; gap: 14px; font-size: 12px; color: var(--ink-3); align-items: center; flex-wrap: wrap; }
+.trust { display: flex; align-items: center; gap: 6px; margin-left: auto; }
+.trust-bar { width: 46px; height: 4px; background: #E9E9EB; border-radius: 2px; overflow: hidden; }
+.trust-fill { height: 100%; background: var(--accent); }
+
+.row-detail { max-height: 0; opacity: 0; overflow: hidden; transition: max-height 0.4s ease, opacity 0.3s ease, margin 0.3s ease; }
+.row.open .row-detail { max-height: 400px; opacity: 1; margin-top: 12px; }
+.row-abstract { font-size: 13px; color: var(--ink-2); line-height: 1.65; margin-bottom: 12px; }
+.row-actions { display: flex; gap: 10px; }
+.btn-link {
+  font-size: 12px; color: var(--accent); border: 0.5px solid var(--accent-soft);
+  background: var(--accent-soft); padding: 6px 12px; border-radius: 8px; transition: all 0.18s;
+}
+.btn-link:hover { background: var(--accent); color: #fff; }
+
+/* ── 등장 애니메이션 (staggered fade-in) ── */
+@keyframes riseIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+.row { opacity: 0; animation: riseIn 0.5s cubic-bezier(0.16,1,0.3,1) forwards; }
+
+/* ── 로딩 스켈레톤 ── */
+@keyframes shimmer { 0% { background-position: -200px 0; } 100% { background-position: 240px 0; } }
+.skel { background: linear-gradient(90deg,#EDEDEF 25%,#F6F6F7 50%,#EDEDEF 75%); background-size: 400px 100%; animation: shimmer 1.4s infinite linear; border-radius: 4px; }
+
+/* ── 빈 상태 ── */
+.empty { text-align: center; padding: 60px 20px; color: var(--ink-3); font-size: 14px; }
+
+/* ── 움직임 최소화 설정 존중 (접근성) ── */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .row, .trust-fill, .skel { animation: none !important; opacity: 1 !important; }
+}
+
+@media (max-width: 520px) {
+  .brand { font-size: 15px; }
+  .row { padding: 14px 16px; }
+}

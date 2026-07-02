@@ -1,0 +1,121 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { supabase, STUDY_TYPE_LABELS, countryName } from '../lib/supabase.js';
+
+// ── 서버에서 논문을 미리 읽어옴 (SEO 핵심: 완성된 HTML로 전달) ──
+const { data: papers, error } = await supabase
+  .from('papers')
+  .select('id, title_en, title_ko, study_type, primary_category, citation_count, publication_year, countries, is_retracted')
+  .eq('is_retracted', false)
+  .order('publication_date', { ascending: false, nullsFirst: false })
+  .limit(50);
+
+const list = papers || [];
+
+function studyInfo(type) {
+  return STUDY_TYPE_LABELS[type] || STUDY_TYPE_LABELS.unclassified;
+}
+---
+<Layout>
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <div class="brand">연구<span>아카이브</span></div>
+      <div style="display:flex;gap:6px;align-items:center;font-size:13px;color:var(--ink-2)">
+        최신순 <i class="ti ti-chevron-down"></i>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="controls">
+      <div class="search-box">
+        <i class="ti ti-search" style="color:var(--ink-3)"></i>
+        <input id="search" type="text" placeholder="한글로 검색…" autocomplete="off" />
+      </div>
+      <div class="chip on" data-filter="all">전체</div>
+      <div class="chip" data-filter="meta_analysis">메타분석</div>
+      <div class="chip" data-filter="rct">실험연구</div>
+    </div>
+
+    {error && <div class="empty">데이터를 불러오지 못했어요. 잠시 후 다시 시도해 주세요.</div>}
+
+    {!error && list.length === 0 && (
+      <div class="empty">아직 수집된 논문이 없어요.</div>
+    )}
+
+    {!error && list.length > 0 && (
+      <div class="list" id="list">
+        {list.map((p, i) => {
+          const s = studyInfo(p.study_type);
+          const country = (p.countries && p.countries[0]) ? countryName(p.countries[0]) : '';
+          return (
+            <article
+              class="row"
+              data-type={p.study_type}
+              data-title={(p.title_ko || p.title_en || '').toLowerCase()}
+              style={`animation-delay:${Math.min(i * 0.04, 0.6)}s`}
+            >
+              <div class="row-tags">
+                <span class="tag" style={`color:${s.fg};background:${s.bg}`}>{s.label}</span>
+                {p.primary_category && <span class="tag-field">{p.primary_category}</span>}
+                <i class="ti ti-chevron-right chev"></i>
+              </div>
+              <h2 class="row-title">{p.title_ko || p.title_en}</h2>
+              <div class="row-meta">
+                <span><i class="ti ti-quote" style="font-size:13px;vertical-align:-1px"></i> 인용 {p.citation_count?.toLocaleString() || 0}</span>
+                <span>{[p.publication_year, country].filter(Boolean).join(' · ')}</span>
+                <div class="trust">
+                  <span style={`color:${s.strength >= 0.6 ? 'var(--accent)' : 'var(--ink-3)'}`}>신뢰도</span>
+                  <div class="trust-bar"><div class="trust-fill" style={`width:${Math.round(s.strength * 100)}%`}></div></div>
+                </div>
+              </div>
+              <div class="row-detail">
+                <p class="row-abstract" data-id={p.id}>초록을 불러오는 중…</p>
+                <div class="row-actions">
+                  <a class="btn-link" href={`/paper/${p.id}`}>자세히 보기</a>
+                </div>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+    )}
+  </main>
+
+  <!-- Tabler 아이콘 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.0.0/dist/tabler-icons.min.css" />
+
+  <script>
+    // 카드 펼치기/접기 + 초록 지연 로딩
+    const rows = document.querySelectorAll('.row');
+    rows.forEach((row) => {
+      row.addEventListener('click', () => {
+        row.classList.toggle('open');
+      });
+    });
+
+    // 필터 칩
+    const chips = document.querySelectorAll('.chip');
+    chips.forEach((chip) => {
+      chip.addEventListener('click', () => {
+        chips.forEach((c) => c.classList.remove('on'));
+        chip.classList.add('on');
+        const f = chip.dataset.filter;
+        rows.forEach((row) => {
+          const show = f === 'all' || row.dataset.type === f;
+          row.style.display = show ? '' : 'none';
+        });
+      });
+    });
+
+    // 검색 (제목 기준 즉시 필터)
+    const search = document.getElementById('search');
+    search?.addEventListener('input', (e) => {
+      const q = e.target.value.toLowerCase().trim();
+      rows.forEach((row) => {
+        const show = !q || (row.dataset.title || '').includes(q);
+        row.style.display = show ? '' : 'none';
+      });
+    });
+  </script>
+</Layout>

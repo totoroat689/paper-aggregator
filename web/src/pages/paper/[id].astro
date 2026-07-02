@@ -1,0 +1,89 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { supabase, STUDY_TYPE_LABELS, countryName } from '../../lib/supabase.js';
+
+const { id } = Astro.params;
+
+const { data: paper } = await supabase
+  .from('papers')
+  .select('*')
+  .eq('id', id)
+  .single();
+
+// 논문이 없으면 목록으로
+if (!paper) {
+  return Astro.redirect('/');
+}
+
+const s = STUDY_TYPE_LABELS[paper.study_type] || STUDY_TYPE_LABELS.unclassified;
+const countries = (paper.countries || []).map(countryName).join(', ');
+const authors = (paper.authors || []).map((a) => a.name).filter(Boolean).slice(0, 6).join(', ');
+
+// 검색엔진용 구조화 데이터: 이 페이지가 '학술 논문'임을 알림
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ScholarlyArticle',
+  headline: paper.title_en,
+  ...(authors && { author: (paper.authors || []).map((a) => ({ '@type': 'Person', name: a.name })) }),
+  ...(paper.publication_date && { datePublished: paper.publication_date }),
+  ...(paper.journal_name && { publisher: { '@type': 'Organization', name: paper.journal_name } }),
+  ...(paper.abstract_en && { abstract: paper.abstract_en }),
+};
+---
+<Layout
+  title={`${paper.title_ko || paper.title_en} — 연구 아카이브`}
+  description={(paper.abstract_ko || paper.abstract_en || '').slice(0, 150)}
+  jsonLd={jsonLd}
+>
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <a class="brand" href="/">연구<span>아카이브</span></a>
+      <a href="/" style="font-size:13px;color:var(--ink-2)"><i class="ti ti-arrow-left"></i> 목록</a>
+    </div>
+  </header>
+
+  <main class="wrap" style="padding-top:24px;padding-bottom:60px">
+    <div class="row-tags" style="margin-bottom:12px">
+      <span class="tag" style={`color:${s.fg};background:${s.bg}`}>{s.label}</span>
+      {paper.primary_category && <span class="tag-field">{paper.primary_category}</span>}
+    </div>
+
+    <h1 style="font-size:24px;font-weight:600;line-height:1.35;letter-spacing:-0.02em;margin-bottom:8px">
+      {paper.title_ko || paper.title_en}
+    </h1>
+    {paper.title_ko && paper.title_en && (
+      <p style="font-size:14px;color:var(--ink-3);margin-bottom:16px">{paper.title_en}</p>
+    )}
+
+    <div class="row-meta" style="margin-bottom:24px;padding-bottom:20px;border-bottom:0.5px solid var(--line)">
+      <span><i class="ti ti-quote" style="font-size:13px;vertical-align:-1px"></i> 인용 {paper.citation_count?.toLocaleString() || 0}</span>
+      {paper.publication_year && <span>{paper.publication_year}</span>}
+      {countries && <span>{countries}</span>}
+      {paper.journal_name && <span>{paper.journal_name}</span>}
+    </div>
+
+    {authors && (
+      <p style="font-size:13px;color:var(--ink-2);margin-bottom:20px"><strong style="font-weight:500">저자</strong> · {authors}</p>
+    )}
+
+    <section style="margin-bottom:28px">
+      <h2 style="font-size:15px;font-weight:500;margin-bottom:10px">초록</h2>
+      <p style="font-size:14px;color:var(--ink-2);line-height:1.75" id="abstract">
+        {paper.abstract_ko || paper.abstract_en || '초록이 제공되지 않는 논문입니다.'}
+      </p>
+      {!paper.abstract_ko && paper.abstract_en && (
+        <button id="translate-btn" class="btn-link" style="margin-top:14px;cursor:pointer;border:none">
+          <i class="ti ti-language"></i> 한국어로 번역
+        </button>
+      )}
+    </section>
+
+    {paper.fulltext_url && (
+      <a class="btn-link" href={paper.fulltext_url} target="_blank" rel="noopener">
+        <i class="ti ti-external-link"></i> 원문 보기
+      </a>
+    )}
+  </main>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.0.0/dist/tabler-icons.min.css" />
+</Layout>
