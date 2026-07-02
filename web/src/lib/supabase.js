@@ -1,11 +1,18 @@
 import { createClient } from '@supabase/supabase-js';
 
-// 키는 Vercel 환경변수에서 읽어옵니다 (코드에 직접 안 박음).
-// anon 키는 읽기 전용이라 공개돼도 안전하지만, 관리 편의상 환경변수로 둡니다.
+// 화면 읽기용 (anon 키, 공개돼도 안전 - 읽기 전용)
 const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL;
 const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
 
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// 서버 전용 쓰기 연결 (번역 결과 저장 등).
+// service_role 키는 서버 안에서만 쓰이고 화면(브라우저)에는 절대 노출되지 않습니다.
+export function getServiceClient() {
+  const key = import.meta.env.SUPABASE_SERVICE_KEY;
+  if (!key) return supabase; // 키 없으면 읽기용으로 대체(저장은 실패하지만 앱은 안 죽음)
+  return createClient(SUPABASE_URL, key);
+}
 
 // 연구유형 코드 -> 한글 이름 + 색상
 export const STUDY_TYPE_LABELS = {

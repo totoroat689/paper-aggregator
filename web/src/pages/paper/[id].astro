@@ -72,11 +72,38 @@ const jsonLd = {
         {paper.abstract_ko || paper.abstract_en || '초록이 제공되지 않는 논문입니다.'}
       </p>
       {!paper.abstract_ko && paper.abstract_en && (
-        <button id="translate-btn" class="btn-link" style="margin-top:14px;cursor:pointer;border:none">
+        <button id="translate-btn" class="btn-link" data-id={paper.id} style="margin-top:14px;cursor:pointer;border:none">
           <i class="ti ti-language"></i> 한국어로 번역
         </button>
       )}
     </section>
+
+    <script>
+      const btn = document.getElementById('translate-btn');
+      btn?.addEventListener('click', async () => {
+        const id = btn.dataset.id;
+        btn.textContent = '번역 중…';
+        btn.disabled = true;
+        try {
+          const res = await fetch('/api/translate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id }),
+          });
+          const data = await res.json();
+          if (data.abstract_ko) {
+            document.getElementById('abstract').textContent = data.abstract_ko;
+            btn.style.display = 'none';
+          } else {
+            btn.textContent = data.error || '번역 실패';
+            btn.disabled = false;
+          }
+        } catch {
+          btn.textContent = '번역 실패 · 다시 시도';
+          btn.disabled = false;
+        }
+      });
+    </script>
 
     {paper.fulltext_url && (
       <a class="btn-link" href={paper.fulltext_url} target="_blank" rel="noopener">

@@ -2,26 +2,32 @@
 import Layout from '../layouts/Layout.astro';
 import { supabase, STUDY_TYPE_LABELS, countryName } from '../lib/supabase.js';
 
-// ── 서버에서 논문을 미리 읽어옴 (SEO 핵심: 완성된 HTML로 전달) ──
+// 정렬 옵션 (주소 뒤 ?sort=cited 로 바뀜)
+const sort = Astro.url.searchParams.get('sort') || 'recent';
+const orderCol = sort === 'cited' ? 'citation_count' : 'publication_date';
+
 const { data: papers, error } = await supabase
   .from('papers')
-  .select('id, title_en, title_ko, study_type, primary_category, citation_count, publication_year, countries, is_retracted')
+  .select('id, title_en, title_ko, abstract_en, abstract_ko, study_type, primary_category, citation_count, publication_year, countries, fulltext_url, is_retracted')
   .eq('is_retracted', false)
-  .order('publication_date', { ascending: false, nullsFirst: false })
-  .limit(50);
+  .order(orderCol, { ascending: false, nullsFirst: false })
+  .limit(60);
 
 const list = papers || [];
-
-function studyInfo(type) {
-  return STUDY_TYPE_LABELS[type] || STUDY_TYPE_LABELS.unclassified;
+function studyInfo(type) { return STUDY_TYPE_LABELS[type] || STUDY_TYPE_LABELS.unclassified; }
+function shortAbstract(p) {
+  const t = p.abstract_ko || p.abstract_en;
+  if (!t) return '초록이 제공되지 않는 논문입니다.';
+  return t.length > 300 ? t.slice(0, 300) + '…' : t;
 }
 ---
 <Layout>
   <header class="topbar">
     <div class="wrap topbar-inner">
       <div class="brand">연구<span>아카이브</span></div>
-      <div style="display:flex;gap:6px;align-items:center;font-size:13px;color:var(--ink-2)">
-        최신순 <i class="ti ti-chevron-down"></i>
+      <div class="sort-tabs">
+        <a href="/?sort=recent" class={`sort-tab ${sort === 'recent' ? 'on' : ''}`}>최신순</a>
+        <a href="/?sort=cited" class={`sort-tab ${sort === 'cited' ? 'on' : ''}`}>인용순</a>
       </div>
     </div>
   </header>
@@ -30,49 +36,48 @@ function studyInfo(type) {
     <div class="controls">
       <div class="search-box">
         <i class="ti ti-search" style="color:var(--ink-3)"></i>
-        <input id="search" type="text" placeholder="한글로 검색…" autocomplete="off" />
+        <input id="search" type="text" placeholder="제목으로 검색…" autocomplete="off" />
       </div>
       <div class="chip on" data-filter="all">전체</div>
+      <div class="chip" data-filter="experiment">실험연구</div>
       <div class="chip" data-filter="meta_analysis">메타분석</div>
-      <div class="chip" data-filter="rct">실험연구</div>
+      <div class="chip" data-filter="review">리뷰</div>
     </div>
 
-    {error && <div class="empty">데이터를 불러오지 못했어요. 잠시 후 다시 시도해 주세요.</div>}
-
-    {!error && list.length === 0 && (
-      <div class="empty">아직 수집된 논문이 없어요.</div>
-    )}
+    {error && <div class="empty">데이터를 불러오지 못했어요.</div>}
+    {!error && list.length === 0 && <div class="empty">아직 수집된 논문이 없어요.</div>}
 
     {!error && list.length > 0 && (
       <div class="list" id="list">
         {list.map((p, i) => {
           const s = studyInfo(p.study_type);
           const country = (p.countries && p.countries[0]) ? countryName(p.countries[0]) : '';
+          const isExp = p.study_type === 'rct' || p.study_type === 'experimental_likely';
+          const filterKey = isExp ? 'experiment' : p.study_type;
           return (
-            <article
-              class="row"
-              data-type={p.study_type}
+            <article class="row" data-filter={filterKey}
               data-title={(p.title_ko || p.title_en || '').toLowerCase()}
-              style={`animation-delay:${Math.min(i * 0.04, 0.6)}s`}
-            >
+              style={`animation-delay:${Math.min(i * 0.04, 0.5)}s`}>
               <div class="row-tags">
                 <span class="tag" style={`color:${s.fg};background:${s.bg}`}>{s.label}</span>
-                {p.primary_category && <span class="tag-field">{p.primary_category}</span>}
+                {p.primary_category && <span class="tag-field" style={`color:${s.fg}`}>{p.primary_category}</span>}
                 <i class="ti ti-chevron-right chev"></i>
               </div>
               <h2 class="row-title">{p.title_ko || p.title_en}</h2>
               <div class="row-meta">
-                <span><i class="ti ti-quote" style="font-size:13px;vertical-align:-1px"></i> 인용 {p.citation_count?.toLocaleString() || 0}</span>
-                <span>{[p.publication_year, country].filter(Boolean).join(' · ')}</span>
+                <span><i class="ti ti-quote" style="font-size:13px;vertical-align:-1px"></i> 인용 {(p.citation_count || 0).toLocaleString()}</span>
+                {p.publication_year && p.publication_year <= 2026 && <span><i class="ti ti-calendar" style="font-size:13px;vertical-align:-1px"></i> {p.publication_year}</span>}
+                {country && <span>{country}</span>}
                 <div class="trust">
-                  <span style={`color:${s.strength >= 0.6 ? 'var(--accent)' : 'var(--ink-3)'}`}>신뢰도</span>
-                  <div class="trust-bar"><div class="trust-fill" style={`width:${Math.round(s.strength * 100)}%`}></div></div>
+                  <span style={`color:${s.strength >= 0.6 ? s.fg : 'var(--ink-3)'}`}>신뢰도</span>
+                  <div class="trust-bar"><div class="trust-fill" style={`background:${s.fg};--target:${Math.round(s.strength * 100)}%`}></div></div>
                 </div>
               </div>
               <div class="row-detail">
-                <p class="row-abstract" data-id={p.id}>초록을 불러오는 중…</p>
+                <p class="row-abstract">{shortAbstract(p)}</p>
                 <div class="row-actions">
                   <a class="btn-link" href={`/paper/${p.id}`}>자세히 보기</a>
+                  {p.fulltext_url && <a class="btn-link" href={p.fulltext_url} target="_blank" rel="noopener"><i class="ti ti-external-link"></i> 원문</a>}
                 </div>
               </div>
             </article>
@@ -82,19 +87,21 @@ function studyInfo(type) {
     )}
   </main>
 
-  <!-- Tabler 아이콘 -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.0.0/dist/tabler-icons.min.css" />
 
   <script>
-    // 카드 펼치기/접기 + 초록 지연 로딩
     const rows = document.querySelectorAll('.row');
     rows.forEach((row) => {
-      row.addEventListener('click', () => {
+      row.addEventListener('click', (e) => {
+        if (e.target.closest('a')) return;
         row.classList.toggle('open');
+        const fill = row.querySelector('.trust-fill');
+        if (fill && row.classList.contains('open')) {
+          fill.style.width = getComputedStyle(fill).getPropertyValue('--target');
+        }
       });
     });
 
-    // 필터 칩
     const chips = document.querySelectorAll('.chip');
     chips.forEach((chip) => {
       chip.addEventListener('click', () => {
@@ -102,19 +109,16 @@ function studyInfo(type) {
         chip.classList.add('on');
         const f = chip.dataset.filter;
         rows.forEach((row) => {
-          const show = f === 'all' || row.dataset.type === f;
-          row.style.display = show ? '' : 'none';
+          row.style.display = (f === 'all' || row.dataset.filter === f) ? '' : 'none';
         });
       });
     });
 
-    // 검색 (제목 기준 즉시 필터)
     const search = document.getElementById('search');
     search?.addEventListener('input', (e) => {
       const q = e.target.value.toLowerCase().trim();
       rows.forEach((row) => {
-        const show = !q || (row.dataset.title || '').includes(q);
-        row.style.display = show ? '' : 'none';
+        row.style.display = (!q || (row.dataset.title || '').includes(q)) ? '' : 'none';
       });
     });
   </script>
