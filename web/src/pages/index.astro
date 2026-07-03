@@ -116,8 +116,8 @@ const chips = [
                 {p.publication_year && p.publication_year <= 2026 && <span><i class="ti ti-calendar" style="font-size:13px;vertical-align:-1px"></i> {p.publication_year}</span>}
                 {country && <span>{country}</span>}
                 <div class="trust">
-                  <span style={`color:${s.strength >= 0.6 ? s.fg : 'var(--ink-3)'}`}>신뢰도</span>
-                  <div class="trust-bar"><div class="trust-fill" data-target={`${Math.round(s.strength * 100)}%`} style={`background:${s.fg}`}></div></div>
+                  <span style={`color:${s.strength >= 0.6 ? 'var(--accent)' : 'var(--ink-3)'}`}>신뢰도</span>
+                  <div class="trust-bar"><div class="trust-fill" data-target={`${Math.round(s.strength * 100)}%`}></div></div>
                 </div>
               </div>
               <div class="row-detail">

@@ -14,15 +14,15 @@ export function getServiceClient() {
   return createClient(SUPABASE_URL, key);
 }
 
-// 연구유형 코드 -> 한글 이름 + 색상
+// 연구유형 코드 -> 한글 이름 + 색상 (배지: 색조 또렷하게)
 export const STUDY_TYPE_LABELS = {
-  meta_analysis: { label: '메타분석', fg: '#085041', bg: '#E1F5EE', strength: 0.95 },
-  rct: { label: '무작위대조실험', fg: '#185FA5', bg: '#E6F1FB', strength: 0.85 },
-  experimental_likely: { label: '실험연구', fg: '#3F6B5E', bg: '#E1F0EA', strength: 0.65 },
-  observational: { label: '관찰연구', fg: '#8A6D1F', bg: '#F5EFDD', strength: 0.5 },
-  review: { label: '리뷰', fg: '#5F5E5A', bg: '#F1EFE8', strength: 0.4 },
-  other: { label: '기타', fg: '#888780', bg: '#F1EFE8', strength: 0.2 },
-  unclassified: { label: '미분류', fg: '#A1A1AA', bg: '#F4F4F5', strength: 0.2 },
+  meta_analysis: { label: '메타분석', fg: '#0A5C4A', bg: '#D6F0E7', strength: 0.95 },
+  rct: { label: '무작위대조실험', fg: '#1A5DA8', bg: '#DCEBFB', strength: 0.85 },
+  experimental_likely: { label: '실험연구', fg: '#2E7D64', bg: '#D9F0E5', strength: 0.65 },
+  observational: { label: '관찰연구', fg: '#9A6A15', bg: '#F6EACE', strength: 0.5 },
+  review: { label: '리뷰', fg: '#7A5AA6', bg: '#EDE6F7', strength: 0.4 },
+  other: { label: '기타', fg: '#6B6A64', bg: '#ECEBE6', strength: 0.2 },
+  unclassified: { label: '미분류', fg: '#71717A', bg: '#EAEAEC', strength: 0.2 },
 };
 
 // 26개 분야 영어 -> 한글
