@@ -455,6 +455,13 @@ def main():
 
     log_run(fetched, saved, skipped, failed)
 
+    # 제목 한글화 (배치): 이전 배치 회수 + 새 배치 제출
+    try:
+        import translate_titles
+        translate_titles.run()
+    except Exception as e:
+        print(f"[제목번역] 오류(수집에는 영향 없음): {e}")
+
 
 if __name__ == "__main__":
     main()
