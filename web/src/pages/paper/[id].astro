@@ -1,6 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { supabase, STUDY_TYPE_LABELS, categoryKo, countryName } from '../../lib/supabase.js';
+import { supabase, STUDY_TYPE_LABELS, categoryKo, fieldColor, countryName } from '../../lib/supabase.js';
 
 const { id } = Astro.params;
 
@@ -45,7 +45,7 @@ const jsonLd = {
   <main class="wrap" style="padding-top:24px;padding-bottom:60px">
     <div class="row-tags" style="margin-bottom:12px">
       <span class="tag" style={`color:${s.fg};background:${s.bg}`}>{s.label}</span>
-      {paper.primary_category && <span class="tag-field">{categoryKo(paper.primary_category)}</span>}
+      {paper.primary_category && (() => { const fc = fieldColor(categoryKo(paper.primary_category)); return <span class="tag-field" style={`color:${fc.fg};background:${fc.bg}`}>{categoryKo(paper.primary_category)}</span>; })()}
     </div>
 
     <h1 style="font-size:24px;font-weight:600;line-height:1.35;letter-spacing:-0.02em;margin-bottom:8px">

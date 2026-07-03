@@ -1,0 +1,6 @@
+web/node_modules/
+web/dist/
+web/.vercel/
+web/.astro/
+web/.env
+__pycache__/

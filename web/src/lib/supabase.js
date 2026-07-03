@@ -48,6 +48,55 @@ export const CATEGORY_KO = {
   'Linguistics': '언어학', 'Agricultural and Food Sciences': '농업·식품과학',
 };
 
+
+// 분야별 파스텔 색 (계열별로 묶어서 조화롭게)
+const FIELD_PASTEL = {
+  // 의학·보건 계열: 연분홍/연코랄
+  '의학': { fg: '#A34A5E', bg: '#FBE8EC' },
+  '간호학': { fg: '#A34A5E', bg: '#FBE8EC' },
+  '치의학': { fg: '#A85A4A', bg: '#FAEAE5' },
+  '보건의료': { fg: '#A85A4A', bg: '#FAEAE5' },
+  '약리·독성학': { fg: '#96548C', bg: '#F6E9F4' },
+  // 생명과학 계열: 연그린
+  '생화학·유전·분자생물학': { fg: '#3E7D4F', bg: '#E3F2E6' },
+  '면역·미생물학': { fg: '#3E7D4F', bg: '#E3F2E6' },
+  '농업·생물학': { fg: '#5B7E3A', bg: '#EBF2DF' },
+  '생물학': { fg: '#3E7D4F', bg: '#E3F2E6' },
+  '농업·식품과학': { fg: '#5B7E3A', bg: '#EBF2DF' },
+  '수의학': { fg: '#5B7E3A', bg: '#EBF2DF' },
+  '신경과학': { fg: '#7A5AA6', bg: '#EFE8F8' },
+  // 자연과학 계열: 연블루/연보라
+  '물리·천문학': { fg: '#5A5AA8', bg: '#EAEAF9' },
+  '화학': { fg: '#4A6FA5', bg: '#E6EEF8' },
+  '수학': { fg: '#5A5AA8', bg: '#EAEAF9' },
+  '지구·행성과학': { fg: '#4A7A96', bg: '#E4F0F5' },
+  '환경과학': { fg: '#3E8578', bg: '#E1F1EE' },
+  '에너지': { fg: '#96742E', bg: '#F7EFDD' },
+  // 공학 계열: 연슬레이트
+  '공학': { fg: '#5F6E85', bg: '#EAEEF4' },
+  '화학공학': { fg: '#5F6E85', bg: '#EAEEF4' },
+  '재료공학': { fg: '#5F6E85', bg: '#EAEEF4' },
+  '컴퓨터과학': { fg: '#4A6FA5', bg: '#E6EEF8' },
+  // 사회과학 계열: 연노랑/연민트
+  '심리학': { fg: '#B07A2A', bg: '#FBF0DC' },
+  '사회과학': { fg: '#A8842E', bg: '#F8F1DE' },
+  '경제·금융': { fg: '#3E8578', bg: '#E1F1EE' },
+  '경영·회계': { fg: '#3E8578', bg: '#E1F1EE' },
+  '의사결정학': { fg: '#5F6E85', bg: '#EAEEF4' },
+  '정치학': { fg: '#A8842E', bg: '#F8F1DE' },
+  '교육학': { fg: '#B07A2A', bg: '#FBF0DC' },
+  '법학': { fg: '#A8842E', bg: '#F8F1DE' },
+  '지리학': { fg: '#4A7A96', bg: '#E4F0F5' },
+  '지질학': { fg: '#4A7A96', bg: '#E4F0F5' },
+  // 인문·예술 계열: 연라벤더
+  '예술·인문학': { fg: '#96548C', bg: '#F6E9F4' },
+  '언어학': { fg: '#96548C', bg: '#F6E9F4' },
+};
+
+export function fieldColor(nameKo) {
+  return FIELD_PASTEL[nameKo] || { fg: '#71717A', bg: '#EFEFF1' };
+}
+
 export function categoryKo(name) {
   if (!name) return '기타';
   return CATEGORY_KO[name] || name;
