@@ -1,0 +1,120 @@
+---
+import Layout from '../layouts/Layout.astro';
+import AuthBar from '../components/AuthBar.astro';
+---
+<Layout title="내 북마크 — 연구 아카이브" description="저장해둔 논문 목록">
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <a class="brand" href="/">연구<span>아카이브</span><span class="dot"></span></a>
+      <div class="topbar-right">
+        <a href="/" style="font-size:13px;color:var(--ink-2)"><i class="ti ti-arrow-left"></i> 목록</a>
+        <AuthBar />
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap" style="padding-top:24px;padding-bottom:60px">
+    <h1 style="font-size:20px;font-weight:600;margin-bottom:16px"><i class="ti ti-bookmark"></i> 내 북마크</h1>
+    <div id="bm-page" class="list">
+      <div class="empty" id="bm-status">불러오는 중…</div>
+    </div>
+  </main>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.0.0/dist/tabler-icons.min.css" />
+
+  <script>
+    import { supabase, STUDY_TYPE_LABELS, categoryKo } from '../lib/supabase.js';
+
+    const box = document.getElementById('bm-page');
+    const status = document.getElementById('bm-status');
+
+    function fmtDate(d, year) {
+      if (d) {
+        const parts = String(d).split('-');
+        if (parts.length === 3) return `${parts[0]}.${parts[1]}.${parts[2]}`;
+      }
+      return year ? String(year) : '';
+    }
+
+    async function load() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        status.innerHTML = '';
+        const msg = document.createElement('div');
+        msg.textContent = '북마크는 로그인 후 이용할 수 있어요. ';
+        const btn = document.createElement('button');
+        btn.className = 'auth-btn';
+        btn.textContent = '구글로 로그인';
+        btn.addEventListener('click', () => supabase.auth.signInWithOAuth({
+          provider: 'google',
+          options: { redirectTo: window.location.href },
+        }));
+        status.appendChild(msg);
+        status.appendChild(btn);
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from('bookmarks')
+        .select('paper_id, created_at, papers(id, title_ko, title_en, study_type, primary_category, publication_date, publication_year, citation_count)')
+        .order('created_at', { ascending: false });
+
+      if (error) { status.textContent = '북마크를 불러오지 못했어요.'; return; }
+      if (!data || data.length === 0) {
+        status.textContent = '아직 저장한 논문이 없어요. 목록에서 "저장"을 눌러보세요.';
+        return;
+      }
+
+      status.remove();
+      data.forEach(({ papers: p, paper_id }) => {
+        if (!p) return;
+        const row = document.createElement('article');
+        row.className = 'row open';
+
+        const tags = document.createElement('div');
+        tags.className = 'row-tags';
+        const s = STUDY_TYPE_LABELS[p.study_type] || STUDY_TYPE_LABELS.unclassified;
+        const tag = document.createElement('span');
+        tag.className = 'tag';
+        tag.style.color = s.fg; tag.style.background = s.bg;
+        tag.textContent = s.label;
+        tags.appendChild(tag);
+        if (p.primary_category) {
+          const f = document.createElement('span');
+          f.className = 'tag-field';
+          f.textContent = categoryKo(p.primary_category);
+          tags.appendChild(f);
+        }
+        row.appendChild(tags);
+
+        const h = document.createElement('h2');
+        h.className = 'row-title';
+        const a = document.createElement('a');
+        a.href = `/paper/${p.id}`;
+        a.textContent = p.title_ko || p.title_en;
+        h.appendChild(a);
+        row.appendChild(h);
+
+        const meta = document.createElement('div');
+        meta.className = 'row-meta';
+        const d = fmtDate(p.publication_date, p.publication_year);
+        meta.textContent = [`인용 ${(p.citation_count || 0).toLocaleString()}`, d].filter(Boolean).join(' · ');
+
+        const del = document.createElement('button');
+        del.className = 'btn-link';
+        del.style.marginLeft = 'auto';
+        del.innerHTML = '<i class="ti ti-trash"></i> 삭제';
+        del.addEventListener('click', async () => {
+          const { error: e2 } = await supabase.from('bookmarks').delete().eq('paper_id', paper_id);
+          if (!e2) row.remove();
+        });
+        meta.appendChild(del);
+        row.appendChild(meta);
+
+        box.appendChild(row);
+      });
+    }
+
+    load();
+  </script>
+</Layout>

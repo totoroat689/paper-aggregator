@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { supabase, STUDY_TYPE_LABELS, categoryKo, fieldColor, countryName } from '../lib/supabase.js';
+import AuthBar from '../components/AuthBar.astro';
+import { supabase, STUDY_TYPE_LABELS, CATEGORY_KO, categoryKo, fieldColor, countryName } from '../lib/supabase.js';
 
 const params = Astro.url.searchParams;
 
@@ -8,8 +9,16 @@ const params = Astro.url.searchParams;
 const sort = params.get('sort') === 'cited' ? 'cited' : 'recent';
 const orderCol = sort === 'cited' ? 'citation_count' : 'publication_date';
 
-// 유형 필터 (all / experiment / meta_analysis / review)
+// 유형 필터 (all / meta_analysis / experiment / observational / review / etc)
 const type = params.get('type') || 'all';
+
+// 분야 필터 (한글 분야명 기준. 같은 한글명에 대응하는 영어 표기가 여럿이면 전부 포함)
+const cat = (params.get('cat') || '').trim();
+const KO_TO_EN = {};
+for (const [en, ko] of Object.entries(CATEGORY_KO)) {
+  (KO_TO_EN[ko] = KO_TO_EN[ko] || []).push(en);
+}
+const catOptions = Object.keys(KO_TO_EN).sort((a, b) => a.localeCompare(b, 'ko'));
 
 // 검색어
 const q = (params.get('q') || '').trim();
@@ -38,13 +47,18 @@ const to = from + PER_PAGE - 1;
 // 쿼리 빌드 (전체 데이터 대상)
 let query = supabase
   .from('papers')
-  .select('id, title_en, title_ko, abstract_en, abstract_ko, study_type, primary_category, citation_count, publication_year, countries, fulltext_url, is_retracted', { count: 'exact' })
+  .select('id, title_en, title_ko, abstract_en, abstract_ko, study_type, primary_category, citation_count, publication_year, publication_date, countries, fulltext_url, is_retracted', { count: 'exact' })
   .eq('is_retracted', false);
 
 if (type === 'experiment') {
   query = query.in('study_type', ['rct', 'experimental_likely']);
+} else if (type === 'etc') {
+  query = query.in('study_type', ['other', 'unclassified']);
 } else if (type !== 'all') {
   query = query.eq('study_type', type);
+}
+if (cat && KO_TO_EN[cat]) {
+  query = query.in('primary_category', KO_TO_EN[cat]);
 }
 if (q) {
   // 확장 용어들로 제목(한/영) + 초록에서 검색
@@ -70,31 +84,48 @@ function shortAbstract(p) {
   if (!t) return '초록이 제공되지 않는 논문입니다.';
   return t.length > 300 ? t.slice(0, 300) + '…' : t;
 }
+// 발표일 예쁘게: 2024-03-15 -> 2024.03.15 (일자 없으면 연도만)
+function fmtDate(p) {
+  if (p.publication_date) {
+    const parts = String(p.publication_date).split('-');
+    if (parts.length === 3) return `${parts[0]}.${parts[1]}.${parts[2]}`;
+    return String(p.publication_date);
+  }
+  if (p.publication_year && p.publication_year <= 2026) return String(p.publication_year);
+  return '';
+}
 // 현재 조건을 유지하며 특정 값만 바꾼 URL 생성
 function buildUrl(overrides = {}) {
   const p = new URLSearchParams();
-  const merged = { sort, type, q, page: 1, ...overrides };
+  const merged = { sort, type, cat, q, page: 1, ...overrides };
   if (merged.sort && merged.sort !== 'recent') p.set('sort', merged.sort);
   if (merged.type && merged.type !== 'all') p.set('type', merged.type);
+  if (merged.cat) p.set('cat', merged.cat);
   if (merged.q) p.set('q', merged.q);
   if (merged.page && merged.page > 1) p.set('page', merged.page);
   const s = p.toString();
   return s ? `/?${s}` : '/';
 }
+// 대분류(연구유형) 칩 — 유형 전체를 빠짐없이
 const chips = [
   { key: 'all', label: '전체' },
-  { key: 'experiment', label: '실험연구' },
   { key: 'meta_analysis', label: '메타분석' },
+  { key: 'experiment', label: '실험연구' },
+  { key: 'observational', label: '관찰연구' },
   { key: 'review', label: '리뷰' },
+  { key: 'etc', label: '기타·미분류' },
 ];
 ---
 <Layout>
   <header class="topbar">
     <div class="wrap topbar-inner">
       <a href="/" class="brand">연구<span>아카이브</span><span class="dot"></span></a>
-      <div class="sort-tabs">
-        <a href={buildUrl({ sort: 'recent' })} class={`sort-tab ${sort === 'recent' ? 'on' : ''}`}>최신순</a>
-        <a href={buildUrl({ sort: 'cited' })} class={`sort-tab ${sort === 'cited' ? 'on' : ''}`}>인용순</a>
+      <div class="topbar-right">
+        <div class="sort-tabs">
+          <a href={buildUrl({ sort: 'recent' })} class={`sort-tab ${sort === 'recent' ? 'on' : ''}`}>최신순</a>
+          <a href={buildUrl({ sort: 'cited' })} class={`sort-tab ${sort === 'cited' ? 'on' : ''}`}>인용순</a>
+        </div>
+        <AuthBar />
       </div>
     </div>
   </header>
@@ -108,11 +139,30 @@ const chips = [
         <input name="q" type="text" placeholder="제목으로 검색…" autocomplete="off" value={q} />
         {sort !== 'recent' && <input type="hidden" name="sort" value={sort} />}
         {type !== 'all' && <input type="hidden" name="type" value={type} />}
+        {cat && <input type="hidden" name="cat" value={cat} />}
       </form>
-      {chips.map((c) => (
-        <a href={buildUrl({ type: c.key })} class={`chip type-${c.key} ${type === c.key ? 'on' : ''}`}>{c.label}</a>
-      ))}
     </div>
+    <div class="filterbar">
+      <div class="chip-group">
+        {chips.map((c) => (
+          <a href={buildUrl({ type: c.key })} class={`chip type-${c.key} ${type === c.key ? 'on' : ''}`}>{c.label}</a>
+        ))}
+      </div>
+      <select id="cat-select" class="cat-select" aria-label="분야 선택">
+        <option value="">분야 전체</option>
+        {catOptions.map((o) => (
+          <option value={o} selected={o === cat}>{o}</option>
+        ))}
+      </select>
+    </div>
+    {(type !== 'all' || cat) && (
+      <div class="filter-active">
+        적용된 필터:
+        {type !== 'all' && <span class="fa-pill">{chips.find((c) => c.key === type)?.label}</span>}
+        {cat && <span class="fa-pill">{cat}</span>}
+        <a href={buildUrl({ type: 'all', cat: '' })} class="fa-clear">전체 해제</a>
+      </div>
+    )}
 
     {error && <div class="empty">데이터를 불러오지 못했어요.</div>}
     {!error && list.length === 0 && <div class="empty">아직 수집된 논문이 없어요.</div>}
@@ -132,7 +182,7 @@ const chips = [
               <h2 class="row-title">{p.title_ko || p.title_en}</h2>
               <div class="row-meta">
                 <span><i class="ti ti-quote" style="font-size:13px;vertical-align:-1px"></i> 인용 {(p.citation_count || 0).toLocaleString()}</span>
-                {p.publication_year && p.publication_year <= 2026 && <span><i class="ti ti-calendar" style="font-size:13px;vertical-align:-1px"></i> {p.publication_year}</span>}
+                {fmtDate(p) && <span><i class="ti ti-calendar" style="font-size:13px;vertical-align:-1px"></i> {fmtDate(p)}</span>}
                 {country && <span>{country}</span>}
                 <div class="trust">
                   <span style={`color:${s.strength >= 0.6 ? 'var(--accent)' : 'var(--ink-3)'}`}>신뢰도</span>
@@ -144,6 +194,7 @@ const chips = [
                 <div class="row-actions">
                   <a class="btn-link" href={`/paper/${p.id}`}>자세히 보기</a>
                   {p.fulltext_url && <a class="btn-link" href={p.fulltext_url} target="_blank" rel="noopener"><i class="ti ti-external-link"></i> 원문</a>}
+                  <button type="button" class="btn-link bm" data-id={p.id}><i class="ti ti-bookmark"></i> 저장</button>
                 </div>
               </div>
             </article>
@@ -180,12 +231,21 @@ const chips = [
       fills.forEach((f) => { f.style.width = f.getAttribute('data-target') || '0%'; });
     }
 
-    // 카드 펼치기
+    // 카드 펼치기 (링크·버튼 클릭은 제외)
     document.querySelectorAll('.row').forEach((row) => {
       row.addEventListener('click', (e) => {
-        if (e.target.closest('a')) return;
+        if (e.target.closest('a, button')) return;
         row.classList.toggle('open');
       });
+    });
+
+    // 분야 드롭다운: 고르면 조건 유지한 채 이동
+    document.getElementById('cat-select')?.addEventListener('change', (e) => {
+      const u = new URL(window.location.href);
+      const v = e.target.value;
+      if (v) u.searchParams.set('cat', v); else u.searchParams.delete('cat');
+      u.searchParams.delete('page');
+      window.location.href = u.toString();
     });
 
     // 한글 검색: 제출 전에 확장 용어를 만들어두고 이동 (한 번 만들면 캐시됨)

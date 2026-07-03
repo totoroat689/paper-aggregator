@@ -1,0 +1,89 @@
+---
+// 로그인 영역 (구글 로그인 / 사용자 메뉴)
+// + 페이지에 있는 북마크 버튼(.bm[data-id])의 동작도 여기서 한꺼번에 처리합니다.
+---
+<div class="auth-area" id="auth-area">
+  <button type="button" id="login-btn" class="auth-btn" hidden>
+    <i class="ti ti-brand-google"></i> 로그인
+  </button>
+  <div id="user-menu" class="user-menu" hidden>
+    <a href="/bookmarks" class="auth-link"><i class="ti ti-bookmark"></i> 북마크</a>
+    <button type="button" id="logout-btn" class="auth-link as-btn">로그아웃</button>
+  </div>
+</div>
+
+<script>
+  import { supabase } from '../lib/supabase.js';
+
+  const loginBtn = document.getElementById('login-btn');
+  const userMenu = document.getElementById('user-menu');
+
+  function render(session) {
+    const on = !!session;
+    if (loginBtn) loginBtn.hidden = on;
+    if (userMenu) userMenu.hidden = !on;
+  }
+
+  // 구글 로그인 (끝나면 지금 보던 페이지로 돌아옴)
+  async function login() {
+    await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: window.location.href },
+    });
+  }
+  loginBtn?.addEventListener('click', login);
+
+  document.getElementById('logout-btn')?.addEventListener('click', async () => {
+    await supabase.auth.signOut();
+    window.location.reload();
+  });
+
+  // ── 북마크 버튼 처리 ─────────────────────────────────────────
+  const bmButtons = Array.from(document.querySelectorAll('.bm[data-id]'));
+
+  function paintBookmark(btn, saved) {
+    btn.classList.toggle('on', saved);
+    btn.innerHTML = saved
+      ? '<i class="ti ti-bookmark-filled"></i> 저장됨'
+      : '<i class="ti ti-bookmark"></i> 저장';
+  }
+
+  async function markSaved(session) {
+    if (!session || bmButtons.length === 0) return;
+    const ids = bmButtons.map((b) => b.dataset.id);
+    const { data } = await supabase
+      .from('bookmarks')
+      .select('paper_id')
+      .in('paper_id', ids);
+    const saved = new Set((data || []).map((r) => r.paper_id));
+    bmButtons.forEach((b) => paintBookmark(b, saved.has(b.dataset.id)));
+  }
+
+  bmButtons.forEach((btn) => {
+    btn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        if (confirm('북마크는 로그인 후 이용할 수 있어요. 구글로 로그인할까요?')) login();
+        return;
+      }
+      const id = btn.dataset.id;
+      const isOn = btn.classList.contains('on');
+      paintBookmark(btn, !isOn); // 화면 먼저 반응 (느낌 빠르게)
+      if (isOn) {
+        const { error } = await supabase.from('bookmarks').delete().eq('paper_id', id);
+        if (error) paintBookmark(btn, true);
+      } else {
+        const { error } = await supabase.from('bookmarks').insert({ paper_id: id });
+        if (error && error.code !== '23505') paintBookmark(btn, false); // 중복저장은 무시
+      }
+    });
+  });
+
+  // 시작: 세션 확인 후 화면 반영
+  supabase.auth.getSession().then(({ data: { session } }) => {
+    render(session);
+    markSaved(session);
+  });
+  supabase.auth.onAuthStateChange((_evt, session) => render(session));
+</script>

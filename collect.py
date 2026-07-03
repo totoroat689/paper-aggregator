@@ -99,6 +99,9 @@ def _openalex_to_paper(raw):
     p["primary_category"] = deep_get(raw, "primary_topic", "field", "display_name")
     p["journal_name"] = deep_get(raw, "primary_location", "source", "display_name")
     p["fulltext_url"] = deep_get(raw, "primary_location", "landing_page_url")
+    # 라이선스(cc-by 등): 오픈액세스 위치의 값을 우선, 없으면 기본 위치의 값
+    p["license"] = (deep_get(raw, "best_oa_location", "license")
+                    or deep_get(raw, "primary_location", "license"))
     p["study_type"] = classify_study_type([deep_get(raw, "type")], p["abstract_en"])
     p["sources"] = ["openalex"]
     p["source_ids"] = {"openalex": deep_get(raw, "id")}
@@ -342,13 +345,14 @@ def enrich_categories(papers):
     분야(primary_category)가 빈 논문을, DOI로 OpenAlex에 물어서 채움.
     50개씩 묶어서 한 번에 조회 -> 하나씩 묻는 것보다 수십 배 빠름.
     """
-    need = [p for p in papers if not p.get("primary_category") and p.get("doi")]
+    need = [p for p in papers
+            if (not p.get("primary_category") or not p.get("license")) and p.get("doi")]
     total = len(need)
     if not total:
         print("[분야보완] 채울 대상 없음")
         return 0
 
-    print(f"[분야보완] 대상 {total}건, 50개씩 묶어서 조회 시작")
+    print(f"[분야보완] 대상 {total}건(분야/라이선스), 50개씩 묶어서 조회 시작")
     by_doi = {p["doi"]: p for p in need}
     filled = 0
     dois = list(by_doi.keys())
@@ -360,7 +364,7 @@ def enrich_categories(papers):
         params = {
             "api_key": OPENALEX_API_KEY,
             "filter": filter_val,
-            "select": "doi,primary_topic",
+            "select": "doi,primary_topic,best_oa_location,primary_location",
             "per_page": 50,
         }
         try:
@@ -370,9 +374,20 @@ def enrich_categories(papers):
                 continue
             for work in resp.json().get("results", []):
                 doi = normalize_doi(deep_get(work, "doi"))
+                if not doi or doi not in by_doi:
+                    continue
+                target = by_doi[doi]
+                changed = False
                 field = deep_get(work, "primary_topic", "field", "display_name")
-                if doi and field and doi in by_doi:
-                    by_doi[doi]["primary_category"] = field
+                if field and not target.get("primary_category"):
+                    target["primary_category"] = field
+                    changed = True
+                lic = (deep_get(work, "best_oa_location", "license")
+                       or deep_get(work, "primary_location", "license"))
+                if lic and not target.get("license"):
+                    target["license"] = lic
+                    changed = True
+                if changed:
                     filled += 1
         except (requests.RequestException, ValueError) as e:
             print(f"[분야보완] {i+len(chunk)}/{total} 오류(건너뜀): {e}")

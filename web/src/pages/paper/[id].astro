@@ -1,6 +1,17 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import AuthBar from '../../components/AuthBar.astro';
 import { supabase, STUDY_TYPE_LABELS, categoryKo, fieldColor, countryName } from '../../lib/supabase.js';
+
+// 발표일 예쁘게: 2024-03-15 -> 2024.03.15
+function fmtDate(d, year) {
+  if (d) {
+    const parts = String(d).split('-');
+    if (parts.length === 3) return `${parts[0]}.${parts[1]}.${parts[2]}`;
+    return String(d);
+  }
+  return year ? String(year) : '';
+}
 
 const { id } = Astro.params;
 
@@ -38,7 +49,10 @@ const jsonLd = {
   <header class="topbar">
     <div class="wrap topbar-inner">
       <a class="brand" href="/">연구<span>아카이브</span><span class="dot"></span></a>
-      <a href="/" style="font-size:13px;color:var(--ink-2)"><i class="ti ti-arrow-left"></i> 목록</a>
+      <div class="topbar-right">
+        <a href="/" style="font-size:13px;color:var(--ink-2)"><i class="ti ti-arrow-left"></i> 목록</a>
+        <AuthBar />
+      </div>
     </div>
   </header>
 
@@ -57,9 +71,12 @@ const jsonLd = {
 
     <div class="row-meta" style="margin-bottom:24px;padding-bottom:20px;border-bottom:0.5px solid var(--line)">
       <span><i class="ti ti-quote" style="font-size:13px;vertical-align:-1px"></i> 인용 {paper.citation_count?.toLocaleString() || 0}</span>
-      {paper.publication_year && <span>{paper.publication_year}</span>}
+      {fmtDate(paper.publication_date, paper.publication_year) && (
+        <span><i class="ti ti-calendar" style="font-size:13px;vertical-align:-1px"></i> {fmtDate(paper.publication_date, paper.publication_year)}</span>
+      )}
       {countries && <span>{countries}</span>}
       {paper.journal_name && <span>{paper.journal_name}</span>}
+      <button type="button" class="btn-link bm" data-id={paper.id}><i class="ti ti-bookmark"></i> 저장</button>
     </div>
 
     {authors && (

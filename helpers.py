@@ -21,6 +21,7 @@ PAPER_FIELDS = [
     "primary_category",
     "sources", "source_ids",
     "fulltext_url", "is_open_access", "journal_name",
+    "license",
 ]
 
 
@@ -35,6 +36,7 @@ def blank_paper():
         "primary_category": None,
         "sources": [], "source_ids": {},
         "fulltext_url": None, "is_open_access": False, "journal_name": None,
+        "license": None,
     }
 
 
@@ -261,7 +263,7 @@ _MERGE_ORDER = {"europepmc": 0, "openalex": 1, "semanticscholar": 2}
 _FILL_FIELDS = [
     "doi", "pmid", "title_en", "abstract_en", "countries", "primary_category",
     "publication_year", "publication_date", "source_indexed_date",
-    "journal_name", "fulltext_url",
+    "journal_name", "fulltext_url", "license",
 ]
 
 _TYPE_STRENGTH = {
