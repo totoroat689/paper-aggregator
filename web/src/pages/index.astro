@@ -7,9 +7,9 @@ Astro.response.headers.set('Cache-Control', 'public, s-maxage=120, stale-while-r
 
 const params = Astro.url.searchParams;
 
-// 정렬
-const sort = params.get('sort') === 'cited' ? 'cited' : 'recent';
-const orderCol = sort === 'cited' ? 'citation_count' : 'publication_date';
+// 정렬 (기본 = 추천순)
+const sortParam = params.get('sort');
+const sort = sortParam === 'cited' ? 'cited' : sortParam === 'recent' ? 'recent' : 'reco';
 
 // 대분류(연구유형) — 쉼표로 여러 개 선택 가능
 const TYPE_MAP = {
@@ -56,7 +56,7 @@ const to = from + PER_PAGE - 1;
 // 쿼리 빌드 (전체 데이터 대상)
 let query = supabase
   .from('papers')
-  .select('id, title_en, title_ko, abstract_en, abstract_ko, study_type, primary_category, citation_count, publication_year, publication_date, countries, fulltext_url, is_retracted', { count: 'exact' })
+  .select('id, title_en, title_ko, abstract_en, abstract_ko, study_type, primary_category, citation_count, view_count, publication_year, publication_date, countries, fulltext_url, is_retracted', { count: 'exact' })
   .eq('is_retracted', false);
 
 if (types.length > 0) {
@@ -74,9 +74,39 @@ if (q) {
   query = query.or(conds.join(','));
 }
 
-const { data: papers, error, count } = await query
-  .order(orderCol, { ascending: false, nullsFirst: false })
-  .range(from, to);
+let papers, error, count;
+if (sort === 'reco' && from < 300) {
+  // 추천순: 최근 논문 풀(최대 300건)을 [최신성 45% + 인용 35% + 조회수 20%] 점수로 재정렬
+  const res = await query
+    .order('publication_date', { ascending: false, nullsFirst: false })
+    .range(0, 299);
+  error = res.error;
+  count = res.count;
+  const pool = res.data || [];
+  const now = Date.now();
+  const maxC = Math.max(1, ...pool.map((p) => p.citation_count || 0));
+  const maxV = Math.max(1, ...pool.map((p) => p.view_count || 0));
+  const score = (p) => {
+    const days = p.publication_date
+      ? Math.max(0, (now - new Date(p.publication_date).getTime()) / 86400000)
+      : 365;
+    const fresh = Math.exp(-days / 45); // 45일 단위로 절반씩 감쇠
+    const cite = Math.log10(1 + (p.citation_count || 0)) / Math.log10(1 + maxC);
+    const view = Math.log10(1 + (p.view_count || 0)) / Math.log10(1 + maxV);
+    return 0.45 * fresh + 0.35 * cite + 0.2 * view;
+  };
+  pool.sort((a, b) => score(b) - score(a));
+  papers = pool.slice(from, from + PER_PAGE);
+} else {
+  // 최신순/인용순 (추천순의 뒷페이지도 최신순으로 이어짐)
+  const orderCol = sort === 'cited' ? 'citation_count' : 'publication_date';
+  const res = await query
+    .order(orderCol, { ascending: false, nullsFirst: false })
+    .range(from, to);
+  papers = res.data;
+  error = res.error;
+  count = res.count;
+}
 
 const list = papers || [];
 const total = count || 0;
@@ -102,7 +132,7 @@ function fmtDate(p) {
 function buildUrl(overrides = {}) {
   const p = new URLSearchParams();
   const merged = { sort, type: types.join(','), cat: cats.join(','), q, page: 1, ...overrides };
-  if (merged.sort && merged.sort !== 'recent') p.set('sort', merged.sort);
+  if (merged.sort && merged.sort !== 'reco') p.set('sort', merged.sort);
   if (merged.type) p.set('type', merged.type);
   if (merged.cat) p.set('cat', merged.cat);
   if (merged.q) p.set('q', merged.q);
@@ -123,7 +153,7 @@ const activeCount = types.length + cats.length;
 
 // ── SEO ──
 // 필터·검색·정렬이 걸린 변형 페이지는 색인 제외(무한 조합 방지), 순수 목록만 색인
-const isFiltered = Boolean(q || types.length || cats.length || sort !== 'recent');
+const isFiltered = Boolean(q || types.length || cats.length || sort !== 'reco');
 const pageTitle = q
   ? `"${q}" 검색 결과 — 연구 아카이브`
   : page > 1
@@ -168,11 +198,12 @@ const websiteJsonLd = {
       <form class="search-box" method="get" action="/">
         <i class="ti ti-search" style="color:var(--ink-3)"></i>
         <input name="q" type="text" placeholder="제목으로 검색…" autocomplete="off" value={q} />
-        {sort !== 'recent' && <input type="hidden" name="sort" value={sort} />}
+        {sort !== 'reco' && <input type="hidden" name="sort" value={sort} />}
         {types.length > 0 && <input type="hidden" name="type" value={types.join(',')} />}
         {cats.length > 0 && <input type="hidden" name="cat" value={cats.join(',')} />}
       </form>
       <select id="sort-select" class="tool-select" aria-label="정렬">
+        <option value="reco" selected={sort === 'reco'}>추천순</option>
         <option value="recent" selected={sort === 'recent'}>최신순</option>
         <option value="cited" selected={sort === 'cited'}>인용순</option>
       </select>
@@ -219,12 +250,12 @@ const websiteJsonLd = {
     {!error && list.length === 0 && <div class="empty">조건에 맞는 논문이 없어요.</div>}
 
     {!error && list.length > 0 && (
-      <div class="list" id="list">
+      <div class="list" id="list" data-sort={sort}>
         {list.map((p, i) => {
           const s = studyInfo(p.study_type);
           const country = (p.countries && p.countries[0]) ? countryName(p.countries[0]) : '';
           return (
-            <article class="row" style={`animation-delay:${Math.min(i * 0.04, 0.5)}s`}>
+            <article class="row" style={`animation-delay:${Math.min(i * 0.04, 0.5)}s`} data-cat={p.primary_category ? categoryKo(p.primary_category) : ''} data-stype={p.study_type || ''} data-cite={p.citation_count || 0} data-date={p.publication_date || p.publication_year || ''}>
               <div class="row-tags">
                 <span class="tag" style={`color:${s.fg};background:${s.bg}`}>{s.label}</span>
                 {p.primary_category && (() => { const fc = fieldColor(categoryKo(p.primary_category)); return <span class="tag-field" style={`color:${fc.fg};background:${fc.bg}`}>{categoryKo(p.primary_category)}</span>; })()}
@@ -266,6 +297,39 @@ const websiteJsonLd = {
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.0.0/dist/tabler-icons.min.css" />
 
   <script>
+    // ── 개인화 배치: 추천순일 때, 이 기기에서 본 논문 취향으로 10칸당 [취향7 : 인기2 : 최신1] 재배치 ──
+    (() => {
+      const listEl = document.getElementById('list');
+      if (!listEl || listEl.dataset.sort !== 'reco') return;
+      let taste = null;
+      try { taste = JSON.parse(localStorage.getItem('ra_taste') || 'null'); } catch {}
+      if (!taste) return;
+      const signals = Object.values(taste.cats || {}).reduce((a, b) => a + b, 0);
+      if (signals < 3) return; // 취향 데이터가 너무 적으면 기본 추천 유지
+
+      const rows = Array.from(listEl.querySelectorAll('.row'));
+      if (rows.length < 10) return;
+      const tScore = (r) => ((taste.cats || {})[r.dataset.cat] || 0) * 2 + ((taste.types || {})[r.dataset.stype] || 0);
+      const byTaste = [...rows].sort((a, b) => tScore(b) - tScore(a));
+      const byPop = [...rows].sort((a, b) => (+b.dataset.cite || 0) - (+a.dataset.cite || 0));
+      const byNew = [...rows].sort((a, b) => String(b.dataset.date).localeCompare(String(a.dataset.date)));
+
+      const used = new Set();
+      const take = (arr) => { for (const r of arr) { if (!used.has(r)) { used.add(r); return r; } } return null; };
+      const pattern = ['t', 't', 't', 'p', 't', 't', 't', 'n', 't', 'p']; // 취향7 인기2 최신1
+      const out = [];
+      for (let i = 0; out.length < rows.length; i++) {
+        const k = pattern[i % 10];
+        const r = k === 'p' ? (take(byPop) || take(byTaste) || take(byNew))
+          : k === 'n' ? (take(byNew) || take(byTaste) || take(byPop))
+          : (take(byTaste) || take(byPop) || take(byNew));
+        if (!r) break;
+        out.push(r);
+      }
+      out.forEach((r, i) => { r.style.animationDelay = `${Math.min(i * 0.04, 0.5)}s`; });
+      listEl.append(...out);
+    })();
+
     // 신뢰도 막대: 화면에 보이면 스르륵 차오름
     const fills = document.querySelectorAll('.trust-fill');
     if ('IntersectionObserver' in window) {
@@ -294,7 +358,7 @@ const websiteJsonLd = {
     document.getElementById('sort-select')?.addEventListener('change', (e) => {
       const u = new URL(window.location.href);
       const v = e.target.value;
-      if (v === 'recent') u.searchParams.delete('sort'); else u.searchParams.set('sort', v);
+      if (v === 'reco') u.searchParams.delete('sort'); else u.searchParams.set('sort', v);
       u.searchParams.delete('page');
       window.location.href = u.toString();
     });

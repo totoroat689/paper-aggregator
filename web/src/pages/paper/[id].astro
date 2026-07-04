@@ -89,11 +89,11 @@ const jsonLd = {
       {paper.primary_category && (() => { const fc = fieldColor(categoryKo(paper.primary_category)); return <span class="tag-field" style={`color:${fc.fg};background:${fc.bg}`}>{categoryKo(paper.primary_category)}</span>; })()}
     </div>
 
-    <h1 style="font-size:24px;font-weight:600;line-height:1.35;letter-spacing:-0.02em;margin-bottom:8px">
+    <h1 id="p-title" class="swap-el" style="font-size:24px;font-weight:600;line-height:1.35;letter-spacing:-0.02em;margin-bottom:8px">
       {paper.title_ko || paper.title_en}
     </h1>
     {paper.title_ko && paper.title_en && (
-      <p style="font-size:14px;color:var(--ink-3);margin-bottom:16px">{paper.title_en}</p>
+      <p id="p-subtitle" class="swap-el" style="font-size:14px;color:var(--ink-3);margin-bottom:16px">{paper.title_en}</p>
     )}
 
     <div class="row-meta" style="margin-bottom:24px;padding-bottom:20px;border-bottom:0.5px solid var(--line)">
@@ -104,6 +104,9 @@ const jsonLd = {
       {countries && <span>{countries}</span>}
       {paper.journal_name && <span>{paper.journal_name}</span>}
       <button type="button" class="btn-link bm" data-id={paper.id}><i class="ti ti-bookmark"></i> 저장</button>
+      {(paper.title_ko || paper.abstract_ko) && (
+        <button type="button" id="lang-toggle" class="btn-link" style="background:none;border:none;cursor:pointer;padding:0;font-family:inherit"><i class="ti ti-language"></i> 원문으로 보기</button>
+      )}
     </div>
 
     {authors && (
@@ -112,7 +115,7 @@ const jsonLd = {
 
     <section style="margin-bottom:28px">
       <h2 style="font-size:15px;font-weight:500;margin-bottom:10px">초록</h2>
-      <p style="font-size:14px;color:var(--ink-2);line-height:1.75" id="abstract">
+      <p style="font-size:14px;color:var(--ink-2);line-height:1.75" id="abstract" class="swap-el">
         {paper.abstract_ko || paper.abstract_en || '초록이 제공되지 않는 논문입니다.'}
       </p>
       {!paper.abstract_ko && paper.abstract_en && (
@@ -121,6 +124,28 @@ const jsonLd = {
         </button>
       )}
     </section>
+
+    <div class="row-actions" style="margin-bottom:8px">
+      {paper.fulltext_url && (
+        <a class="btn-link" href={paper.fulltext_url} target="_blank" rel="noopener">
+          <i class="ti ti-external-link"></i> 원문 보기
+        </a>
+      )}
+      <button type="button" id="analyze-btn" class="btn-link" style="background:none;border:none;cursor:pointer;padding:0;font-family:inherit">
+        <i class="ti ti-sparkles"></i> 초록 분석
+      </button>
+      <button type="button" id="fulltext-btn" class="btn-link" data-id={paper.id} style="background:none;border:none;cursor:pointer;padding:0;font-family:inherit">
+        <i class="ti ti-file-text"></i> 한글화 원문
+      </button>
+    </div>
+
+    <section id="fulltext-wrap" class="reveal">
+      <h2 style="font-size:15px;font-weight:600;margin:20px 0 10px">원문 전문 <span style="font-size:12px;font-weight:400;color:var(--ink-3)">(테스트 중 — 아직 번역 전, 원어로 표시돼요)</span></h2>
+      <div id="fulltext-body" class="post-body" style="font-size:14px;line-height:1.75;color:var(--ink-2)"></div>
+    </section>
+
+    <div id="paper-data" data-id={paper.id} data-cat={paper.primary_category ? categoryKo(paper.primary_category) : ''} data-stype={paper.study_type || ''} hidden></div>
+    <script type="application/json" id="paper-texts" set:html={JSON.stringify({ tk: paper.title_ko, te: paper.title_en, ak: paper.abstract_ko, ae: paper.abstract_en }).replace(/</g, '\\u003c')} />
 
     <script>
       const btn = document.getElementById('translate-btn');
@@ -149,11 +174,105 @@ const jsonLd = {
       });
     </script>
 
-    {paper.fulltext_url && (
-      <a class="btn-link" href={paper.fulltext_url} target="_blank" rel="noopener">
-        <i class="ti ti-external-link"></i> 원문 보기
-      </a>
-    )}
+    <script>
+      import { supabase } from '../../lib/supabase.js';
+
+      const pd = document.getElementById('paper-data');
+      const pid = pd?.dataset.id;
+
+      // ── 조회수 +1 (인기 신호) + 취향 기록 (개인화 신호, 이 기기에만 저장) ──
+      if (pd && pid) {
+        supabase.rpc('increment_view', { pid }).then(() => {}, () => {});
+        try {
+          const KEY = 'ra_taste';
+          const t = JSON.parse(localStorage.getItem(KEY) || '{"cats":{},"types":{}}');
+          const bump = (o, k) => { if (k) o[k] = Math.min((o[k] || 0) + 1, 50); };
+          bump(t.cats, pd.dataset.cat);
+          bump(t.types, pd.dataset.stype);
+          localStorage.setItem(KEY, JSON.stringify(t));
+        } catch {}
+      }
+
+      // ── 원문/한국어 전환 토글 (스르륵 페이드) ──
+      const texts = document.getElementById('paper-texts');
+      const lbtn = document.getElementById('lang-toggle');
+      if (texts && lbtn) {
+        const d = JSON.parse(texts.textContent);
+        let en = false;
+        const tEl = document.getElementById('p-title');
+        const stEl = document.getElementById('p-subtitle');
+        const abEl = document.getElementById('abstract');
+        lbtn.addEventListener('click', () => {
+          en = !en;
+          [tEl, stEl, abEl].forEach((x) => x && x.classList.add('swapping'));
+          setTimeout(() => {
+            if (en) {
+              if (tEl && d.te) tEl.textContent = d.te;
+              if (stEl) stEl.hidden = true;
+              if (abEl && d.ae) abEl.textContent = d.ae;
+              lbtn.innerHTML = '<i class="ti ti-language"></i> 한국어로 보기';
+            } else {
+              if (tEl) tEl.textContent = d.tk || d.te;
+              if (stEl) stEl.hidden = false;
+              if (abEl) abEl.textContent = d.ak || d.ae || '';
+              lbtn.innerHTML = '<i class="ti ti-language"></i> 원문으로 보기';
+            }
+            [tEl, stEl, abEl].forEach((x) => x && x.classList.remove('swapping'));
+          }, 300);
+        });
+      }
+
+      // ── 초록 분석 (유료 예정, 자리만) ──
+      document.getElementById('analyze-btn')?.addEventListener('click', () => {
+        alert('AI 초록 분석은 준비 중인 기능이에요. (유료 서비스로 제공 예정)');
+      });
+
+      // ── 한글화 원문: 지금은 테스트 — 원문을 가져와 초록 아래로 스르륵 펼침 ──
+      const fbtn = document.getElementById('fulltext-btn');
+      const wrap = document.getElementById('fulltext-wrap');
+      const fbody = document.getElementById('fulltext-body');
+      let ftLoaded = false;
+      fbtn?.addEventListener('click', async () => {
+        if (!wrap || !fbody) return;
+        // 이미 열려 있으면 접기
+        if (wrap.classList.contains('open')) {
+          wrap.style.maxHeight = '0px';
+          wrap.classList.remove('open');
+          fbtn.innerHTML = '<i class="ti ti-file-text"></i> 한글화 원문';
+          return;
+        }
+        if (ftLoaded) {
+          wrap.classList.add('open');
+          wrap.style.maxHeight = wrap.scrollHeight + 'px';
+          fbtn.innerHTML = '<i class="ti ti-chevron-up"></i> 원문 접기';
+          return;
+        }
+        fbtn.disabled = true;
+        fbtn.innerHTML = '<i class="ti ti-loader-2"></i> 원문 가져오는 중…';
+        try {
+          const res = await fetch('/api/fulltext', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: pid }),
+          });
+          const data = await res.json();
+          if (data.text) {
+            fbody.textContent = data.text;
+            ftLoaded = true;
+            wrap.classList.add('open');
+            wrap.style.maxHeight = wrap.scrollHeight + 'px';
+            fbtn.innerHTML = '<i class="ti ti-chevron-up"></i> 원문 접기';
+          } else {
+            alert(data.error || '원문을 가져오지 못했어요.');
+            fbtn.innerHTML = '<i class="ti ti-file-text"></i> 한글화 원문';
+          }
+        } catch {
+          alert('원문을 가져오지 못했어요.');
+          fbtn.innerHTML = '<i class="ti ti-file-text"></i> 한글화 원문';
+        }
+        fbtn.disabled = false;
+      });
+    </script>
 
     {related.length > 0 && (
       <section style="margin-top:36px;padding-top:24px;border-top:0.5px solid var(--line)">
