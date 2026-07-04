@@ -1,0 +1,104 @@
+---
+import Layout from '../layouts/Layout.astro';
+import AuthBar from '../components/AuthBar.astro';
+---
+<Layout title="내 정보 — 연구 아카이브" description="내 계정 정보">
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <a href="/" class="brand">연구<span>아카이브</span><span class="dot"></span></a>
+      <nav class="nav-links">
+        <a href="/">논문</a>
+        <a href="/board">게시판</a>
+      </nav>
+      <AuthBar />
+    </div>
+  </header>
+
+  <main class="wrap" style="padding-top:24px;padding-bottom:60px;max-width:560px">
+    <h1 style="font-size:20px;font-weight:600;margin-bottom:20px"><i class="ti ti-user"></i> 내 정보</h1>
+
+    <div id="need-login" class="empty" hidden>
+      로그인 후 이용할 수 있어요.
+      <button type="button" id="p-login" class="auth-btn" style="margin-left:8px"><i class="ti ti-brand-google"></i> 구글로 로그인</button>
+    </div>
+
+    <div id="profile-box" class="post-view" hidden>
+      <div style="display:flex;gap:14px;align-items:center;margin-bottom:20px">
+        <img id="p-avatar" alt="" referrerpolicy="no-referrer" style="width:56px;height:56px;border-radius:50%" hidden />
+        <div>
+          <div id="p-name" style="font-size:16px;font-weight:600"></div>
+          <div id="p-email" style="font-size:13px;color:var(--ink-3)"></div>
+        </div>
+      </div>
+
+      <div class="form-area" style="margin-top:0">
+        <label style="font-size:13px;color:var(--ink-2);display:block;margin-bottom:6px">닉네임 (게시판·댓글에 표시되는 이름)</label>
+        <input type="text" id="p-nickname" maxlength="20" placeholder="닉네임" />
+        <div style="display:flex;gap:10px;align-items:center;margin-top:12px">
+          <button type="button" id="p-save" class="primary-btn">저장</button>
+          <span id="p-msg" style="font-size:13px;color:var(--accent)"></span>
+        </div>
+      </div>
+
+      <p style="font-size:12px;color:var(--ink-3);margin-top:20px;line-height:1.6">
+        로그인은 구글 계정으로 이뤄지며, 이름·이메일·프로필 사진은 구글에서 가져와요.
+        이 사이트가 별도로 저장하는 건 닉네임뿐이에요.
+      </p>
+    </div>
+  </main>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.0.0/dist/tabler-icons.min.css" />
+
+  <script>
+    import { supabase } from '../lib/supabase.js';
+
+    let uid = null;
+
+    document.getElementById('p-login')?.addEventListener('click', () => {
+      supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: { redirectTo: window.location.href },
+      });
+    });
+
+    async function init() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        document.getElementById('need-login').hidden = false;
+        return;
+      }
+      uid = session.user.id;
+      document.getElementById('profile-box').hidden = false;
+
+      const meta = session.user.user_metadata || {};
+      document.getElementById('p-name').textContent = meta.full_name || meta.name || '';
+      document.getElementById('p-email').textContent = session.user.email || '';
+      if (meta.avatar_url) {
+        const av = document.getElementById('p-avatar');
+        av.src = meta.avatar_url;
+        av.hidden = false;
+      }
+
+      const { data } = await supabase.from('profiles').select('nickname').eq('id', uid).maybeSingle();
+      if (data) document.getElementById('p-nickname').value = data.nickname;
+    }
+
+    document.getElementById('p-save')?.addEventListener('click', async () => {
+      const nick = document.getElementById('p-nickname').value.trim();
+      const msg = document.getElementById('p-msg');
+      if (nick.length < 2) { msg.textContent = '닉네임은 2자 이상이어야 해요.'; msg.style.color = '#B4443C'; return; }
+      const { error } = await supabase.from('profiles')
+        .upsert({ id: uid, nickname: nick }, { onConflict: 'id' });
+      if (error) {
+        msg.textContent = error.code === '23505' ? '이미 사용 중인 닉네임이에요.' : '저장에 실패했어요.';
+        msg.style.color = '#B4443C';
+        return;
+      }
+      msg.textContent = '저장됐어요!';
+      msg.style.color = 'var(--accent)';
+    });
+
+    supabase.auth.onAuthStateChange((_e, s) => { if (s && !uid) window.location.reload(); });
+    init();
+  </script>
+</Layout>

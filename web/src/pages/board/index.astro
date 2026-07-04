@@ -1,0 +1,74 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import AuthBar from '../../components/AuthBar.astro';
+import { supabase } from '../../lib/supabase.js';
+
+const tab = Astro.url.searchParams.get('tab') === 'hot' ? 'hot' : 'new';
+
+const { data, error } = await supabase
+  .from('posts')
+  .select('id, title, created_at, profiles(nickname), comments(count), post_votes(value)')
+  .order('created_at', { ascending: false })
+  .limit(100);
+
+let posts = (data || []).map((p) => ({
+  id: p.id,
+  title: p.title,
+  created_at: p.created_at,
+  nickname: p.profiles?.nickname || '익명',
+  commentCount: p.comments?.[0]?.count ?? 0,
+  score: (p.post_votes || []).reduce((s, v) => s + (v.value || 0), 0),
+}));
+if (tab === 'hot') {
+  posts.sort((a, b) => (b.score - a.score) || (new Date(b.created_at) - new Date(a.created_at)));
+}
+
+function timeAgo(iso) {
+  const s = (Date.now() - new Date(iso).getTime()) / 1000;
+  if (s < 60) return '방금';
+  if (s < 3600) return `${Math.floor(s / 60)}분 전`;
+  if (s < 86400) return `${Math.floor(s / 3600)}시간 전`;
+  if (s < 86400 * 30) return `${Math.floor(s / 86400)}일 전`;
+  const d = new Date(iso);
+  return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
+}
+---
+<Layout title="게시판 — 연구 아카이브" description="연구 아카이브 커뮤니티 게시판. 연구와 논문에 대해 자유롭게 이야기해요.">
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <a href="/" class="brand">연구<span>아카이브</span><span class="dot"></span></a>
+      <nav class="nav-links">
+        <a href="/">논문</a>
+        <a href="/board" class="on">게시판</a>
+      </nav>
+      <AuthBar />
+    </div>
+  </header>
+
+  <main class="wrap" style="padding-top:20px;padding-bottom:60px">
+    <div class="board-head">
+      <div class="tabs">
+        <a href="/board" class={tab === 'new' ? 'on' : ''}>최신</a>
+        <a href="/board?tab=hot" class={tab === 'hot' ? 'on' : ''}>인기</a>
+      </div>
+      <a href="/board/write" class="write-btn"><i class="ti ti-pencil"></i> 글쓰기</a>
+    </div>
+
+    {error && <div class="empty">게시판을 불러오지 못했어요. (게시판 표가 아직 없다면 SQL을 먼저 실행해주세요)</div>}
+    {!error && posts.length === 0 && <div class="empty">아직 글이 없어요. 첫 글을 남겨보세요!</div>}
+
+    <div class="board-list">
+      {posts.map((p) => (
+        <a class="post-row" href={`/board/${p.id}`}>
+          <div class="post-score"><i class="ti ti-arrow-big-up"></i>{p.score}</div>
+          <div class="post-main">
+            <div class="post-title">{p.title}</div>
+            <div class="post-meta">{p.nickname} · {timeAgo(p.created_at)} · 댓글 {p.commentCount}</div>
+          </div>
+        </a>
+      ))}
+    </div>
+  </main>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.0.0/dist/tabler-icons.min.css" />
+</Layout>

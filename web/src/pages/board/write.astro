@@ -1,0 +1,81 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import AuthBar from '../../components/AuthBar.astro';
+---
+<Layout title="글쓰기 — 연구 아카이브" description="게시판에 글을 작성합니다.">
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <a href="/" class="brand">연구<span>아카이브</span><span class="dot"></span></a>
+      <nav class="nav-links">
+        <a href="/">논문</a>
+        <a href="/board" class="on">게시판</a>
+      </nav>
+      <AuthBar />
+    </div>
+  </header>
+
+  <main class="wrap" style="padding-top:24px;padding-bottom:60px;max-width:760px">
+    <h1 style="font-size:20px;font-weight:600;margin-bottom:16px"><i class="ti ti-pencil"></i> 글쓰기</h1>
+
+    <div id="need-login" class="empty" hidden>
+      글쓰기는 로그인 후 이용할 수 있어요.
+      <button type="button" id="write-login" class="auth-btn" style="margin-left:8px"><i class="ti ti-brand-google"></i> 구글로 로그인</button>
+    </div>
+
+    <div id="write-form" class="form-area" hidden>
+      <input type="text" id="w-title" placeholder="제목" maxlength="200" style="margin-bottom:10px" />
+      <textarea id="w-body" placeholder="내용을 입력하세요" style="min-height:220px"></textarea>
+      <div style="display:flex;gap:10px;margin-top:12px">
+        <button type="button" id="w-submit" class="primary-btn">등록</button>
+        <a href="/board" class="ghost-btn" style="text-decoration:none;display:inline-flex;align-items:center">취소</a>
+      </div>
+    </div>
+  </main>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.0.0/dist/tabler-icons.min.css" />
+
+  <script>
+    import { supabase } from '../../lib/supabase.js';
+
+    const needLogin = document.getElementById('need-login');
+    const form = document.getElementById('write-form');
+
+    function login() {
+      supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: { redirectTo: window.location.href },
+      });
+    }
+    document.getElementById('write-login')?.addEventListener('click', login);
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) { form.hidden = false; } else { needLogin.hidden = false; }
+    });
+    supabase.auth.onAuthStateChange((_e, session) => {
+      if (session) { form.hidden = false; needLogin.hidden = true; }
+    });
+
+    let busy = false;
+    document.getElementById('w-submit')?.addEventListener('click', async () => {
+      if (busy) return;
+      const title = document.getElementById('w-title').value.trim();
+      const body = document.getElementById('w-body').value.trim();
+      if (!title) { alert('제목을 입력해주세요.'); return; }
+      busy = true;
+      const btn = document.getElementById('w-submit');
+      btn.textContent = '등록 중…';
+      const { data, error } = await supabase
+        .from('posts')
+        .insert({ title, body })
+        .select('id')
+        .single();
+      if (error || !data) {
+        alert('등록에 실패했어요. 잠시 후 다시 시도해주세요.');
+        btn.textContent = '등록';
+        busy = false;
+        return;
+      }
+      window.location.href = `/board/${data.id}`;
+    });
+  </script>
+</Layout>

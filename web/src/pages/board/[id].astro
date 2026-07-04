@@ -1,0 +1,224 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import AuthBar from '../../components/AuthBar.astro';
+import { supabase } from '../../lib/supabase.js';
+
+const { id } = Astro.params;
+
+const { data: post } = await supabase
+  .from('posts')
+  .select('id, title, body, created_at, updated_at, user_id, profiles(nickname), post_votes(value)')
+  .eq('id', id)
+  .single();
+
+if (!post) {
+  return Astro.redirect('/board');
+}
+
+const { data: commentsData } = await supabase
+  .from('comments')
+  .select('id, body, created_at, user_id, profiles(nickname)')
+  .eq('post_id', id)
+  .order('created_at', { ascending: true });
+
+const comments = commentsData || [];
+const score = (post.post_votes || []).reduce((s, v) => s + (v.value || 0), 0);
+const nickname = post.profiles?.nickname || '익명';
+
+function timeAgo(iso) {
+  const s = (Date.now() - new Date(iso).getTime()) / 1000;
+  if (s < 60) return '방금';
+  if (s < 3600) return `${Math.floor(s / 60)}분 전`;
+  if (s < 86400) return `${Math.floor(s / 3600)}시간 전`;
+  if (s < 86400 * 30) return `${Math.floor(s / 86400)}일 전`;
+  const d = new Date(iso);
+  return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
+}
+---
+<Layout title={`${post.title} — 연구 아카이브 게시판`} description={(post.body || post.title).slice(0, 150)}>
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <a href="/" class="brand">연구<span>아카이브</span><span class="dot"></span></a>
+      <nav class="nav-links">
+        <a href="/">논문</a>
+        <a href="/board" class="on">게시판</a>
+      </nav>
+      <AuthBar />
+    </div>
+  </header>
+
+  <main class="wrap" style="padding-top:20px;padding-bottom:60px;max-width:760px">
+    <a href="/board" style="font-size:13px;color:var(--ink-2)"><i class="ti ti-arrow-left"></i> 게시판</a>
+
+    <article class="post-view" style="margin-top:12px" data-uid={post.user_id}>
+      <h1 style="font-size:21px;font-weight:600;line-height:1.4;margin-bottom:8px">{post.title}</h1>
+      <div class="post-meta" style="margin-bottom:14px">
+        {nickname} · {timeAgo(post.created_at)}{post.updated_at && ' · 수정됨'}
+        <span id="owner-actions" hidden>
+          · <button type="button" id="post-edit-btn" class="btn-link" style="background:none;border:none;cursor:pointer;padding:0;font-family:inherit">수정</button>
+          · <button type="button" id="post-del-btn" class="btn-link" style="background:none;border:none;cursor:pointer;padding:0;font-family:inherit;color:#B4443C">삭제</button>
+        </span>
+      </div>
+
+      <div class="vote-box">
+        <button type="button" class="vote" id="vote-up" data-v="1"><i class="ti ti-arrow-big-up"></i></button>
+        <span id="score">{score}</span>
+        <button type="button" class="vote" id="vote-down" data-v="-1"><i class="ti ti-arrow-big-down"></i></button>
+      </div>
+
+      <div class="post-body" id="post-body">{post.body || ''}</div>
+
+      <div id="edit-area" class="form-area" hidden>
+        <textarea id="edit-body">{post.body || ''}</textarea>
+        <div style="display:flex;gap:10px;margin-top:10px">
+          <button type="button" id="edit-save" class="primary-btn">저장</button>
+          <button type="button" id="edit-cancel" class="ghost-btn">취소</button>
+        </div>
+      </div>
+    </article>
+
+    <section>
+      <h2 style="font-size:15px;font-weight:600;margin-bottom:8px">댓글 {comments.length}</h2>
+      <div id="comment-list">
+        {comments.map((c) => (
+          <div class="comment" data-uid={c.user_id} data-cid={c.id}>
+            <div class="comment-meta">
+              <strong style="font-weight:500;color:var(--ink-2)">{c.profiles?.nickname || '익명'}</strong>
+              <span>{timeAgo(c.created_at)}</span>
+              <button type="button" class="c-del" hidden style="background:none;border:none;cursor:pointer;padding:0;font-size:12px;color:#B4443C;font-family:inherit">삭제</button>
+            </div>
+            <div class="comment-body">{c.body}</div>
+          </div>
+        ))}
+      </div>
+
+      <div class="form-area">
+        <textarea id="c-body" placeholder="댓글을 입력하세요 (로그인 필요)" style="min-height:80px"></textarea>
+        <button type="button" id="c-submit" class="primary-btn" style="margin-top:10px">댓글 등록</button>
+      </div>
+    </section>
+  </main>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.0.0/dist/tabler-icons.min.css" />
+
+  <script>
+    import { supabase } from '../../lib/supabase.js';
+
+    const postId = window.location.pathname.split('/').pop();
+    const article = document.querySelector('.post-view');
+    const ownerUid = article?.dataset.uid;
+    let uid = null;
+    let myVote = 0;
+
+    function login() {
+      supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: { redirectTo: window.location.href },
+      });
+    }
+    function askLogin() {
+      if (confirm('로그인 후 이용할 수 있어요. 구글로 로그인할까요?')) login();
+    }
+
+    async function init() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
+      uid = session.user.id;
+
+      // 내 글이면 수정/삭제 노출
+      if (uid === ownerUid) {
+        document.getElementById('owner-actions').hidden = false;
+      }
+      // 내 댓글에 삭제 노출
+      document.querySelectorAll('.comment').forEach((c) => {
+        if (c.dataset.uid === uid) c.querySelector('.c-del').hidden = false;
+      });
+      // 내 추천 상태 표시
+      const { data: v } = await supabase
+        .from('post_votes')
+        .select('value')
+        .eq('post_id', postId)
+        .eq('user_id', uid)
+        .maybeSingle();
+      if (v) {
+        myVote = v.value;
+        paintVote();
+      }
+    }
+
+    function paintVote() {
+      document.getElementById('vote-up')?.classList.toggle('on', myVote === 1);
+      document.getElementById('vote-down')?.classList.toggle('on', myVote === -1);
+    }
+
+    // 추천/비추천: 누르면 반영, 같은 걸 다시 누르면 취소
+    ['vote-up', 'vote-down'].forEach((bid) => {
+      document.getElementById(bid)?.addEventListener('click', async (e) => {
+        if (!uid) { askLogin(); return; }
+        const v = parseInt(e.currentTarget.dataset.v, 10);
+        const scoreEl = document.getElementById('score');
+        const cur = parseInt(scoreEl.textContent, 10) || 0;
+        if (myVote === v) {
+          const { error } = await supabase.from('post_votes').delete()
+            .eq('post_id', postId).eq('user_id', uid);
+          if (!error) { scoreEl.textContent = cur - v; myVote = 0; paintVote(); }
+        } else {
+          const { error } = await supabase.from('post_votes')
+            .upsert({ post_id: postId, user_id: uid, value: v }, { onConflict: 'post_id,user_id' });
+          if (!error) { scoreEl.textContent = cur - myVote + v; myVote = v; paintVote(); }
+        }
+      });
+    });
+
+    // 댓글 등록
+    let cBusy = false;
+    document.getElementById('c-submit')?.addEventListener('click', async () => {
+      if (!uid) { askLogin(); return; }
+      if (cBusy) return;
+      const body = document.getElementById('c-body').value.trim();
+      if (!body) { alert('댓글 내용을 입력해주세요.'); return; }
+      cBusy = true;
+      const { error } = await supabase.from('comments').insert({ post_id: postId, body });
+      if (error) { alert('댓글 등록에 실패했어요.'); cBusy = false; return; }
+      window.location.reload();
+    });
+
+    // 내 댓글 삭제
+    document.querySelectorAll('.c-del').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        if (!confirm('이 댓글을 삭제할까요?')) return;
+        const c = btn.closest('.comment');
+        const { error } = await supabase.from('comments').delete().eq('id', c.dataset.cid);
+        if (!error) c.remove();
+      });
+    });
+
+    // 내 글 수정
+    document.getElementById('post-edit-btn')?.addEventListener('click', () => {
+      document.getElementById('post-body').hidden = true;
+      document.getElementById('edit-area').hidden = false;
+    });
+    document.getElementById('edit-cancel')?.addEventListener('click', () => {
+      document.getElementById('edit-area').hidden = true;
+      document.getElementById('post-body').hidden = false;
+    });
+    document.getElementById('edit-save')?.addEventListener('click', async () => {
+      const body = document.getElementById('edit-body').value;
+      const { error } = await supabase.from('posts')
+        .update({ body, updated_at: new Date().toISOString() })
+        .eq('id', postId);
+      if (error) { alert('수정에 실패했어요.'); return; }
+      window.location.reload();
+    });
+
+    // 내 글 삭제
+    document.getElementById('post-del-btn')?.addEventListener('click', async () => {
+      if (!confirm('이 글을 삭제할까요? 댓글도 함께 삭제됩니다.')) return;
+      const { error } = await supabase.from('posts').delete().eq('id', postId);
+      if (error) { alert('삭제에 실패했어요.'); return; }
+      window.location.href = '/board';
+    });
+
+    init();
+  </script>
+</Layout>

@@ -9,16 +9,16 @@ const params = Astro.url.searchParams;
 const sort = params.get('sort') === 'cited' ? 'cited' : 'recent';
 const orderCol = sort === 'cited' ? 'citation_count' : 'publication_date';
 
-// 유형 필터 (all / meta_analysis / experiment / observational / review / etc)
+// 대분류(연구유형)
 const type = params.get('type') || 'all';
 
-// 분야 필터 (한글 분야명 기준. 같은 한글명에 대응하는 영어 표기가 여럿이면 전부 포함)
-const cat = (params.get('cat') || '').trim();
+// 소분류(분야) — 쉼표로 여러 개 선택 가능 (한글 분야명 기준)
 const KO_TO_EN = {};
 for (const [en, ko] of Object.entries(CATEGORY_KO)) {
   (KO_TO_EN[ko] = KO_TO_EN[ko] || []).push(en);
 }
 const catOptions = Object.keys(KO_TO_EN).sort((a, b) => a.localeCompare(b, 'ko'));
+const cats = (params.get('cat') || '').split(',').map((s) => s.trim()).filter((s) => KO_TO_EN[s]);
 
 // 검색어
 const q = (params.get('q') || '').trim();
@@ -57,11 +57,10 @@ if (type === 'experiment') {
 } else if (type !== 'all') {
   query = query.eq('study_type', type);
 }
-if (cat && KO_TO_EN[cat]) {
-  query = query.in('primary_category', KO_TO_EN[cat]);
+if (cats.length > 0) {
+  query = query.in('primary_category', cats.flatMap((c) => KO_TO_EN[c]));
 }
 if (q) {
-  // 확장 용어들로 제목(한/영) + 초록에서 검색
   const conds = searchTerms.flatMap((t) => [
     `title_ko.ilike.%${t}%`,
     `title_en.ilike.%${t}%`,
@@ -97,7 +96,7 @@ function fmtDate(p) {
 // 현재 조건을 유지하며 특정 값만 바꾼 URL 생성
 function buildUrl(overrides = {}) {
   const p = new URLSearchParams();
-  const merged = { sort, type, cat, q, page: 1, ...overrides };
+  const merged = { sort, type, cat: cats.join(','), q, page: 1, ...overrides };
   if (merged.sort && merged.sort !== 'recent') p.set('sort', merged.sort);
   if (merged.type && merged.type !== 'all') p.set('type', merged.type);
   if (merged.cat) p.set('cat', merged.cat);
@@ -106,7 +105,7 @@ function buildUrl(overrides = {}) {
   const s = p.toString();
   return s ? `/?${s}` : '/';
 }
-// 대분류(연구유형) 칩 — 유형 전체를 빠짐없이
+// 대분류(연구유형) 칩
 const chips = [
   { key: 'all', label: '전체' },
   { key: 'meta_analysis', label: '메타분석' },
@@ -115,57 +114,74 @@ const chips = [
   { key: 'review', label: '리뷰' },
   { key: 'etc', label: '기타·미분류' },
 ];
+const typeLabel = chips.find((c) => c.key === type)?.label;
+const activeCount = (type !== 'all' ? 1 : 0) + cats.length;
 ---
 <Layout>
   <header class="topbar">
     <div class="wrap topbar-inner">
       <a href="/" class="brand">연구<span>아카이브</span><span class="dot"></span></a>
-      <div class="topbar-right">
-        <div class="sort-tabs">
-          <a href={buildUrl({ sort: 'recent' })} class={`sort-tab ${sort === 'recent' ? 'on' : ''}`}>최신순</a>
-          <a href={buildUrl({ sort: 'cited' })} class={`sort-tab ${sort === 'cited' ? 'on' : ''}`}>인용순</a>
-        </div>
-        <AuthBar />
-      </div>
+      <nav class="nav-links">
+        <a href="/" class="on">논문</a>
+        <a href="/board">게시판</a>
+      </nav>
+      <AuthBar />
     </div>
   </header>
 
   <main class="wrap">
     <div class="count-line">{q ? `"${q}" 검색: ` : ''}전체 {total.toLocaleString()}편 · {page}/{totalPages} 페이지</div>
 
-    <div class="controls">
+    <div class="toolbar">
       <form class="search-box" method="get" action="/">
         <i class="ti ti-search" style="color:var(--ink-3)"></i>
         <input name="q" type="text" placeholder="제목으로 검색…" autocomplete="off" value={q} />
         {sort !== 'recent' && <input type="hidden" name="sort" value={sort} />}
         {type !== 'all' && <input type="hidden" name="type" value={type} />}
-        {cat && <input type="hidden" name="cat" value={cat} />}
+        {cats.length > 0 && <input type="hidden" name="cat" value={cats.join(',')} />}
       </form>
+      <select id="sort-select" class="tool-select" aria-label="정렬">
+        <option value="recent" selected={sort === 'recent'}>최신순</option>
+        <option value="cited" selected={sort === 'cited'}>인용순</option>
+      </select>
+      <button type="button" id="filter-toggle" class="tool-btn">
+        <i class="ti ti-adjustments-horizontal"></i> 필터
+        {activeCount > 0 && <span class="tool-badge">{activeCount}</span>}
+      </button>
     </div>
-    <div class="filterbar">
-      <div class="chip-group">
+
+    <div id="filter-panel" class="filter-panel" data-type={type} hidden>
+      <div class="fp-label">연구유형</div>
+      <div class="fp-chips">
         {chips.map((c) => (
-          <a href={buildUrl({ type: c.key })} class={`chip type-${c.key} ${type === c.key ? 'on' : ''}`}>{c.label}</a>
+          <button type="button" class={`chip fp-type type-${c.key} ${type === c.key ? 'on' : ''}`} data-key={c.key}>{c.label}</button>
         ))}
       </div>
-      <select id="cat-select" class="cat-select" aria-label="분야 선택">
-        <option value="">분야 전체</option>
+      <div class="fp-label" style="margin-top:16px">분야 — 여러 개 선택 가능</div>
+      <div class="fp-grid">
         {catOptions.map((o) => (
-          <option value={o} selected={o === cat}>{o}</option>
+          <label class="fp-check"><input type="checkbox" value={o} checked={cats.includes(o)} /> {o}</label>
         ))}
-      </select>
+      </div>
+      <div class="fp-actions">
+        <button type="button" id="fp-apply" class="fp-apply">적용</button>
+        <a href="/" class="fp-reset">전체 초기화</a>
+      </div>
     </div>
-    {(type !== 'all' || cat) && (
+
+    {(type !== 'all' || cats.length > 0 || q) && (
       <div class="filter-active">
-        적용된 필터:
-        {type !== 'all' && <span class="fa-pill">{chips.find((c) => c.key === type)?.label}</span>}
-        {cat && <span class="fa-pill">{cat}</span>}
-        <a href={buildUrl({ type: 'all', cat: '' })} class="fa-clear">전체 해제</a>
+        {type !== 'all' && <a class="fa-pill" href={buildUrl({ type: 'all' })}>{typeLabel} ×</a>}
+        {cats.map((c) => (
+          <a class="fa-pill" href={buildUrl({ cat: cats.filter((x) => x !== c).join(',') })}>{c} ×</a>
+        ))}
+        {q && <a class="fa-pill" href={buildUrl({ q: '' })}>"{q}" ×</a>}
+        <a href="/" class="fa-clear">전체 해제</a>
       </div>
     )}
 
     {error && <div class="empty">데이터를 불러오지 못했어요.</div>}
-    {!error && list.length === 0 && <div class="empty">아직 수집된 논문이 없어요.</div>}
+    {!error && list.length === 0 && <div class="empty">조건에 맞는 논문이 없어요.</div>}
 
     {!error && list.length > 0 && (
       <div class="list" id="list">
@@ -239,11 +255,36 @@ const chips = [
       });
     });
 
-    // 분야 드롭다운: 고르면 조건 유지한 채 이동
-    document.getElementById('cat-select')?.addEventListener('change', (e) => {
+    // 정렬 바꾸면 즉시 반영
+    document.getElementById('sort-select')?.addEventListener('change', (e) => {
       const u = new URL(window.location.href);
       const v = e.target.value;
-      if (v) u.searchParams.set('cat', v); else u.searchParams.delete('cat');
+      if (v === 'recent') u.searchParams.delete('sort'); else u.searchParams.set('sort', v);
+      u.searchParams.delete('page');
+      window.location.href = u.toString();
+    });
+
+    // 필터 패널 열고닫기
+    const panel = document.getElementById('filter-panel');
+    document.getElementById('filter-toggle')?.addEventListener('click', () => {
+      if (panel) panel.hidden = !panel.hidden;
+    });
+
+    // 패널 안 연구유형 칩: 하나만 선택 (적용 전까지는 화면만 바뀜)
+    let selType = panel?.dataset.type || 'all';
+    panel?.querySelectorAll('.fp-type').forEach((b) => {
+      b.addEventListener('click', () => {
+        selType = b.dataset.key;
+        panel.querySelectorAll('.fp-type').forEach((x) => x.classList.toggle('on', x === b));
+      });
+    });
+
+    // 적용: 연구유형 + 분야(여러 개)를 한 번에 반영
+    document.getElementById('fp-apply')?.addEventListener('click', () => {
+      const u = new URL(window.location.href);
+      if (selType && selType !== 'all') u.searchParams.set('type', selType); else u.searchParams.delete('type');
+      const picked = Array.from(panel.querySelectorAll('.fp-grid input:checked')).map((i) => i.value);
+      if (picked.length) u.searchParams.set('cat', picked.join(',')); else u.searchParams.delete('cat');
       u.searchParams.delete('page');
       window.location.href = u.toString();
     });
@@ -253,7 +294,7 @@ const chips = [
     searchForm?.addEventListener('submit', async (e) => {
       const input = searchForm.querySelector('input[name="q"]');
       const val = (input?.value || '').trim();
-      if (!val || !/[가-힣]/.test(val)) return; // 영어면 그냥 진행
+      if (!val || !/[가-힣]/.test(val)) return;
       e.preventDefault();
       try {
         await fetch('/api/expand-search', {
