@@ -5,22 +5,19 @@ import { supabase } from '../../lib/supabase.js';
 
 const { id } = Astro.params;
 
-const { data: post } = await supabase
-  .from('posts')
-  .select('id, title, body, created_at, updated_at, user_id')
-  .eq('id', id)
-  .single();
-
-if (!post) {
-  return Astro.redirect('/board');
-}
-
-// 댓글 / 추천수 / 닉네임을 각각 단순 조회해서 메모리에서 합침
-const [cmtRes, voteRes] = await Promise.all([
+// 글 + 댓글 + 추천수를 동시에 조회 (왕복 줄여서 속도 개선)
+const [postRes, cmtRes, voteRes] = await Promise.all([
+  supabase.from('posts').select('id, title, body, created_at, updated_at, user_id')
+    .eq('id', id).single(),
   supabase.from('comments').select('id, body, created_at, user_id')
     .eq('post_id', id).order('created_at', { ascending: true }),
   supabase.from('post_votes').select('value').eq('post_id', id),
 ]);
+const post = postRes.data;
+
+if (!post) {
+  return Astro.redirect('/board');
+}
 const rawComments = cmtRes.data || [];
 const score = (voteRes.data || []).reduce((s, v) => s + (v.value || 0), 0);
 
@@ -85,7 +82,7 @@ function timeAgo(iso) {
     </article>
 
     <section>
-      <h2 style="font-size:15px;font-weight:600;margin-bottom:8px">댓글 {comments.length}</h2>
+      <h2 style="font-size:15px;font-weight:600;margin-bottom:8px">댓글 <span id="c-count">{comments.length}</span></h2>
       <div id="comment-list">
         {comments.map((c) => (
           <div class="comment" data-uid={c.user_id} data-cid={c.id}>
@@ -116,6 +113,7 @@ function timeAgo(iso) {
     const ownerUid = article?.dataset.uid;
     let uid = null;
     let myVote = 0;
+    let myNick = '나';
 
     function login() {
       supabase.auth.signInWithOAuth({
@@ -131,6 +129,8 @@ function timeAgo(iso) {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) return;
       uid = session.user.id;
+      supabase.from('profiles').select('nickname').eq('id', uid).maybeSingle()
+        .then(({ data }) => { myNick = data?.nickname || '나'; });
 
       // 내 글이면 수정/삭제 노출
       if (uid === ownerUid) {
@@ -177,18 +177,57 @@ function timeAgo(iso) {
       });
     });
 
-    // 댓글 등록
+    // 댓글 등록 (새로고침 없이 화면에 바로 추가)
     let cBusy = false;
     document.getElementById('c-submit')?.addEventListener('click', async () => {
       if (!uid) { askLogin(); return; }
       if (cBusy) return;
-      const body = document.getElementById('c-body').value.trim();
+      const bodyEl = document.getElementById('c-body');
+      const body = bodyEl.value.trim();
       if (!body) { alert('댓글 내용을 입력해주세요.'); return; }
       cBusy = true;
-      const { error } = await supabase.from('comments').insert({ post_id: postId, body });
-      if (error) { alert('댓글 등록에 실패했어요.'); cBusy = false; return; }
-      window.location.reload();
+      const { data, error } = await supabase.from('comments')
+        .insert({ post_id: postId, body })
+        .select('id')
+        .single();
+      cBusy = false;
+      if (error || !data) { alert('댓글 등록에 실패했어요.'); return; }
+
+      const c = document.createElement('div');
+      c.className = 'comment';
+      c.dataset.uid = uid;
+      c.dataset.cid = data.id;
+      const meta = document.createElement('div');
+      meta.className = 'comment-meta';
+      const who = document.createElement('strong');
+      who.style.cssText = 'font-weight:500;color:var(--ink-2)';
+      who.textContent = myNick;
+      const when = document.createElement('span');
+      when.textContent = '방금';
+      const del = document.createElement('button');
+      del.type = 'button';
+      del.className = 'c-del';
+      del.style.cssText = 'background:none;border:none;cursor:pointer;padding:0;font-size:12px;color:#B4443C;font-family:inherit';
+      del.textContent = '삭제';
+      del.addEventListener('click', async () => {
+        if (!confirm('이 댓글을 삭제할까요?')) return;
+        const { error: e2 } = await supabase.from('comments').delete().eq('id', data.id);
+        if (!e2) { c.remove(); bumpCount(-1); }
+      });
+      meta.append(who, when, del);
+      const bodyDiv = document.createElement('div');
+      bodyDiv.className = 'comment-body';
+      bodyDiv.textContent = body;
+      c.append(meta, bodyDiv);
+      document.getElementById('comment-list').appendChild(c);
+      bodyEl.value = '';
+      bumpCount(1);
     });
+
+    function bumpCount(n) {
+      const el = document.getElementById('c-count');
+      if (el) el.textContent = (parseInt(el.textContent, 10) || 0) + n;
+    }
 
     // 내 댓글 삭제
     document.querySelectorAll('.c-del').forEach((btn) => {
@@ -196,7 +235,7 @@ function timeAgo(iso) {
         if (!confirm('이 댓글을 삭제할까요?')) return;
         const c = btn.closest('.comment');
         const { error } = await supabase.from('comments').delete().eq('id', c.dataset.cid);
-        if (!error) c.remove();
+        if (!error) { c.remove(); bumpCount(-1); }
       });
     });
 
@@ -215,7 +254,10 @@ function timeAgo(iso) {
         .update({ body, updated_at: new Date().toISOString() })
         .eq('id', postId);
       if (error) { alert('수정에 실패했어요.'); return; }
-      window.location.reload();
+      const pb = document.getElementById('post-body');
+      pb.textContent = body;
+      document.getElementById('edit-area').hidden = true;
+      pb.hidden = false;
     });
 
     // 내 글 삭제
