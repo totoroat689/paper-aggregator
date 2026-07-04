@@ -9,8 +9,15 @@ const params = Astro.url.searchParams;
 const sort = params.get('sort') === 'cited' ? 'cited' : 'recent';
 const orderCol = sort === 'cited' ? 'citation_count' : 'publication_date';
 
-// 대분류(연구유형)
-const type = params.get('type') || 'all';
+// 대분류(연구유형) — 쉼표로 여러 개 선택 가능
+const TYPE_MAP = {
+  meta_analysis: ['meta_analysis'],
+  experiment: ['rct', 'experimental_likely'],
+  observational: ['observational'],
+  review: ['review'],
+  etc: ['other', 'unclassified'],
+};
+const types = (params.get('type') || '').split(',').map((s) => s.trim()).filter((k) => TYPE_MAP[k]);
 
 // 소분류(분야) — 쉼표로 여러 개 선택 가능 (한글 분야명 기준)
 const KO_TO_EN = {};
@@ -50,12 +57,8 @@ let query = supabase
   .select('id, title_en, title_ko, abstract_en, abstract_ko, study_type, primary_category, citation_count, publication_year, publication_date, countries, fulltext_url, is_retracted', { count: 'exact' })
   .eq('is_retracted', false);
 
-if (type === 'experiment') {
-  query = query.in('study_type', ['rct', 'experimental_likely']);
-} else if (type === 'etc') {
-  query = query.in('study_type', ['other', 'unclassified']);
-} else if (type !== 'all') {
-  query = query.eq('study_type', type);
+if (types.length > 0) {
+  query = query.in('study_type', types.flatMap((k) => TYPE_MAP[k]));
 }
 if (cats.length > 0) {
   query = query.in('primary_category', cats.flatMap((c) => KO_TO_EN[c]));
@@ -96,26 +99,25 @@ function fmtDate(p) {
 // 현재 조건을 유지하며 특정 값만 바꾼 URL 생성
 function buildUrl(overrides = {}) {
   const p = new URLSearchParams();
-  const merged = { sort, type, cat: cats.join(','), q, page: 1, ...overrides };
+  const merged = { sort, type: types.join(','), cat: cats.join(','), q, page: 1, ...overrides };
   if (merged.sort && merged.sort !== 'recent') p.set('sort', merged.sort);
-  if (merged.type && merged.type !== 'all') p.set('type', merged.type);
+  if (merged.type) p.set('type', merged.type);
   if (merged.cat) p.set('cat', merged.cat);
   if (merged.q) p.set('q', merged.q);
   if (merged.page && merged.page > 1) p.set('page', merged.page);
   const s = p.toString();
   return s ? `/?${s}` : '/';
 }
-// 대분류(연구유형) 칩
+// 대분류(연구유형) 칩 — 여러 개 선택 가능
 const chips = [
-  { key: 'all', label: '전체' },
   { key: 'meta_analysis', label: '메타분석' },
   { key: 'experiment', label: '실험연구' },
   { key: 'observational', label: '관찰연구' },
   { key: 'review', label: '리뷰' },
   { key: 'etc', label: '기타·미분류' },
 ];
-const typeLabel = chips.find((c) => c.key === type)?.label;
-const activeCount = (type !== 'all' ? 1 : 0) + cats.length;
+const TYPE_LABELS = Object.fromEntries(chips.map((c) => [c.key, c.label]));
+const activeCount = types.length + cats.length;
 ---
 <Layout>
   <header class="topbar">
@@ -137,7 +139,7 @@ const activeCount = (type !== 'all' ? 1 : 0) + cats.length;
         <i class="ti ti-search" style="color:var(--ink-3)"></i>
         <input name="q" type="text" placeholder="제목으로 검색…" autocomplete="off" value={q} />
         {sort !== 'recent' && <input type="hidden" name="sort" value={sort} />}
-        {type !== 'all' && <input type="hidden" name="type" value={type} />}
+        {types.length > 0 && <input type="hidden" name="type" value={types.join(',')} />}
         {cats.length > 0 && <input type="hidden" name="cat" value={cats.join(',')} />}
       </form>
       <select id="sort-select" class="tool-select" aria-label="정렬">
@@ -150,11 +152,12 @@ const activeCount = (type !== 'all' ? 1 : 0) + cats.length;
       </button>
     </div>
 
-    <div id="filter-panel" class="filter-panel" data-type={type} hidden>
-      <div class="fp-label">연구유형</div>
+    <div id="filter-panel" class="filter-panel" data-type={types.join(',')} hidden>
+      <div class="fp-label">연구유형 — 여러 개 선택 가능</div>
       <div class="fp-chips">
+        <button type="button" class={`chip fp-type type-all ${types.length === 0 ? 'on' : ''}`} data-key="all">전체</button>
         {chips.map((c) => (
-          <button type="button" class={`chip fp-type type-${c.key} ${type === c.key ? 'on' : ''}`} data-key={c.key}>{c.label}</button>
+          <button type="button" class={`chip fp-type type-${c.key} ${types.includes(c.key) ? 'on' : ''}`} data-key={c.key}>{c.label}</button>
         ))}
       </div>
       <div class="fp-label" style="margin-top:16px">분야 — 여러 개 선택 가능</div>
@@ -169,9 +172,11 @@ const activeCount = (type !== 'all' ? 1 : 0) + cats.length;
       </div>
     </div>
 
-    {(type !== 'all' || cats.length > 0 || q) && (
+    {(types.length > 0 || cats.length > 0 || q) && (
       <div class="filter-active">
-        {type !== 'all' && <a class="fa-pill" href={buildUrl({ type: 'all' })}>{typeLabel} ×</a>}
+        {types.map((t) => (
+          <a class="fa-pill" href={buildUrl({ type: types.filter((x) => x !== t).join(',') })}>{TYPE_LABELS[t]} ×</a>
+        ))}
         {cats.map((c) => (
           <a class="fa-pill" href={buildUrl({ cat: cats.filter((x) => x !== c).join(',') })}>{c} ×</a>
         ))}
@@ -270,19 +275,29 @@ const activeCount = (type !== 'all' ? 1 : 0) + cats.length;
       if (panel) panel.hidden = !panel.hidden;
     });
 
-    // 패널 안 연구유형 칩: 하나만 선택 (적용 전까지는 화면만 바뀜)
-    let selType = panel?.dataset.type || 'all';
-    panel?.querySelectorAll('.fp-type').forEach((b) => {
+    // 패널 안 연구유형 칩: 여러 개 토글 ('전체'를 누르면 모두 해제)
+    const selTypes = new Set((panel?.dataset.type || '').split(',').filter(Boolean));
+    const typeBtns = panel ? Array.from(panel.querySelectorAll('.fp-type')) : [];
+    function paintTypes() {
+      typeBtns.forEach((b) => {
+        const k = b.dataset.key;
+        b.classList.toggle('on', k === 'all' ? selTypes.size === 0 : selTypes.has(k));
+      });
+    }
+    typeBtns.forEach((b) => {
       b.addEventListener('click', () => {
-        selType = b.dataset.key;
-        panel.querySelectorAll('.fp-type').forEach((x) => x.classList.toggle('on', x === b));
+        const k = b.dataset.key;
+        if (k === 'all') selTypes.clear();
+        else if (selTypes.has(k)) selTypes.delete(k);
+        else selTypes.add(k);
+        paintTypes();
       });
     });
 
-    // 적용: 연구유형 + 분야(여러 개)를 한 번에 반영
+    // 적용: 연구유형(여러 개) + 분야(여러 개)를 한 번에 반영
     document.getElementById('fp-apply')?.addEventListener('click', () => {
       const u = new URL(window.location.href);
-      if (selType && selType !== 'all') u.searchParams.set('type', selType); else u.searchParams.delete('type');
+      if (selTypes.size > 0) u.searchParams.set('type', Array.from(selTypes).join(',')); else u.searchParams.delete('type');
       const picked = Array.from(panel.querySelectorAll('.fp-grid input:checked')).map((i) => i.value);
       if (picked.length) u.searchParams.set('cat', picked.join(',')); else u.searchParams.delete('cat');
       u.searchParams.delete('page');

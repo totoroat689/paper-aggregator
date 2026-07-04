@@ -98,7 +98,9 @@ import AuthBar from '../components/AuthBar.astro';
       msg.style.color = 'var(--accent)';
     });
 
-    supabase.auth.onAuthStateChange((_e, s) => { if (s && !uid) window.location.reload(); });
+    supabase.auth.onAuthStateChange((event, s) => {
+      if (event === 'SIGNED_IN' && !uid) setTimeout(() => window.location.reload(), 0);
+    });
     init();
   </script>
 </Layout>

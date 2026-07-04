@@ -51,8 +51,8 @@ import AuthBar from '../../components/AuthBar.astro';
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) { form.hidden = false; } else { needLogin.hidden = false; }
     });
-    supabase.auth.onAuthStateChange((_e, session) => {
-      if (session) { form.hidden = false; needLogin.hidden = true; }
+    supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' && session) setTimeout(() => { form.hidden = false; needLogin.hidden = true; }, 0);
     });
 
     let busy = false;
