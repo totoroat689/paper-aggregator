@@ -7,7 +7,7 @@ const { id } = Astro.params;
 
 const { data: post } = await supabase
   .from('posts')
-  .select('id, title, body, created_at, updated_at, user_id, profiles(nickname), post_votes(value)')
+  .select('id, title, body, created_at, updated_at, user_id')
   .eq('id', id)
   .single();
 
@@ -15,15 +15,22 @@ if (!post) {
   return Astro.redirect('/board');
 }
 
-const { data: commentsData } = await supabase
-  .from('comments')
-  .select('id, body, created_at, user_id, profiles(nickname)')
-  .eq('post_id', id)
-  .order('created_at', { ascending: true });
+// 댓글 / 추천수 / 닉네임을 각각 단순 조회해서 메모리에서 합침
+const [cmtRes, voteRes] = await Promise.all([
+  supabase.from('comments').select('id, body, created_at, user_id')
+    .eq('post_id', id).order('created_at', { ascending: true }),
+  supabase.from('post_votes').select('value').eq('post_id', id),
+]);
+const rawComments = cmtRes.data || [];
+const score = (voteRes.data || []).reduce((s, v) => s + (v.value || 0), 0);
 
-const comments = commentsData || [];
-const score = (post.post_votes || []).reduce((s, v) => s + (v.value || 0), 0);
-const nickname = post.profiles?.nickname || '익명';
+const uids = [...new Set([post.user_id, ...rawComments.map((c) => c.user_id)])];
+const { data: profs } = await supabase.from('profiles').select('id, nickname').in('id', uids);
+const nickOf = {};
+(profs || []).forEach((r) => { nickOf[r.id] = r.nickname; });
+
+const comments = rawComments.map((c) => ({ ...c, nickname: nickOf[c.user_id] || '익명' }));
+const nickname = nickOf[post.user_id] || '익명';
 
 function timeAgo(iso) {
   const s = (Date.now() - new Date(iso).getTime()) / 1000;
@@ -83,7 +90,7 @@ function timeAgo(iso) {
         {comments.map((c) => (
           <div class="comment" data-uid={c.user_id} data-cid={c.id}>
             <div class="comment-meta">
-              <strong style="font-weight:500;color:var(--ink-2)">{c.profiles?.nickname || '익명'}</strong>
+              <strong style="font-weight:500;color:var(--ink-2)">{c.nickname}</strong>
               <span>{timeAgo(c.created_at)}</span>
               <button type="button" class="c-del" hidden style="background:none;border:none;cursor:pointer;padding:0;font-size:12px;color:#B4443C;font-family:inherit">삭제</button>
             </div>

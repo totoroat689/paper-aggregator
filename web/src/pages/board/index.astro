@@ -5,22 +5,43 @@ import { supabase } from '../../lib/supabase.js';
 
 const tab = Astro.url.searchParams.get('tab') === 'hot' ? 'hot' : 'new';
 
-const { data, error } = await supabase
+// 글 목록 (결합조회 없이 단순 조회 -> 어떤 설정에서도 확실히 동작)
+const { data: postsData, error } = await supabase
   .from('posts')
-  .select('id, title, created_at, profiles(nickname), comments(count), post_votes(value)')
+  .select('id, title, created_at, user_id')
   .order('created_at', { ascending: false })
   .limit(100);
 
-let posts = (data || []).map((p) => ({
-  id: p.id,
-  title: p.title,
-  created_at: p.created_at,
-  nickname: p.profiles?.nickname || '익명',
-  commentCount: p.comments?.[0]?.count ?? 0,
-  score: (p.post_votes || []).reduce((s, v) => s + (v.value || 0), 0),
-}));
-if (tab === 'hot') {
-  posts.sort((a, b) => (b.score - a.score) || (new Date(b.created_at) - new Date(a.created_at)));
+let posts = [];
+if (postsData && postsData.length > 0) {
+  const ids = postsData.map((p) => p.id);
+  const uids = [...new Set(postsData.map((p) => p.user_id))];
+
+  // 닉네임 / 추천수 / 댓글수를 각각 한 번에 가져와 메모리에서 합침
+  const [profRes, voteRes, cmtRes] = await Promise.all([
+    supabase.from('profiles').select('id, nickname').in('id', uids),
+    supabase.from('post_votes').select('post_id, value').in('post_id', ids),
+    supabase.from('comments').select('post_id').in('post_id', ids),
+  ]);
+
+  const nickOf = {};
+  (profRes.data || []).forEach((r) => { nickOf[r.id] = r.nickname; });
+  const scoreOf = {};
+  (voteRes.data || []).forEach((r) => { scoreOf[r.post_id] = (scoreOf[r.post_id] || 0) + (r.value || 0); });
+  const cmtOf = {};
+  (cmtRes.data || []).forEach((r) => { cmtOf[r.post_id] = (cmtOf[r.post_id] || 0) + 1; });
+
+  posts = postsData.map((p) => ({
+    id: p.id,
+    title: p.title,
+    created_at: p.created_at,
+    nickname: nickOf[p.user_id] || '익명',
+    score: scoreOf[p.id] || 0,
+    commentCount: cmtOf[p.id] || 0,
+  }));
+  if (tab === 'hot') {
+    posts.sort((a, b) => (b.score - a.score) || (new Date(b.created_at) - new Date(a.created_at)));
+  }
 }
 
 function timeAgo(iso) {
@@ -54,7 +75,12 @@ function timeAgo(iso) {
       <a href="/board/write" class="write-btn"><i class="ti ti-pencil"></i> 글쓰기</a>
     </div>
 
-    {error && <div class="empty">게시판을 불러오지 못했어요. (게시판 표가 아직 없다면 SQL을 먼저 실행해주세요)</div>}
+    {error && (
+      <div class="empty">
+        게시판을 불러오지 못했어요.
+        <div style="font-size:12px;color:var(--ink-3);margin-top:8px">{error.message}</div>
+      </div>
+    )}
     {!error && posts.length === 0 && <div class="empty">아직 글이 없어요. 첫 글을 남겨보세요!</div>}
 
     <div class="board-list">

@@ -3,6 +3,8 @@ import Layout from '../layouts/Layout.astro';
 import AuthBar from '../components/AuthBar.astro';
 import { supabase, STUDY_TYPE_LABELS, CATEGORY_KO, categoryKo, fieldColor, countryName } from '../lib/supabase.js';
 
+Astro.response.headers.set('Cache-Control', 'public, s-maxage=120, stale-while-revalidate=600');
+
 const params = Astro.url.searchParams;
 
 // 정렬
