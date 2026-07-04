@@ -23,29 +23,53 @@ const { data: paper } = await supabase
   .eq('id', id)
   .single();
 
-// 논문이 없으면 목록으로
+// 논문이 없으면 404 (soft-404 방지: 리다이렉트 대신 정직한 404)
 if (!paper) {
-  return Astro.redirect('/');
+  return new Response(
+    '<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="robots" content="noindex"><title>논문을 찾을 수 없어요</title></head><body style="font-family:sans-serif;text-align:center;padding:80px 20px;background:#F4F4F5;color:#18181B"><h1 style="font-size:48px;color:#A1A1AA">404</h1><p>논문을 찾을 수 없어요. 삭제되었거나 주소가 바뀐 논문이에요.</p><a href="/" style="color:#3F6B5E">홈으로 가기</a></body></html>',
+    { status: 404, headers: { 'Content-Type': 'text/html; charset=utf-8' } },
+  );
+}
+
+// 같은 분야의 최신 논문 (내부 링크: 크롤러 탐색 + 방문자 체류)
+let related = [];
+if (paper.primary_category) {
+  const { data: rel } = await supabase
+    .from('papers')
+    .select('id, title_ko, title_en, publication_date, publication_year')
+    .eq('primary_category', paper.primary_category)
+    .eq('is_retracted', false)
+    .neq('id', paper.id)
+    .order('publication_date', { ascending: false, nullsFirst: false })
+    .limit(5);
+  related = rel || [];
 }
 
 const s = STUDY_TYPE_LABELS[paper.study_type] || STUDY_TYPE_LABELS.unclassified;
 const countries = (paper.countries || []).map(countryName).join(', ');
 const authors = (paper.authors || []).map((a) => a.name).filter(Boolean).slice(0, 6).join(', ');
 
-// 검색엔진용 구조화 데이터: 이 페이지가 '학술 논문'임을 알림
+// 검색엔진용 구조화 데이터: 이 페이지가 '학술 논문'임을 알림 (한글 우선)
+const canonicalPath = `/paper/${paper.id}`;
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'ScholarlyArticle',
-  headline: paper.title_en,
+  headline: paper.title_ko || paper.title_en,
+  ...(paper.title_ko && paper.title_en && { alternativeHeadline: paper.title_en }),
+  inLanguage: paper.title_ko ? 'ko' : 'en',
+  url: `https://paper-aggregator.vercel.app${canonicalPath}`,
+  ...(paper.doi && { sameAs: `https://doi.org/${paper.doi}` }),
+  isAccessibleForFree: Boolean(paper.is_open_access),
   ...(authors && { author: (paper.authors || []).map((a) => ({ '@type': 'Person', name: a.name })) }),
   ...(paper.publication_date && { datePublished: paper.publication_date }),
   ...(paper.journal_name && { publisher: { '@type': 'Organization', name: paper.journal_name } }),
-  ...(paper.abstract_en && { abstract: paper.abstract_en }),
+  ...((paper.abstract_ko || paper.abstract_en) && { abstract: paper.abstract_ko || paper.abstract_en }),
 };
 ---
 <Layout
   title={`${paper.title_ko || paper.title_en} — 연구 아카이브`}
-  description={(paper.abstract_ko || paper.abstract_en || '').slice(0, 150)}
+  description={(paper.abstract_ko || paper.abstract_en || `${categoryKo(paper.primary_category) || ''} 분야 연구 논문`).slice(0, 150)}
+  canonical={canonicalPath}
   jsonLd={jsonLd}
 >
   <header class="topbar">
@@ -129,6 +153,21 @@ const jsonLd = {
       <a class="btn-link" href={paper.fulltext_url} target="_blank" rel="noopener">
         <i class="ti ti-external-link"></i> 원문 보기
       </a>
+    )}
+
+    {related.length > 0 && (
+      <section style="margin-top:36px;padding-top:24px;border-top:0.5px solid var(--line)">
+        <h2 style="font-size:15px;font-weight:600;margin-bottom:12px">{categoryKo(paper.primary_category)} 분야의 다른 최신 연구</h2>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:10px">
+          {related.map((r) => (
+            <li>
+              <a href={`/paper/${r.id}`} style="font-size:14px;color:var(--ink-2);line-height:1.5">
+                <i class="ti ti-file-text" style="color:var(--ink-3)"></i> {r.title_ko || r.title_en}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
     )}
   </main>
 

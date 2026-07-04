@@ -120,8 +120,36 @@ const chips = [
 ];
 const TYPE_LABELS = Object.fromEntries(chips.map((c) => [c.key, c.label]));
 const activeCount = types.length + cats.length;
+
+// ── SEO ──
+// 필터·검색·정렬이 걸린 변형 페이지는 색인 제외(무한 조합 방지), 순수 목록만 색인
+const isFiltered = Boolean(q || types.length || cats.length || sort !== 'recent');
+const pageTitle = q
+  ? `"${q}" 검색 결과 — 연구 아카이브`
+  : page > 1
+    ? `최신 실증 연구 논문 ${page}페이지 — 연구 아카이브`
+    : '연구 아카이브 — 전 세계 최신 실증 연구 논문을 한국어로';
+const pageDesc = 'OpenAlex·Europe PMC·Semantic Scholar에서 매일 수집한 최신 실험연구·메타분석·관찰연구 논문을 분야별로 골라 보세요. 연구 신뢰도를 함께 표시합니다.';
+// 검색창 구조화 데이터: 구글 검색결과에 사이트 검색창이 뜰 수 있게
+const websiteJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: '연구 아카이브',
+  url: 'https://paper-aggregator.vercel.app',
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: { '@type': 'EntryPoint', urlTemplate: 'https://paper-aggregator.vercel.app/?q={search_term_string}' },
+    'query-input': 'required name=search_term_string',
+  },
+};
 ---
-<Layout>
+<Layout
+  title={pageTitle}
+  description={pageDesc}
+  canonical={'/' + (page > 1 && !isFiltered ? `?page=${page}` : '')}
+  noindex={isFiltered}
+  jsonLd={websiteJsonLd}
+>
   <header class="topbar">
     <div class="wrap topbar-inner">
       <a href="/" class="brand">연구<span>아카이브</span><span class="dot"></span></a>

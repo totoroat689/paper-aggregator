@@ -1,10 +1,19 @@
 ---
 // 모든 페이지가 공유하는 틀. SEO 메타 정보가 여기 들어갑니다.
 const {
-  title = '연구 아카이브',
+  title = '연구 아카이브 — 전 세계 최신 실증 연구 논문을 한국어로',
   description = '전 세계 최신 실증 연구 논문을 한곳에서. 실험을 거친 신뢰도 높은 연구만 골라 봅니다.',
   jsonLd = null,
+  canonical = null,   // 예: '/paper/abc' (대표 주소)
+  noindex = false,    // true면 검색엔진 색인 제외 (필터·검색·개인 페이지)
 } = Astro.props;
+
+const SITE = (Astro.site?.toString() || 'https://paper-aggregator.vercel.app').replace(/\/$/, '');
+const canonicalUrl = canonical
+  ? (canonical.startsWith('http') ? canonical : SITE + canonical)
+  : SITE + Astro.url.pathname;
+const ogImage = SITE + '/og-image.png';
+const year = new Date().getFullYear();
 ---
 <!DOCTYPE html>
 <html lang="ko">
@@ -13,12 +22,23 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
+    <link rel="canonical" href={canonicalUrl} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="theme-color" content="#F4F4F5" />
 
     <!-- 검색결과·SNS 공유 미리보기용 -->
+    <meta property="og:site_name" content="연구 아카이브" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
-    <meta name="twitter:card" content="summary" />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:locale" content="ko_KR" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
 
     <!-- 한글+영문 어울리는 모던 폰트 -->
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -27,11 +47,24 @@ const {
       href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css"
     />
 
-    <!-- 구조화 데이터(JSON-LD): 검색엔진이 '학술 논문'으로 이해하게 -->
+    <!-- 구조화 데이터(JSON-LD): 검색엔진이 페이지 성격을 이해하게 -->
     {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
   </head>
   <body>
     <slot />
+
+    <footer class="site-footer">
+      <div class="wrap">
+        <p class="sf-line"><strong>연구 아카이브</strong> — 전 세계 최신 실증 연구 논문을 한국어로 모아 보는 곳</p>
+        <p class="sf-line">데이터 출처: OpenAlex · Europe PMC · Semantic Scholar (매일 자동 수집)</p>
+        <nav class="sf-nav">
+          <a href="/about">소개</a>
+          <a href="/board">게시판</a>
+          <a href="/sitemap.xml">사이트맵</a>
+        </nav>
+        <p class="sf-line">© {year} 연구 아카이브</p>
+      </div>
+    </footer>
   </body>
 </html>
 <style is:global>

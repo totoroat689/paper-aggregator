@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /bookmarks
+Disallow: /profile
+Disallow: /board/write
+
+Sitemap: https://paper-aggregator.vercel.app/sitemap.xml

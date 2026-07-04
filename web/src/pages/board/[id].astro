@@ -16,7 +16,10 @@ const [postRes, cmtRes, voteRes] = await Promise.all([
 const post = postRes.data;
 
 if (!post) {
-  return Astro.redirect('/board');
+  return new Response(
+    '<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="robots" content="noindex"><title>글을 찾을 수 없어요</title></head><body style="font-family:sans-serif;text-align:center;padding:80px 20px;background:#F4F4F5;color:#18181B"><h1 style="font-size:48px;color:#A1A1AA">404</h1><p>글을 찾을 수 없어요. 삭제되었거나 주소가 바뀐 글이에요.</p><a href="/board" style="color:#3F6B5E">게시판으로 가기</a></body></html>',
+    { status: 404, headers: { 'Content-Type': 'text/html; charset=utf-8' } },
+  );
 }
 const rawComments = cmtRes.data || [];
 const score = (voteRes.data || []).reduce((s, v) => s + (v.value || 0), 0);
@@ -39,7 +42,7 @@ function timeAgo(iso) {
   return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
 }
 ---
-<Layout title={`${post.title} — 연구 아카이브 게시판`} description={(post.body || post.title).slice(0, 150)}>
+<Layout title={`${post.title} — 연구 아카이브 게시판`} description={(post.body || post.title).slice(0, 150)} canonical={`/board/${post.id}`}>
   <header class="topbar">
     <div class="wrap topbar-inner">
       <a href="/" class="brand">연구<span>아카이브</span><span class="dot"></span></a>
