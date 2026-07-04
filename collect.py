@@ -454,12 +454,14 @@ def backfill_licenses(limit=1500):
 
     dois = list(by_doi.keys())
     filled = 0
+    not_found = 0      # OpenAlex에 이 DOI 자체가 없음
+    found_no_license = 0  # OpenAlex엔 있지만 라이선스가 null(=bronze OA 등, 원래 정보 없음)
     for i in range(0, len(dois), 50):
         chunk = dois[i:i + 50]
         params = {
             "api_key": OPENALEX_API_KEY,
             "filter": "doi:" + "|".join(chunk),
-            "select": "doi,best_oa_location,primary_location",
+            "select": "doi,best_oa_location,primary_location,open_access",
             "per_page": 50,
         }
         try:
@@ -467,14 +469,17 @@ def backfill_licenses(limit=1500):
             if resp.status_code != 200:
                 print(f"[라이선스보완] {min(i+50, total)}/{total} (응답 {resp.status_code}, 건너뜀)")
                 continue
-            # 라이선스를 찾은 것만 모아서 개별 업데이트
-            for work in resp.json().get("results", []):
+            results = resp.json().get("results", [])
+            matched_dois = set()
+            for work in results:
                 doi = normalize_doi(deep_get(work, "doi"))
                 if not doi or doi not in by_doi:
                     continue
+                matched_dois.add(doi)
                 lic = (deep_get(work, "best_oa_location", "license")
                        or deep_get(work, "primary_location", "license"))
                 if not lic:
+                    found_no_license += 1
                     continue
                 pid = by_doi[doi]
                 up = requests.patch(
@@ -485,13 +490,14 @@ def backfill_licenses(limit=1500):
                 )
                 if up.status_code < 300:
                     filled += 1
+            not_found += len(chunk) - len(matched_dois)
         except (requests.RequestException, ValueError) as e:
             print(f"[라이선스보완] {min(i+50, total)}/{total} 오류(건너뜀): {e}")
             continue
-        print(f"[라이선스보완] {min(i+50, total)}/{total} 진행 (누적 {filled}건 채움)")
+        print(f"[라이선스보완] {min(i+50, total)}/{total} 진행 (누적 채움 {filled} / OpenAlex에 라이선스없음 {found_no_license} / OpenAlex에 없음 {not_found})")
         time.sleep(0.2)
 
-    print(f"[라이선스보완] 완료 — 총 {filled}건 채움")
+    print(f"[라이선스보완] 완료 — 채움 {filled}건 / 라이선스 정보 자체가 없음(bronze OA 등 추정) {found_no_license}건 / OpenAlex 미등록 {not_found}건")
     return filled
 
 
