@@ -420,6 +420,81 @@ def existing_titles_without_doi():
     return titles
 
 
+def backfill_licenses(limit=1500):
+    """
+    DB에 이미 저장된 논문 중, 오픈액세스인데 라이선스가 비어 있는 것들을
+    DOI로 OpenAlex에 다시 물어 라이선스를 채운다 (소급 보완).
+    - 비공개 논문(is_open_access=false)은 원래 라이선스가 없으므로 대상에서 제외
+    - 수집기가 돌 때마다 함께 실행되어 누락분을 조금씩 계속 메움
+    """
+    # 1) 대상 조회: 오픈액세스 + 라이선스 없음 + DOI 있음
+    url = (f"{SUPABASE_URL}/rest/v1/papers"
+           f"?select=id,doi&license=is.null&is_open_access=eq.true"
+           f"&doi=not.is.null&limit={limit}")
+    try:
+        resp = requests.get(url, headers=_db_headers(False), timeout=30)
+        resp.raise_for_status()
+        rows = resp.json()
+    except requests.RequestException as e:
+        print(f"[라이선스보완] 대상 조회 실패(건너뜀): {e}")
+        return 0
+
+    targets = [r for r in rows if r.get("doi")]
+    total = len(targets)
+    if not total:
+        print("[라이선스보완] 채울 대상 없음")
+        return 0
+
+    print(f"[라이선스보완] 대상 {total}건, 50개씩 OpenAlex 조회 시작")
+    by_doi = {}
+    for r in targets:
+        d = normalize_doi(r["doi"])
+        if d:
+            by_doi[d] = r["id"]
+
+    dois = list(by_doi.keys())
+    filled = 0
+    for i in range(0, len(dois), 50):
+        chunk = dois[i:i + 50]
+        params = {
+            "api_key": OPENALEX_API_KEY,
+            "filter": "doi:" + "|".join(chunk),
+            "select": "doi,best_oa_location,primary_location",
+            "per_page": 50,
+        }
+        try:
+            resp = requests.get("https://api.openalex.org/works", params=params, timeout=30)
+            if resp.status_code != 200:
+                print(f"[라이선스보완] {min(i+50, total)}/{total} (응답 {resp.status_code}, 건너뜀)")
+                continue
+            # 라이선스를 찾은 것만 모아서 개별 업데이트
+            for work in resp.json().get("results", []):
+                doi = normalize_doi(deep_get(work, "doi"))
+                if not doi or doi not in by_doi:
+                    continue
+                lic = (deep_get(work, "best_oa_location", "license")
+                       or deep_get(work, "primary_location", "license"))
+                if not lic:
+                    continue
+                pid = by_doi[doi]
+                up = requests.patch(
+                    f"{SUPABASE_URL}/rest/v1/papers?id=eq.{pid}",
+                    headers=_db_headers(False),
+                    json={"license": lic},
+                    timeout=30,
+                )
+                if up.status_code < 300:
+                    filled += 1
+        except (requests.RequestException, ValueError) as e:
+            print(f"[라이선스보완] {min(i+50, total)}/{total} 오류(건너뜀): {e}")
+            continue
+        print(f"[라이선스보완] {min(i+50, total)}/{total} 진행 (누적 {filled}건 채움)")
+        time.sleep(0.2)
+
+    print(f"[라이선스보완] 완료 — 총 {filled}건 채움")
+    return filled
+
+
 # ══════════════════════════════════════════════════════════════════
 #  3) 전체 실행
 # ══════════════════════════════════════════════════════════════════
@@ -469,6 +544,13 @@ def main():
     print(f"=== 저장: 성공 {saved} / 건너뜀 {skipped} / 실패 {failed} ===")
 
     log_run(fetched, saved, skipped, failed)
+
+    # DB에 이미 있는 오픈액세스 논문 중 라이선스 누락분을 소급 보완
+    try:
+        backfilled = backfill_licenses()
+        print(f"=== 라이선스 소급 보완: {backfilled}건 채움 ===")
+    except Exception as e:
+        print(f"[라이선스보완] 오류(수집에는 영향 없음): {e}")
 
     # 제목 한글화 (배치): 이전 배치 회수 + 새 배치 제출
     try:
