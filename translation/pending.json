@@ -1,0 +1,807 @@
+{
+ "titles": [
+  {
+   "id": "a63360bf-99c5-4bab-bb30-b2d539bc260c",
+   "title_en": "Improving arrhythmic risk prediction using cardiac magnetic resonance within deep learning in ischemic heart disease."
+  },
+  {
+   "id": "94c94c9b-bad2-471f-b6cc-b9c81f7cc853",
+   "title_en": "Graft transmissible resistance to Alternaria alternata is mediated by rootstock to scion JA transport activating raffinose synthesis."
+  },
+  {
+   "id": "bc82b15b-55d1-457e-9f95-e2e84cbf39b8",
+   "title_en": "Comparison of Radiographic Cervical Sagittal Alignment Parameters in Patients With Nonspecific Neck Pain, Degenerative Neck Pain, and Healthy Individuals."
+  },
+  {
+   "id": "cb31e419-f183-4369-b22e-e494f87a61be",
+   "title_en": "Oncologic Safety of Preoperative Controlled Ovarian Stimulation for Fertility Preservation Among Women with Estrogen Receptor Positive Breast Cancer."
+  },
+  {
+   "id": "2d1e6db1-f4e3-4daa-bba5-d845dfebdfb5",
+   "title_en": "ASO Visual Abstract: Is Mastectomy Necessary in Patients with Occult Breast Cancer and Advanced (N2/N3) Nodal Disease?"
+  },
+  {
+   "id": "d808fc2e-3d90-4312-a445-67efa843af7c",
+   "title_en": "When Human Multitasking Meets Agentic AI"
+  },
+  {
+   "id": "d3d0d377-0d5c-4560-ae5d-1b2be60211a5",
+   "title_en": "Designing Transparent Decision Support for Digital Infrastructure Investments: A Design Science Artifact Using SMAA-SPOTIS"
+  },
+  {
+   "id": "438f4612-54b9-432a-8f6a-58f887e0c269",
+   "title_en": "Antibiotic non-susceptibility associated serotypes of invasive pneumococcal disease - a nationwide population study from Switzerland, 2012-2022."
+  },
+  {
+   "id": "4f2af300-2603-4e69-9be9-cf2cd8e2a76e",
+   "title_en": "AI for Project Portfolio Governance in the Public Sector: Opportunities and Limitations"
+  },
+  {
+   "id": "dd3adf3f-b76c-4f66-b00a-fc2b47bc807d",
+   "title_en": "ASO Visual Abstract: The Effect of Neoadjuvant Therapy on Post-Recurrence Overall Survival After Curative Resection for Intrahepatic Cholangiocarcinoma."
+  },
+  {
+   "id": "3c8260bf-f5b6-4f1e-9bc1-0a74b179755d",
+   "title_en": "Live selling on the move: Disentangling the Roles of Perceived Autonomy and Control in Ambulatory Live Streaming"
+  },
+  {
+   "id": "0ae31ab0-9ab1-4789-b58c-02c7e690a2db",
+   "title_en": "Penilaian Kinerja Kelembagaan Koperasi Desa Merah Putih berbasis Multi-Dimensi untuk Mewujudkan Tata Kelola Koperasi Modern"
+  },
+  {
+   "id": "fa916b6d-909c-4343-bda9-cc1bd31d46ce",
+   "title_en": "NuSAP1 promotes spindle assembly in Trypanosoma brucei by bundling spindle microtubules."
+  },
+  {
+   "id": "9fc90631-36c9-4c75-b47d-b21f3a5a2f84",
+   "title_en": "Attention Under Digital Distraction: An Eye-Tracking Study on the Effectiveness of Blocking Interventions"
+  },
+  {
+   "id": "fe82c5db-af9f-43d3-ab27-45145ea6376f",
+   "title_en": "From wrinkled seeds to plant oil accumulation networks: The legacy of a Plant Physiology classic."
+  },
+  {
+   "id": "d47f7e1d-faad-41fa-ac46-4523075d5651",
+   "title_en": "When Symmetry Misleads in DSS: Modeling Directional Uncertainty with AIN-Based SAW for Information Systems Selection"
+  },
+  {
+   "id": "98b752a7-9212-42be-9a8a-feef9c41c592",
+   "title_en": "From Disruptions to Adaptation: A Systematic Literature Review of Digital Resilience Factors for Healthcare Workers' Continued Use of Health Information Systems"
+  },
+  {
+   "id": "0c566a7d-04f0-4f10-9f42-735277526635",
+   "title_en": "Rostral lesion shift and tract-specific degeneration drive functional heterogeneity in degenerative cervical myelopathy."
+  },
+  {
+   "id": "aeac9709-a242-459a-a5c5-412658609065",
+   "title_en": "Integrated E-nose, volatilomics, and transcriptomics analysis of the aroma formation mechanism during pitaya fruit ripening."
+  },
+  {
+   "id": "dcf59086-bd4f-476b-811f-ab863d6a1edb",
+   "title_en": "Optimal Multi-Model Embedding Combinations for Bibliometric Screening in Systematic Literature Reviews"
+  },
+  {
+   "id": "8e1640c2-8e2b-4110-8db3-a3f2dc6091f9",
+   "title_en": "Resilience Across the Data Divide: A Design-Oriented Systematic Review of Multimodal Fusion for Developed and Emerging Stock Market Forecasting under Crisis"
+  },
+  {
+   "id": "b4751f70-f1f9-4933-8ac7-97fb87cc2540",
+   "title_en": "A Randomized, Double-blind, Placebo-controlled, Dose Ranging, Parallel, Multi-Centre, Phase II Study to Evaluate the Efficacy and Safety of MT921 in Subjects with Moderate to Severe Submental Fat."
+  },
+  {
+   "id": "79b8cf89-d50b-41f7-8560-33026be3eac8",
+   "title_en": "An Exploration of Health Information Technology (2012 - 2024): Present Landscape and Prospective Trajectories"
+  },
+  {
+   "id": "457cf379-37f1-4f0b-82cd-6c36ce72f0d3",
+   "title_en": "Momentum at Your Fingertips: Unraveling the \"Buying Begets Buying\" Effect in Live Streaming E-Commerce"
+  },
+  {
+   "id": "180a6587-a716-4936-a404-042c45d05d03",
+   "title_en": "How Personal Informatics Induces Emotional Awareness: Theoretical Review"
+  },
+  {
+   "id": "a4588cb8-6877-4039-aa61-58dbdb97ab54",
+   "title_en": "Mitigating Attention Bias in Index-Fund Investment: AI-Enabled Decision Support for Retail Investors"
+  },
+  {
+   "id": "152cc977-3143-4289-b411-742bb95583e2",
+   "title_en": "ASO Visual Abstract: Two-Year Outcomes After Direct-to-Surgery in Good Prognosis Margin-Clear Stage II or III Rectal Cancer-The QuickSilver Study."
+  },
+  {
+   "id": "463c35ac-e984-4293-838f-8b0cb6a81377",
+   "title_en": "Tales of total synthesis."
+  },
+  {
+   "id": "74c046b8-3db8-4b84-9f1e-2cd34f23caf7",
+   "title_en": "Echoes of the Past: Understanding Cultural Heritage Digitalisation through an Imprinting Perspective"
+  },
+  {
+   "id": "9d0238c6-2497-4861-9b51-3d47b33b6bdb",
+   "title_en": "Integrating Behavioral Risk Perception into Data-Driven Decision Support System for Supplier Selection"
+  },
+  {
+   "id": "b04ff541-1fc8-450c-aaf7-7a41547ec9f5",
+   "title_en": "The Practices of Pancreatic Neck Margin Testing and Their Outcomes after Pancreatoduodenectomy for Pancreatic Ductal Adenocarcinoma."
+  },
+  {
+   "id": "d620f195-f338-4a85-9a16-ff77b0161c53",
+   "title_en": "Urea–Urease pH-Clock-Enabled Time-Lapse Thiol–Acrylate Adhesives: Two-Part Formulations and One-Pot Underwater Activation"
+  },
+  {
+   "id": "c80930c6-88d8-410a-ab39-bc73347a1d21",
+   "title_en": "The potential of green-synthesized Fe3O4 and ZnO NPs from Catharanthus roseus: Effects on physiological, biochemical, and antibacterial activity"
+  },
+  {
+   "id": "cc1953ef-aae8-43c5-a8c2-b9feef32c79c",
+   "title_en": "The Unification and Emergence of Empirical Reality"
+  },
+  {
+   "id": "1ea5957b-2e0d-4a13-b9a7-4d6c8ce50c34",
+   "title_en": "Spectral Shifts of the T1 → S0 Transition in Polysubstituted Porphyrins with Asymmetric Electron-density Distributions"
+  },
+  {
+   "id": "1b9f7228-5b18-4ccf-9ecf-0b24ac8b2065",
+   "title_en": "Sustainable hydrogen production and potential anticancer applications of biofuel-derived silver decorated BiFeO3 nanostructures."
+  },
+  {
+   "id": "01a5839b-3f04-4e3f-8896-f57d56b05167",
+   "title_en": "Restricted Equivalence Principle: Push–Pull Asymmetry and Transient Time Dilation Reversal in Extended Accelerating Bodies"
+  },
+  {
+   "id": "53ec22a2-7500-408c-ad40-5eb2c2ad69ab",
+   "title_en": "Assessment of Asymmetrical Lower Limb Range of Motion in Six-Step, a Basic Footwork in Breakdance (Breaking)."
+  },
+  {
+   "id": "c5f033d9-7ee1-446d-a0b0-8fc56393dfc6",
+   "title_en": "Retraction notice to “Computational prediction of a new superhard hexagonal carbon allotrope” [Chem. Phys. Lett. 894 (2026) 142844]"
+  },
+  {
+   "id": "606c95c8-16b8-49df-ba3d-e40b541967d9",
+   "title_en": "Hydrodynamic Pressure Changes on Nucleated Bubble Interfaces"
+  },
+  {
+   "id": "8a7a5fa6-de24-4b9d-bb3e-b4458a6752f1",
+   "title_en": "Dimensionless Physics: A Unified Framework v1.3.1"
+  },
+  {
+   "id": "154864bb-1320-4eba-89df-adde0713b7d5",
+   "title_en": "Explaining the Quantum-Mechanical Equations of Motion to an Alien: Demystifying Schrödinger's Equation"
+  },
+  {
+   "id": "402e0658-15cc-4d1c-8346-4022267c6ba3",
+   "title_en": "About cyclic degradation of F500W shipbuilding steel, assessed by acoustic emission and digital image correlation methods"
+  },
+  {
+   "id": "bc149c4f-da59-4ce5-b904-486f55cd21f1",
+   "title_en": "Mental health after unintended pregnancy: insights from a context with available abortion care"
+  },
+  {
+   "id": "45c35cc7-c878-4995-83c2-8a5fe1c1f0fd",
+   "title_en": "Paternal lineage diversity in the Sikh males of Sri Ganganagar, Rajasthan through 27 Y-STRs."
+  },
+  {
+   "id": "f0ced063-2cb3-4a5b-b143-6a7174dee9ec",
+   "title_en": "Recent Advances in Aryne Generation Methods: From Classical Strategies to Cutting-edge Breakthroughs"
+  },
+  {
+   "id": "3d15cece-0444-445b-95f0-39a3684c530d",
+   "title_en": "Potassium-promoted Fe-based catalysts for the Reverse Water-Gas Shift Reaction: Enhanced performance and suppression of surface carbon formation"
+  },
+  {
+   "id": "af2cf0ff-a104-442a-af9f-8a45c477940e",
+   "title_en": "Additive manufacturing of Ti3C2Tx MXene reinforced hydroxyapatite porous scaffolds"
+  },
+  {
+   "id": "2462c0d4-45f0-402b-bbb4-2939816c0ec1",
+   "title_en": "Microwave-assisted two-step sintering of Gd2Ti2O7–TiO2 composites for enhanced thermal and mechanical stability"
+  },
+  {
+   "id": "1d3b6e78-07fb-4068-ad2c-5a13ed0e1f49",
+   "title_en": "High-pressure cold bonding of phosphate ore fines with phosphogypsum-based binder: pellet preparation and performance evaluation"
+  },
+  {
+   "id": "b5f9e24e-696c-43f8-80af-81ed93f43058",
+   "title_en": "Composition engineered GNS/CNT Hybrid nanocomposites with enhanced thermal stability and tunable optical properties via one-step methane CVD."
+  },
+  {
+   "id": "fc29429f-a157-40b5-9117-afeb2cf4bcad",
+   "title_en": "Supplementary Information"
+  },
+  {
+   "id": "92efa826-23b4-4031-823e-8e387b0381f9",
+   "title_en": "Mahaica to Rosignol Road Project - Social Status Report #003 Prepared for AECO/SRKN 2024"
+  },
+  {
+   "id": "d63853fb-b2b3-4975-b6b2-4ac161fcfec3",
+   "title_en": "A Fully Conjugated Imidazole-based Covalent Organic Framework for Efficient Dynamic Capture of Radioactive Iodine"
+  },
+  {
+   "id": "596b7f3a-22ee-45be-b3c5-953c3f57cf56",
+   "title_en": "Adsorption and passivation of copper by 2-aminobenzothiazole in neutral chloride solutions"
+  },
+  {
+   "id": "1703cc8e-eaaa-4540-a2f6-3afbfc99e0ec",
+   "title_en": "Novel electrospun organic–inorganic hybrid scaffold from PCL, gelatin, and bioglass 58 S -cerium oxide nanoparticles for skin tissue engineering"
+  },
+  {
+   "id": "45b44037-eb2e-4770-ad8d-202c535b83b6",
+   "title_en": "Reprocessable Disulfide‐Based Vitrimers with Adhesive Properties"
+  },
+  {
+   "id": "d977e9e8-19b4-487f-a74e-0d620ec69dd0",
+   "title_en": "Combined experimental and computational evaluation of Asplenium nidus leaf extract as a green corrosion inhibitor for mild steel in hydrochloric acid medium"
+  },
+  {
+   "id": "87f215e8-67d4-4885-8c3b-a0b023b5ea38",
+   "title_en": "Green synthesis of silver nanoparticles using Cordia dichotoma leaves and their application as a corrosion inhibitor of mild steel in 1.0 M HCl"
+  },
+  {
+   "id": "43f09243-d78d-4bbb-a8ca-95832bc243f4",
+   "title_en": "Directed self-assembly of linear and Janus-type bottlebrush block copolymers for enhanced EUV lithography pattern quality"
+  },
+  {
+   "id": "059d8b8b-698b-47e4-9250-871a31f28aa8",
+   "title_en": "Nonlinear Optical-Active NaAlP 2 S 6 Synthesized by the MOBQ Method: Synthesis, Structure, and Optical Properties"
+  },
+  {
+   "id": "b3f56236-477a-4b17-afe5-86e2f5a52444",
+   "title_en": "Optimization of fiber silane treatment parameters and hybrid MWCNT–SiO₂ nanofiller for enhanced tensile and flexural modulus of basalt/glass polymer composites"
+  },
+  {
+   "id": "a559ef14-e290-42f0-a0ca-b1d8932a3350",
+   "title_en": "Unlocking Wafer‐Scale 3D Photonic Systems With Ion‐Beam‐Induced Origami"
+  },
+  {
+   "id": "6c4fc39c-7074-434e-910d-c28a73319457",
+   "title_en": "Elemental distribution analysis of mesoporous structure on silicate glass surface corroded in the K2HPO4 aqueous solution"
+  },
+  {
+   "id": "bda394db-d2e9-4a21-8ab8-a711f7aa893d",
+   "title_en": "V01.10 — Mirror Physics IV: Causal Invariance and the Speed of Constraint Propagation"
+  },
+  {
+   "id": "2cbc77e1-54eb-42dc-be35-8cf8adb345c3",
+   "title_en": "Study on the Low‐Temperature Properties of Ethylene Butylene Rubber/Polybutadiene Rubber Blends"
+  },
+  {
+   "id": "53ff0dac-ecef-4ed0-95ce-ebc9dc002b33",
+   "title_en": "Synergistic effect of gum arabic and sodium alginate for the corrosion inhibition of pipeline steel in H2SO4 solutions"
+  },
+  {
+   "id": "852e6969-eb0f-4cfb-868b-0dc552095cdd",
+   "title_en": "A single-grid CA-LBM–Van Leer model for three-dimensional dendrite motion and growth"
+  },
+  {
+   "id": "33c6e4ae-3bfe-44bf-891f-c97a7b819220",
+   "title_en": "Comparative analysis of macro- and microelements and heavy metals in by-products of the vegetable oil industry"
+  },
+  {
+   "id": "cac537fe-387b-4b90-9b6d-e11fd4a2d81a",
+   "title_en": "Supramolecular Analysis of Three Anhydrous Organic Salts Derived from 8-Aminoquinoline and Acid Co-formers-Saccharin, Trichloroacetic Acid, and Naphthalene-1,5-Disulfonic Acid"
+  },
+  {
+   "id": "2de71b02-e431-4c15-b249-eb99bce7aba2",
+   "title_en": "pH Responsive Conformation, Plasticiser Interactions, and Film Formation in Eudragit L100 — Simulation Data and Analysis Scripts"
+  },
+  {
+   "id": "c424b92e-d85a-429a-83e6-71c226147be3",
+   "title_en": "7 Synthesis"
+  },
+  {
+   "id": "3502560b-a7db-4fa4-9fb5-b46a26757801",
+   "title_en": "Mathematical Heuristics in Theoretical Physics: Methodology and Practice"
+  },
+  {
+   "id": "f9924f1c-d73e-4a85-b488-ca8f44900139",
+   "title_en": "Optical Metasurfaces and Metalenses"
+  },
+  {
+   "id": "dd73a324-cc07-4b12-a46a-7c3cc61fd1bb",
+   "title_en": "Improved Carrier Transport and Enhanced Detection Sensitivity Through Zr 4+ Doping in LiYMo 2 O 8 Single Crystals for X-ray Detectors"
+  },
+  {
+   "id": "9a8efed2-b6c8-4326-8a6c-ab40a2520f57",
+   "title_en": "Molecular docking simulations of various aryl amide derivatives of Imidazo[1,5-a] pyridine-1,2,4-thiadiazoles against EGFR protein"
+  },
+  {
+   "id": "5834f030-cd9f-4bc1-abb0-3f4ef8293f4f",
+   "title_en": "M2FA Model Simulation Code – NCT V Accompanying EXISTENCE HELD – Pivot: Existence Surrounded & The Law of the Lost Alone"
+  },
+  {
+   "id": "4d95ab8a-a87d-40df-9690-203e1c72813d",
+   "title_en": "Experimental and theoretical study of corrosion inhibition effect of expired Mebeverine drug on copper in 1.0 M sulfuric acid solution"
+  },
+  {
+   "id": "c2711aeb-43a6-4251-a373-e6a736db55af",
+   "title_en": "Structural and electrochemical behaviour of poly-p-anisidine/Cu nanocomposites for energy storage applications"
+  },
+  {
+   "id": "c789efb2-9130-48a6-97a3-8fb3da1cde6e",
+   "title_en": "Synergistic engineering of starch-embedded polyaniline supported manganese ferrite nanocomposites for energy storage applications"
+  },
+  {
+   "id": "9a51d140-b446-41f3-8180-2137ef02fae8",
+   "title_en": "An Interprofessional Relational Participation Framework for Community-Based Parent-Child Mental Health"
+  },
+  {
+   "id": "ce365102-c071-4e08-b485-fbb1da3d7edc",
+   "title_en": "Numerical investigation of melt pool thermal behavior under various external boundary conditions with LIVE-L7V experimental benchmark"
+  },
+  {
+   "id": "42ef1e0a-d52d-47f0-b097-cfea13daf318",
+   "title_en": "Recent Advances in Green Synthesis, Physicochemical Characterization and Pharmacological Applications of Carbon Dots"
+  },
+  {
+   "id": "1e558291-d91c-49d6-8523-a01335e0b8b8",
+   "title_en": "اتجاهات مشرفي التربية الرياضية نحو كتاب التربية الرياضية المطور للصف العاشر الأساسي في وزارة التربية والتعليم الأردنية Attitudes of physical education supervisors toward the developed physical education textbook for the tenth grade in the ministry of education in Jordan"
+  },
+  {
+   "id": "4648ffba-d056-4300-91a4-ac2c009c6be3",
+   "title_en": "Green and Fast Synthesis of Biobased Epoxy Foams at Room Temperature for Thermal Insulation"
+  },
+  {
+   "id": "83da9729-f7cd-4a62-99cb-64f42dfc9519",
+   "title_en": "Spectral Properties of a Styryl Derivative of Benzothiazole Containing a Linker Group"
+  },
+  {
+   "id": "b2fc9e37-9b8c-4f88-b753-64965d3ff5e9",
+   "title_en": "Comprehensive exposure assessment of residents in a former tin mining area in Kanchanaburi, Thailand."
+  },
+  {
+   "id": "065437ea-a71b-4f81-93b0-a4f367f9886c",
+   "title_en": "Resident- and Facility-Level Correlates of Resident-Reported Quality of Life in Assisted Living Facilities in Minnesota"
+  },
+  {
+   "id": "ad6493a7-4902-406e-b2b7-e99b45e3c13a",
+   "title_en": "Evolutionary Dimensionality Reduction for Structured Heart-Disease Classification: Balancing Predictive Performance, Clinical Input Burden and Global Transparency"
+  },
+  {
+   "id": "ae8ad782-b005-408a-b634-28e7ede99ed9",
+   "title_en": "Pengaruh Disiplin Kerja, Keselamatan Kesehatan Kerja (K3), dan Lingkungan Kerja Terhadap Produktivitas Kerja"
+  },
+  {
+   "id": "f22c078d-432d-441b-a49c-fc47a2f225f3",
+   "title_en": "Mentors or Stressors? Supervisor-Student Relationships and Mental Health in African Universities"
+  },
+  {
+   "id": "61ef9ebc-20b5-4226-b6d6-820d0c2d80a0",
+   "title_en": "High- versus Low-intensity Functional Training on Cognition, Balance, and Functional Ability in Individuals with Cognitive Impairment: A Protocol for a Randomised Clinical Trial"
+  },
+  {
+   "id": "6c8bc384-6bf9-494b-8503-96873fcc3143",
+   "title_en": "Analisis Pelayanan Aksesibilitas bagi Penyandang Disabilitas di Area Terminal Bandar Udara Tjilik Riwut Palangkaraya"
+  },
+  {
+   "id": "e007cf0f-f8a0-4a23-a30b-92d8869ef5e8",
+   "title_en": "Descriptive comparison of comprehensive HIV knowledge and condom non-use at last sexual intercourse among unmarried adolescent girls and young women in Nigeria."
+  },
+  {
+   "id": "6d887602-8c82-448f-ae37-ea1b993e7121",
+   "title_en": "The Effect of Country of Origin Image and Corporate Social Responsibility on Customer Loyalty Toward Shiseido Products, with Brand Image as a Mediating Variable in Medan City"
+  },
+  {
+   "id": "ea62ecb6-2ba0-49c2-9080-762bc1ce15e8",
+   "title_en": "A Digital Competence-based Framework for Evaluating and Enhancing Electronic Health Record Utilization in Hospital Settings: Evidence from a Low- and Middle-Income Country"
+  },
+  {
+   "id": "65fce9b5-6ae6-44b4-ac6d-cd8efcea265e",
+   "title_en": "Diagnóstico situacional em saúde: análise das condições locais e subsídios para o planejamento das ações"
+  },
+  {
+   "id": "1af0a92f-8468-4418-878c-f26ddc3c2739",
+   "title_en": "Heart Disease Prediction Using Machine Learning: Comparative Evaluation of SVM, Random Forest and ANN"
+  },
+  {
+   "id": "6568aca4-053f-425e-85ca-64e37a879fcd",
+   "title_en": "A study on the application of the remote multidisciplinary team teaching model in clinical postgraduate education of urology."
+  },
+  {
+   "id": "9eaf4ae5-0650-4138-8e28-4818bb84d90e",
+   "title_en": "فاعلية استراتيجية كاجان في تنمية الكفاءة المعرفية والاحتفاظ بها في مادة الكرة الطائرة لدى طلبة المرحلة الثانية The Effectiveness of Kagan's Strategy in Developing and Retaining Cognitive Competence in Volleyball for Second-Year Students"
+  },
+  {
+   "id": "1811673c-25ef-4f1a-9440-380c041e7c7e",
+   "title_en": "6 Analysis"
+  },
+  {
+   "id": "34d19a7b-3e50-4b67-8313-c1b0ce44eb8a",
+   "title_en": "Driving License Category D Driving License Practice Test PDF"
+  },
+  {
+   "id": "0d16905b-6946-47d1-a20f-df87df8f10d4",
+   "title_en": "Analysis of Social Media Marketing Capability and Content Marketing Capability on B2B Marketing Performance with Technology Adoption as a Mediating Variable"
+  },
+  {
+   "id": "73ba385d-f16d-4472-a32b-36535d67652b",
+   "title_en": "FATORES ASSOCIADOS À BAIXA ADESÃO AO TRATAMENTO ANTIHIPERTENSIVO E AO CONTROLE PRESSÓRICO INADEQUADO EM ADULTOS ACOMPANHADOS NA ATENÇÃO PRIMÁRIA À SAÚDE: UMA REVISÃO SISTEMÁTICA"
+  },
+  {
+   "id": "2e7fa96c-8f34-4be4-bd9b-33e3af4c24b6",
+   "title_en": "Exploring the Effects of Frailty and Sarcopenia on Dysphagia in Head and Neck Cancer: A Scoping Review"
+  },
+  {
+   "id": "9f2d7de7-de5d-4825-965d-99bc45372975",
+   "title_en": "Pengaruh Pemberian Terapi Sujok pada Pasien Nyeri Post General Anestesi"
+  },
+  {
+   "id": "cc27eb23-fbc8-4b3f-a900-a29960aac873",
+   "title_en": "Türk İnşaat Sektöründe İş Kazalarının Analizi: 2012-2024 Dönemi"
+  },
+  {
+   "id": "7a8fe7eb-5a8e-4b27-b03d-0e7240aadc41",
+   "title_en": "An Interdisciplinary Periodontal Approach to the Esthetic Rehabilitation of a Complicated Crown-root Fracture: A Case Report"
+  },
+  {
+   "id": "50e9536f-3ee3-4ece-8dec-d3df4acd7acf",
+   "title_en": "GREEN SYNTHESIS OF IRON NANOPARTICLES: STRUCTURAL CHARACTERISATION AND ADVANCED ENVIRONMENTAL APPLICATIONS"
+  },
+  {
+   "id": "514ce0d3-b345-4214-bbff-3d3b5d2dc9cd",
+   "title_en": "Parameterizing and modeling of three-dimensional gravel desert surfaces"
+  },
+  {
+   "id": "2e6ed89f-9c26-4290-aa99-7e21bbe6bf18",
+   "title_en": "RESOLUTION OF GRAVITATIONAL SINGULARITY AND THE DYNAMIC ORIGIN OF DARK ENERGY VIA DE BROGLIE WAVE COMPRESSION"
+  },
+  {
+   "id": "c3d90406-86e3-48bf-bae8-23299046b820",
+   "title_en": "Beyond Mechanical Stochasticity: A Unified Tetratropic and Topological Formulation of the Terrestrial Biosphere as a Bounded Informational Shell and the Dynamics of Human Socio-Historical Processing"
+  },
+  {
+   "id": "0733bb0d-b101-45bc-8fe7-aab76d51d35f",
+   "title_en": "Ancient plume-reinforced lithosphere modulates present-day crustal fluid migration and deformation"
+  },
+  {
+   "id": "1d166ce5-e177-48b7-b5e1-764455172c2f",
+   "title_en": "Índice de Vulnerabilidad Post-Impacto (IVPI): Evaluación de Afectados por Desastres en Venezuela"
+  },
+  {
+   "id": "c85132e1-2979-422f-81bb-6e5bcc57a200",
+   "title_en": "A significant drop in tropical cyclones’ lifespan in the Pacific over the past 40 years"
+  },
+  {
+   "id": "42739316-ba07-4bbf-83f9-340847ee2397",
+   "title_en": "The formula of the universe"
+  },
+  {
+   "id": "5cea4f4a-4153-4060-b36f-eb706da17310",
+   "title_en": "GREEN SYNTHESIS OF IRON NANOPARTICLES: STRUCTURAL CHARACTERISATION AND ADVANCED ENVIRONMENTAL APPLICATIONS"
+  },
+  {
+   "id": "5c60575a-79f2-4d62-8e0b-9eb7cbb6af44",
+   "title_en": "Petrography and Geochemistry of Building Stones in a Well-Preserved Urartian Fortress, NW Iran: Implications for Adaptive Construction"
+  },
+  {
+   "id": "c48d2d14-6439-4abd-a3d5-6971a4d28ff0",
+   "title_en": "03-SICHUAN Province of China"
+  },
+  {
+   "id": "99182e32-74ad-4236-b38c-3da890a1b200",
+   "title_en": "Probing the Hygroscopicity, Phase, and Chemical Composition of Methylglyoxal-Glycine Aqueous Brown Carbon Aerosol: A Multi-Instrument Approach"
+  },
+  {
+   "id": "29e25479-953c-40be-95a1-d390f6e90456",
+   "title_en": "Deep‐learning inversion of near‐surface S‐wave velocity using fundamental and higher mode Love waves"
+  },
+  {
+   "id": "533b7a05-642b-4353-ac25-70c82db98b58",
+   "title_en": "Law of Equalization"
+  },
+  {
+   "id": "c88dbf0e-2974-4b2f-a06b-bb0e5cc78029",
+   "title_en": "Process-based Vulnerability Screening in Fractured Mountain Aquifers Integrating Monitoring and Transport Modelling"
+  },
+  {
+   "id": "a604d342-cc18-466c-8aa4-5d73f1b5b260",
+   "title_en": "The formula of the universe"
+  },
+  {
+   "id": "5f9cc962-0530-4df1-a527-f14ce4779a03",
+   "title_en": "Distinct Changes in Tropical Cyclone Seasons Between the Western North Pacific and North Atlantic Under High‐Level Carbon Dioxide Climate Simulations"
+  },
+  {
+   "id": "f18d3d60-8754-4360-bddb-6e2ad5ae6852",
+   "title_en": "Dual-stream cross-modal networks for acoustic-visual detection of surface vessels on wave gliders"
+  },
+  {
+   "id": "3a9dedde-0226-4736-8f3a-d4c9c43ded99",
+   "title_en": "Flexible and Wearable Carbon Cloth‐Based Supercapacitors: Synthesis, Applications, and Challenges"
+  },
+  {
+   "id": "5bbb6036-8f63-4902-87b7-6fe98f9181fd",
+   "title_en": "Recent Advances in Green Synthesis, Physicochemical Characterization and Pharmacological Applications of Carbon Dots"
+  },
+  {
+   "id": "fdc68a38-6478-4016-97df-493afa8b10e0",
+   "title_en": "Exploring the Anticancer Potential of Green Silver-gold Allied Bimetallic Nanoparticles on BHK-21 Cancer Cells Via Genotoxic Approach"
+  },
+  {
+   "id": "24fb4e11-00d5-4a09-ae9c-94857a3ee7db",
+   "title_en": "Effect of boric acid addition to an alkaline–silicate electrolyte on the structure and properties of plasma electrolytic decorative two color coatings formed on AD31 aluminum alloy"
+  },
+  {
+   "id": "4598650b-3ac7-45c2-9b39-d7d5485690ef",
+   "title_en": "Data and code for Single-Sided Wideband Estimation of Wall\\\\ Permittivity, Conductivity, and Thickness"
+  },
+  {
+   "id": "db5cb7e5-4874-415f-b578-68b6bf15e7c7",
+   "title_en": "Special Relativity and the laws of Physics"
+  },
+  {
+   "id": "69918b53-e0a0-4da7-85bc-5ee2ba2e3a40",
+   "title_en": "Dual Action of Phase Separation and Mechanical Locking Enabled Low‐Value Waste Wood Into High‐Performance Structural Phase‐Change‐Induced Self‐Healing Materials"
+  },
+  {
+   "id": "1ffcc3b3-ec8c-44a5-87ed-8f9ba8898341",
+   "title_en": "Green fabrication and antibacterial evaluation of lysozyme-immobilized cysteine-capped silver nanoparticles"
+  },
+  {
+   "id": "b9fe7bc9-c2c2-4c2f-a587-0ef4e3b58f72",
+   "title_en": "Development of methods for inhibiting the corrosion of metals and new options for their application: a review. Part III-2-2. Superhydrophobization of aluminum surfaces from organic solutions of organosilicon compounds"
+  },
+  {
+   "id": "7b40cc42-d309-4b8b-bce3-73590e915823",
+   "title_en": "Development of Chitosan Silver Nanobiocomposites for Antimicrobial Food Packaging Applications"
+  },
+  {
+   "id": "e0638a26-420e-4388-b71c-1b350ee07823",
+   "title_en": "TFStudio: An open-source design, analysis, and optimization environment for optical thin-film coatings"
+  },
+  {
+   "id": "a6f67eaf-dd12-42e8-991b-62585dae6a6f",
+   "title_en": "A Radial Coordinatization of the Triangular-Fractional Grid: Integer Boundaries, a Phase-Pole Center, and a Tiling–Phase Obstruction"
+  },
+  {
+   "id": "dcd07984-f0cb-4bf5-8f91-d02d802beb05",
+   "title_en": "History-Dependent Gravity XIV: Temporal Kernel Geometry and Logarithmic Memory Signatures"
+  },
+  {
+   "id": "a031fa10-6ade-44b2-a6e0-e9d91f4a3d1f",
+   "title_en": "Penetration resistance of g-C3N4/h-BN heterojunction nanocomposite coatings applied to concrete surfaces."
+  },
+  {
+   "id": "3a879db4-de83-4568-b0b4-60e8c7e81042",
+   "title_en": "Molecular Drivers of Contrasting Photoreactivity in Extracellular versus Intracellular Organic Matter from Chlorophyta and Cyanobacteria"
+  },
+  {
+   "id": "0b12549f-e46c-4ced-9da1-1d6ca0c7abae",
+   "title_en": "Ammonium and phosphate supplementation accelerates post-bleaching recovery in the fluted giant clam (Tridacna squamosa): evidence for host-mediated thermal resilience"
+  },
+  {
+   "id": "0b5981b1-dba5-45a6-ae51-d2ec21f7a8d3",
+   "title_en": "Statistical Analysis of Seismicity in West Sumatra (2015–2025) and Aftershock Decay of the 2009 Padang Earthquake Using Gutenberg–Richter and Omori–Utsu Laws"
+  },
+  {
+   "id": "5b4034e6-80cf-4ca0-bb14-2809ee00a6fc",
+   "title_en": "Paper 121: The Non-Shareable Electron in Holosphere Theory A Cuboctahedral Rapid-Closure Hypothesis for Lepton Pointlikeness, Nuclear Exclusion, and Close-Approach Hot Barriers"
+  },
+  {
+   "id": "68469b8a-eaba-49d4-8bd2-a08d215b1e35",
+   "title_en": "CROCO Technical and Numerical Documentation"
+  },
+  {
+   "id": "8b3f146b-ce83-47c3-8c61-0e2264017ccc",
+   "title_en": "Are Time and Temperature the Simple Answer to the Dolomite Problem?"
+  },
+  {
+   "id": "a3593675-a2ef-4b35-8ea0-2dd6a13cfe2b",
+   "title_en": "Quantification of Heat and Salt Budgets in the Western Ross Ice Shelf Cavity and Polynya System"
+  },
+  {
+   "id": "f9ed0e4c-7561-4874-bccb-6aa503dc5eb4",
+   "title_en": "Gemological Optical Microscopy of Three Imperial Celadon Vases of the Qianlong Period (1736–1795): Comparative Analysis and Diagnostic Criteria for Authentication"
+  },
+  {
+   "id": "a92de4d2-b788-411f-9c6c-e416595b7adb",
+   "title_en": "Least-Squares Reverse Time Migration of First Order Multiples Based on the QHAdam Gradient"
+  },
+  {
+   "id": "232a0359-f0db-4600-bc93-3c3bdb74430d",
+   "title_en": "Sensitivity of East Asian Meso‐ β ‐Scale Convective Systems Identification to Microphysical Processes in a Convection‐Permitting Model"
+  },
+  {
+   "id": "234469b0-f69a-4bde-b063-71c71a275b1a",
+   "title_en": "A multi‐variable framework for selecting WRF physics configurations at convection‐permitting scales: An Amazon wet‐season case study"
+  },
+  {
+   "id": "dde9502b-de1c-4c93-b8bd-42796e348311",
+   "title_en": "Dietary transition in the western inner Asian mountain corridor: preliminary stable isotope perspective from early iron age Fergana populations"
+  },
+  {
+   "id": "7ad3139a-c3e3-434d-bae8-5353e999f5e1",
+   "title_en": "Valorization of African walnut (Tetracarpidium Conophorum) husks for green synthesis of silver nanoparticles and sustainable control of indoor mycotoxigenic fungi"
+  },
+  {
+   "id": "4750b7b9-0868-48f1-af54-eb1647d97c3f",
+   "title_en": "Research and application of karst cave detection technology based on LiDAR and high-resolution remote sensing"
+  },
+  {
+   "id": "2efdb472-3fbb-45c2-bb95-64de5c12c88d",
+   "title_en": "Troposphere–Stratosphere–Mesosphere Coupling and Ozone Response to Arctic Stratospheric Variability during the 2024/25 Winter Season"
+  },
+  {
+   "id": "0ae7ced5-ac5c-418b-98fb-e5194f6c6403",
+   "title_en": "Non‐Uniform Reduction of the North Atlantic Tropical Cyclones in Response to the AMOC Weakening Under External Freshwater Forcing"
+  },
+  {
+   "id": "29a043e2-ffe8-4659-a0fe-66ee6e02381a",
+   "title_en": "Investigating Ultrafine Aerosol Turbulent Fluxes during Atmospheric New Particle Formation Events"
+  },
+  {
+   "id": "39e9b88e-f349-4d84-90ae-ee4cb2941a22",
+   "title_en": "People, pasture and plant use: the environmental archaeology of Helgusel shieling site, SW-Iceland"
+  },
+  {
+   "id": "62bf3e5b-391a-42c2-89fc-583d72417c9d",
+   "title_en": "Quaternary Marine Terraces of the Çanakkale Strait Geoheritage Value, Vulnerability, and Conservation Needs"
+  },
+  {
+   "id": "767055ed-821f-496a-a514-4037138f0e64",
+   "title_en": "Quantifying user variability in the traditional X‐ray ice‐rafted‐debris counting technique"
+  },
+  {
+   "id": "bb1f0bfa-9f71-417d-a0d9-47f514a45657",
+   "title_en": "Finite-wavevector instability in dense hydrogen from electronic screening"
+  },
+  {
+   "id": "7d679ba5-0749-49ac-9d58-025ac9c2daa3",
+   "title_en": "Gemological Optical Microscopy of Three Imperial Celadon Vases of the Qianlong Period (1736–1795): Comparative Analysis and Diagnostic Criteria for Authentication"
+  },
+  {
+   "id": "63ab0cf4-6cc6-4a07-95bb-dd998eaf3c41",
+   "title_en": "Proyecto Geotermia Cangas del Narcea"
+  },
+  {
+   "id": "d1dd603d-6336-4fdd-b035-d317047f7b2d",
+   "title_en": "A novel joint inversion method for ocean wave and wind fields using CFOSAT SWIM and SCAT data"
+  },
+  {
+   "id": "d28cd1ca-a667-42de-982b-4c71a357002d",
+   "title_en": "Índice de Vulnerabilidad Post-Impacto (IVPI): Evaluación de Afectados por Desastres en Venezuela"
+  },
+  {
+   "id": "83bcad30-4e5e-4ec1-9f66-5e5e3178f4a9",
+   "title_en": "Experimental_Protocol_for_D-D_Fusion"
+  },
+  {
+   "id": "122e6bf9-19bd-4d70-a668-80be958ef7df",
+   "title_en": "Hubungan Pengetahuan Ibu Hamil Sebelum dan Setelah Edukasi Prenatal Yoga di UPT Puskesmas Pal III Pontianak"
+  },
+  {
+   "id": "f5180191-c2af-47d2-8070-266bd1eb8ecb",
+   "title_en": "Theoretical investigations of the reaction kinetics and mechanism for the Cl initiated oxidation of CF₃C(O)CH₂COCH₂CH₃"
+  },
+  {
+   "id": "ee600651-c9c5-447a-a2a1-d93cb741003a",
+   "title_en": "Quantifying the Ratio of Non‐Synoptically Forced Precipitation Events Over CONUS Using the Quasigeostrophic Omega Equation"
+  },
+  {
+   "id": "a6b82e06-18f8-4af2-892e-557e741f87af",
+   "title_en": "NANO-O'LCHAMLI LYUMINOFORLARNING SIRTQI MORFOLOGIYASI VA NURLANISH KINETIKASINING BOG'LIQLIGI"
+  },
+  {
+   "id": "e7abb880-f05c-4ae2-8c8f-2c2708ab23a1",
+   "title_en": "Penerapan Slow Stroke Back Massage (SSBM) untuk Menurunkan Kecemasan pada Lansia Hipertensi di RSD K.R.M.T. Wongsonegoro Semarang"
+  },
+  {
+   "id": "4afef29b-35b2-4076-b091-8964d5a03589",
+   "title_en": "Quantitative Exploration of Cooling Rate-Driven Solidification Microstructure Evolution in Mg–Al Alloys"
+  },
+  {
+   "id": "6d041656-0fa4-43c5-8887-4545a3711a5b",
+   "title_en": "School-Enterprise Cooperation and Vocational Safety Literacy Formation: A Structural Equation Modeling Approach in Chinese Higher Vocational Colleges"
+  },
+  {
+   "id": "9f0b1638-b815-4fdd-ae51-1363c738ceed",
+   "title_en": "Preparation and performance study of “degradation-heat insulation” multifunctional coatings based on TiO2/SiO2 composite aerogels"
+  },
+  {
+   "id": "64a6344a-fec6-49bb-ba6f-2adddee08b94",
+   "title_en": "Ligand Redox Reactivity Supports C–F Activation at Al(III)"
+  },
+  {
+   "id": "d2bd0e32-2c70-41f6-a8b0-4a3cd39a26d5",
+   "title_en": "Impact of Glucose and Urea on the Aggregation and Thermodynamic Characterictics of Micellization in Sodium Dodecyl Sulfate and Ofloxacin Mixture"
+  },
+  {
+   "id": "fe38d6c9-45b4-468f-859e-9be6f2621ff5",
+   "title_en": "Intermolecular Selective 1,2-Aminohydroxylation of 1,3-Dienes Enabled by Palladium/Copper/Oxygen Cooperation"
+  },
+  {
+   "id": "bd028171-b7ed-4456-afca-6884f7407945",
+   "title_en": "four-states-as-trace-regimes"
+  },
+  {
+   "id": "c3dcfc69-6d48-47cb-abaa-77a9a6de31bb",
+   "title_en": "SANOAT CHIQINDILARIDAN OLINGAN XOMASHYO ASOSIDA SINTEZ QILINGAN LYUMINOFORLARNING SPEKTRAL-LUMINESSENT XOSSALARI"
+  },
+  {
+   "id": "f2211f43-d7c7-4319-9949-b08e25ce86f8",
+   "title_en": "Recent advances in 1,3,5-triazine-based PI3K inhibitors for cancer therapy: a comprehensive review"
+  },
+  {
+   "id": "867f73f5-0daf-4afe-baaf-3aec9e315409",
+   "title_en": "Molecular docking simulations of various aryl amide derivatives of Imidazo[1,5-a] pyridine-1,2,4-thiadiazoles against EGFR protein"
+  },
+  {
+   "id": "b519f4cc-bc0d-47d7-b785-266b3f62b33a",
+   "title_en": "Bromophenyl-Diphenylphosphine Oxides as Novel Starting Materials in the Suzuki–Miyaura and the Hirao Cross-Couplings, as well as in the Michaelis–Arbuzov Reaction"
+  },
+  {
+   "id": "2a92ed65-307f-42d5-b58c-9a7068c7277b",
+   "title_en": "Structure–Property Synergy in Novel Flexible Acrylonitrile Butadiene Rubber Foam‐Like Aerogels: Linking Thermo‐Physical Performance to Microstructure"
+  },
+  {
+   "id": "8204aa79-9f23-4172-9009-079b2f4a5e41",
+   "title_en": "The crystal structure of ( R )-4-(2,4-dimethoxybenzyl)-3-methylpiperazin-2-one, C 14 H 20 N 2 O 3"
+  },
+  {
+   "id": "be0e1aef-dd54-44e5-b6f3-6e5da4947606",
+   "title_en": "Recent advances in 1,3,5-triazine-based PI3K inhibitors for cancer therapy: a comprehensive review"
+  },
+  {
+   "id": "2bd198c9-3627-4e34-baa1-987fe5fa936d",
+   "title_en": "Synthesis, quantum chemical calculations, molecular docking, dynamic simulations and ADME predictions of cyclopropylmethyl substituted indole-based hydrazones"
+  },
+  {
+   "id": "b6813a92-0805-4050-afef-e94c449c51f0",
+   "title_en": "PILAR 5: SUPERKONDUKTOR (Teorema Konfinement Topologis-Meissner Aleph-Null melalui Hiperdimensional Binding Metric - ATMCT-HBM)"
+  },
+  {
+   "id": "bfcd7620-5846-420a-8526-bde638914363",
+   "title_en": "The crystal structure of bis(4,5–dinitroimidazole-1-yl)ethane acetone (1:2), C 14 H 18 N 8 O 10"
+  },
+  {
+   "id": "ec8206c3-8993-4f64-b4e5-445e0a225cca",
+   "title_en": "Triazoles as enzyme inhibitors: synthetic advances, mechanism of action, molecular docking studies and structure-activity relationships"
+  },
+  {
+   "id": "d6aeebd7-b91b-428d-8e23-cd5b18328e39",
+   "title_en": "Chirality-Match-Directed Radical Truce–Smiles Rearrangement of N -Arylsulfinyl Allylamines for Stereoselective Construction of Acyclic Quaternary Carbon Stereocenters"
+  },
+  {
+   "id": "b2f940f7-bd2a-4e96-84de-eaf40d9f5340",
+   "title_en": "Endophytic fungal inoculation reshapes volatile metabolism, aroma complexity, and bioactivity of agarwood essential oil"
+  },
+  {
+   "id": "d313300a-0fee-4af6-af28-7e21ff85560b",
+   "title_en": "Development of a Tapping-Mode Scanning Probe Electrospray Ionization Platform for High-Sensitivity and Long-Term Stability in Single-Cell Mass Spectrometry Imaging of Tissue"
+  },
+  {
+   "id": "562aa623-47b1-41f1-9516-938b1eecea54",
+   "title_en": "Nutritional Quality of Crystal Coconut Sugar and Environmental Impact Assessment of Its Production in Banyumas Regency, Central Java, Indonesia"
+  },
+  {
+   "id": "875fcebe-c005-4c1a-b926-b779630a90f1",
+   "title_en": "Synthesis and structural characterization of salicylaldimine-based trinuclear titanium complexes for ethylene homo- and copolymerization"
+  },
+  {
+   "id": "7c9941b9-f1b3-44a4-a525-498d4f08d04a",
+   "title_en": "PILAR 5: SUPERKONDUKTOR (Teorema Konfinement Topologis-Meissner Aleph-Null melalui Hiperdimensional Binding Metric - ATMCT-HBM)"
+  },
+  {
+   "id": "5e63e2fd-e033-4b31-b476-441e8b3f47c3",
+   "title_en": "Nonporous Self-Assembled Pd(II) Coordination Cage Enabling Dual Capture of Iodine and Methyl Iodide"
+  },
+  {
+   "id": "eb4919b9-fbd5-4d4d-b754-71912234097b",
+   "title_en": "Uranium extraction from its solutions using novel urea embedded fatty acids as an ecofriendly solvent – a comparative mechanistic and thermodynamic study"
+  },
+  {
+   "id": "1e087f0d-4108-441b-8950-05bd82f96452",
+   "title_en": "Supplementary materials"
+  },
+  {
+   "id": "a8dec0fa-c5d4-444d-8399-1e0647d570ec",
+   "title_en": "Direct Spirocyclization of Tryptamines with Dearomatized Phenols Enables Catalyst-Free Access to C3-Spirocyclic Indolenines"
+  },
+  {
+   "id": "8511918f-3af0-418d-8378-18a7e05519ee",
+   "title_en": "From Materials Science to Tantalum Capacitor Reliability: Practical Positioning of SSC Diagnostics"
+  }
+ ],
+ "abstracts": [],
+ "remaining_titles": 6150,
+ "remaining_abstracts": 4059
+}
