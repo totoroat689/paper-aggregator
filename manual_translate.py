@@ -37,6 +37,19 @@ def _headers():
     }
 
 
+def _count(filter_qs):
+    """조건에 맞는 전체 건수 (진행률 표시용)"""
+    url = f"{SUPABASE_URL}/rest/v1/papers?select=id&{filter_qs}&limit=1"
+    h = dict(_headers())
+    h["Prefer"] = "count=exact"
+    try:
+        resp = requests.get(url, headers=h, timeout=30)
+        cr = resp.headers.get("content-range", "")  # 예: "0-0/1234"
+        return int(cr.split("/")[-1]) if "/" in cr else -1
+    except (requests.RequestException, ValueError):
+        return -1
+
+
 def export_pending():
     """한글화 안 된 제목/초록을 뽑아 pending.json으로 저장"""
     try:
@@ -66,6 +79,10 @@ def export_pending():
         resp = requests.get(url, headers=_headers(), timeout=60)
         resp.raise_for_status()
         out["abstracts"] = resp.json()
+
+    # 진행률: 아직 남은 전체 건수도 함께 기록
+    out["remaining_titles"] = _count("title_ko=is.null&title_en=not.is.null&is_retracted=eq.false")
+    out["remaining_abstracts"] = _count("abstract_ko=is.null&abstract_en=not.is.null&is_retracted=eq.false")
 
     os.makedirs(DIR, exist_ok=True)
     with open(PENDING, "w", encoding="utf-8") as f:
