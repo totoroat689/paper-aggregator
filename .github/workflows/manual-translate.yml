@@ -1,0 +1,37 @@
+name: manual-translate
+
+on:
+  push:
+    paths:
+      - 'translation/request.json'
+      - 'translation/done.json'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: manual-translate
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install requests
+      - name: 자동 판별 실행 (done.json 있으면 DB 반영, request.json 있으면 내보내기)
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: python manual_translate.py
+      - name: 결과 커밋
+        run: |
+          git config user.name "translate-bot"
+          git config user.email "translate-bot@users.noreply.github.com"
+          git add -A translation/ || true
+          git diff --cached --quiet || git commit -m "번역 파이프라인 자동 처리"
+          git push
