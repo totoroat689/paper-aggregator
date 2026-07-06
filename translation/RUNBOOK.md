@@ -20,8 +20,8 @@
    EOF
    git add translation/request.json && git commit -m "번역 요청" && git push origin main
    ```
-   - 제목 단계: `{"title_limit": 200, "abstract_limit": 0}`
-   - 초록 단계(제목 소진 후): `{"title_limit": 0, "abstract_limit": 25}`
+   - 항상 제목만: `{"title_limit": 200, "abstract_limit": 0}`
+   - ⚠️ **초록은 사용자 결정으로 보류 중** — 사용자가 명시적으로 "초록도 진행해줘"라고 하기 전까지 abstract_limit은 항상 0.
 
 2. **추출 대기 후 수신** (Actions 실행 ~30초)
    ```bash
@@ -52,14 +52,14 @@
 
 ## 세션 운영 규칙
 - **라운드 크기**: 제목 200건 / 초록 25건 (품질·분량 균형점. 늘리지 말 것)
-- **세션당 한도**: 제목 라운드 최대 5회(약 1,000건) 또는 초록 라운드 최대 4회(약 100건).
+- **세션당 한도**: 제목 라운드 최대 5회(약 1,000건).
   이 한도에 도달하면 멈추고 사용자에게 보고: 남은 건수 + "새 대화에서 '한글화 이어서 진행해줘'라고 하면 계속됩니다."
-- **우선순위**: 제목 먼저 전부 → 그다음 초록 (제목이 SEO·화면 효과가 훨씬 큼)
+- **범위**: 제목만. 초록은 보류(사용자가 명시적으로 요청할 때만).
 - **중복 실행 금지**: 이전 라운드의 done.json 반영 확인 전에 다음 request를 push하지 말 것.
 - 매 라운드 종료 시 진행률 한 줄 보고: "이번 라운드 N건 반영, 제목 남은 것 X건 / 초록 남은 것 Y건"
 
 ## 완료 판정
-- `pending.json`의 `remaining_titles`와 `remaining_abstracts`가 0이면 전체 완료.
+- `pending.json`의 `remaining_titles`가 0이면 완료 (초록은 보류 중이므로 remaining_abstracts는 무시).
 - 사용자에게 최종 확인 SQL 안내:
   ```sql
   select
