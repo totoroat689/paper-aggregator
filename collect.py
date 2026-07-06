@@ -558,12 +558,12 @@ def main():
     except Exception as e:
         print(f"[라이선스보완] 오류(수집에는 영향 없음): {e}")
 
-    # 제목 한글화 (배치): 이전 배치 회수 + 새 배치 제출
+    # 제목·초록 한글화 (Azure Translator 무료 등급)
     try:
-        import translate_titles
-        translate_titles.run()
+        import translate
+        translate.run()
     except Exception as e:
-        print(f"[제목번역] 오류(수집에는 영향 없음): {e}")
+        print(f"[번역] 오류(수집에는 영향 없음): {e}")
 
 
 if __name__ == "__main__":
