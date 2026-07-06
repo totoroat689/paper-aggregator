@@ -1,0 +1,807 @@
+{
+ "titles": [
+  {
+   "id": "28c150aa-079b-4d8c-b843-189c9e250ee6",
+   "title_en": "Knock tendency in ultra-lean hydrogen combustion using an active pre-chamber fueling strategy"
+  },
+  {
+   "id": "77b2d8f0-3994-4f48-ad53-3980b6d52e1f",
+   "title_en": "Integrated metabolomics and metagenomics reveal divergent caecal metabolic signatures following commercial gut health interventions in broilers."
+  },
+  {
+   "id": "4e78f056-52be-463a-a641-cc8475a1497d",
+   "title_en": "Evaluation of orthodontic treatment need awareness in individuals with different malocclusions."
+  },
+  {
+   "id": "bdbbe5ca-245d-4927-880e-90a1f99ff3e7",
+   "title_en": "Role of Cations in Electrochemical Reactivity and Combustion Performance of Room-Temperature Ionic Liquid (RTIL) Fuels"
+  },
+  {
+   "id": "5160b91e-539c-4c39-9cf9-9befd8d94320",
+   "title_en": "Prevalence and Distribution of Ectoparasite Species in Manipuri Pony of Imphal West District, Manipur, India"
+  },
+  {
+   "id": "70262bcf-fd07-4140-9334-c57455e5a89a",
+   "title_en": "Reconceptualizing online gaming in emerging adulthood: a phenomenological study."
+  },
+  {
+   "id": "ce4f1512-d84b-4d6b-aab3-20df5fe3a89f",
+   "title_en": "Late-Stage Carbonyl Removal via Sequential Double Carbon–Carbon Bond Cleavage"
+  },
+  {
+   "id": "50e09646-c989-4386-b110-f7336d173dfa",
+   "title_en": "Pediatric nasopalatine vs. median palatine cysts: differential diagnosis and endoscopic management - a comparative case report."
+  },
+  {
+   "id": "2e1ffd96-394e-4d8a-b4e1-6e2cf959f588",
+   "title_en": "Antimicrobial Potency and Bond Strength of Glass Ionomer Cement Following Cavity Disinfection with Er, Cr: YSGG Laser, and Iron Oxide Nanoparticles in Deciduous Molars"
+  },
+  {
+   "id": "92129c04-6986-4f70-8f1e-b21969f0df01",
+   "title_en": "Possible Electrocatalytic N–N Coupling for the Green Synthesis of Nitramide (NH 2 NO 2 ) via Nitrate Reduction Reaction on Nitrogen-Doped Graphene Supported Dual-Nickel Atoms (Ni 2 –NC)"
+  },
+  {
+   "id": "da48c1b6-205e-44d3-8764-e83b06fdfffb",
+   "title_en": "Methanol Production from CO2 Emissions: Simulation and Optimization via Hysys"
+  },
+  {
+   "id": "296c335b-8dee-4c72-95c8-b56466c91efc",
+   "title_en": "Raising the BARS in Animal Welfare"
+  },
+  {
+   "id": "e2faaedf-e927-41e3-b3ca-4bfcd93833de",
+   "title_en": "Exploring the Effectiveness of Practice Development Interventions on Patient and Staff Outcomes: A Systematic Review."
+  },
+  {
+   "id": "924f6e6e-0116-424e-b01d-7b4dc856cce5",
+   "title_en": "Systematic review of the efficacy of rituximab in the management of central nervous system involvement among adults with Sjögren's disease."
+  },
+  {
+   "id": "3193479d-2685-4df8-bb1d-837ceda452e1",
+   "title_en": "Modern Phyto-Emulgel Platforms of Lemongrass oil for Rheumatoid Arthritis"
+  },
+  {
+   "id": "9df09900-ac37-4afd-ab0e-ec8feaebfbb2",
+   "title_en": "Design and development of anti-inflammatory poly herbal emulgel for multipurpose therapy"
+  },
+  {
+   "id": "eaa82087-bd84-4349-91ac-0ffc8970cbc5",
+   "title_en": "Formulation and Evaluation of Herbal Tea for Anti-Anginal Activity"
+  },
+  {
+   "id": "008fa1ab-51e9-44d3-bba1-08d02497aea2",
+   "title_en": "Natures Smile Reviews: Does It Live Up to the Hype?"
+  },
+  {
+   "id": "74846e5b-4b54-43c0-b69b-b1611627e2f3",
+   "title_en": "Local Sodium Tanshinone IIA Sulfonate Attenuates Periodontal Bone Loss by Modulating Inflammatory, Immune and Osteoclastogenic Signalling"
+  },
+  {
+   "id": "056b925a-0e26-446c-945f-57577c68bbea",
+   "title_en": "Evolution of AI and Robotics in Modern Orthodontic Workflows of Direct Appliance 3D Printing from Shape Memory Materials – Scoping Review"
+  },
+  {
+   "id": "5ca76ca7-3234-4a0d-99d2-b8e031fb3703",
+   "title_en": "Minimally Invasive Access Cavity Vs Traditional Access Cavity: An Experimental Study"
+  },
+  {
+   "id": "307b0351-b85e-457e-8b3a-9d829ea0b96a",
+   "title_en": "Effects of reduction atmospheres on structure and performance of KFeCuZr catalyst for higher alcohols synthesis from CO2 hydrogenation"
+  },
+  {
+   "id": "6caba61b-e1d7-42f4-a534-dbb27b409a41",
+   "title_en": "Transport and optical behavior of binary mixtures of isobutanol with aliphatic and aromatic hydrocarbons"
+  },
+  {
+   "id": "97e886c9-72f0-45b8-88fe-fa211659d3a3",
+   "title_en": "Experimental and kinetic modelling study of the autoignition and flame propagation of NH3/CH4/C2H6/C3H8 mixtures in a shock tube and a heat flux burner: Effects of C/N cross-reactions"
+  },
+  {
+   "id": "d47f8f8c-d60a-4668-8b24-7c5f217c47c6",
+   "title_en": "SowPostureDS: A Multi-Class Image Dataset for YOLO-Based Detection of Sow Postures in diverse Farrowing Systems."
+  },
+  {
+   "id": "f81a2be0-43a7-42fe-b284-9655005d3d5b",
+   "title_en": "Echocardiographic effects of medetomidine, butorphanol, and their combination in donkeys."
+  },
+  {
+   "id": "cec91767-d9db-4cb5-b80c-38b04b9cda54",
+   "title_en": "Bilateral distal femoral trochlear block migration after medial patellar luxation surgery in a dog"
+  },
+  {
+   "id": "a1045667-e8a7-4d4d-b789-beea6e26e5ce",
+   "title_en": "Fabrication of bi-layered bioresorbable ureteral stent and in-vitro analysis for sustained therapeutics."
+  },
+  {
+   "id": "4a738af6-2b19-4fb4-90d5-72ae703a887b",
+   "title_en": "Enhancing the 12S rRNA reference library of South African chondrichthyans to aid in eDNA metabarcoding."
+  },
+  {
+   "id": "0ef7d63a-a2c3-40b8-ab6b-bc896165b138",
+   "title_en": "Toll-like receptor 4 signaling links cytoskeletal remodeling to lipid accumulation in macrophages."
+  },
+  {
+   "id": "0aeeeddb-b0aa-4038-a166-cc3e18da5622",
+   "title_en": "Impact of Educational Intervention on Mothers' Knowledge and Home Management Practices of Childhood Diarrhea in Under-Five Children"
+  },
+  {
+   "id": "429bdadd-6bd2-4a56-8a59-f907b94ebbdf",
+   "title_en": "Exploring Emulgel as a Modern Approach to Topical Drug Delivery: A Comprehensive Review"
+  },
+  {
+   "id": "2c729461-4853-4cd3-94ab-1cddce14223a",
+   "title_en": "Recent Progress in Niosomes for Enhanced Bioavailability and Site-Specific Drug Delivery"
+  },
+  {
+   "id": "0596a746-4cfa-41a7-ad66-4cc4f0dafc2c",
+   "title_en": "Design and assessment of amino acid-based gemini catanionic niosomes for dual-drug delivery of anticancer drug combination: a comprehensive computational study."
+  },
+  {
+   "id": "aa8d035f-89c7-49f0-bfba-a857e6cbd8ab",
+   "title_en": "Natural Polymers for Buccal Adhesive Tablet Formulations: A Comprehensive Review"
+  },
+  {
+   "id": "1e75e664-d194-4099-b76f-4a229f74d754",
+   "title_en": "Formulation and Evaluation of Herbal Tea for Anti-Anginal Activity"
+  },
+  {
+   "id": "718e99f0-32ed-47f0-a220-1de533ec93cc",
+   "title_en": "Synergistic Effects of Co Administration of Aqueous Ginger Extract and Glibenclamide on Glycaemic Status and Antioxidant Defence in Alloxan Induced Diabetic Wistar Rats"
+  },
+  {
+   "id": "a959c135-667d-439e-96c5-fce1e95c44a8",
+   "title_en": "Synergistic Effects of Co Administration of Aqueous Ginger Extract and Glibenclamide on Glycaemic Status and Antioxidant Defence in Alloxan Induced Diabetic Wistar Rats"
+  },
+  {
+   "id": "e355a924-ecac-4006-8add-62ea2319ae2f",
+   "title_en": "QANDLI DIABET BILAN OG'RIGAN BEMORLARDA PERIODONTAL XAVF OMILLARINI ERTA ANIQLASHNING AHAMIYATI"
+  },
+  {
+   "id": "423fc3cc-18df-4e2c-88c5-03984d1086f7",
+   "title_en": "Natures Smile Reviews: Does It Live Up to the Hype?"
+  },
+  {
+   "id": "c110f81d-a3bf-4906-994a-59358eac32cd",
+   "title_en": "ENDODONTIK DAVOLASHDA ZAMONAVIY BIOMATERIALLARDAN FOYDALANISH SAMARADORLIGI"
+  },
+  {
+   "id": "11d7b95a-bab9-4c71-9786-bbcbb04ae851",
+   "title_en": "Part 2: Insights on dental bridges (Article Series), Futile approach considering management of tilted Titanium implants' abutment. Split bridge design, an entity that should be kicked out of dentistry"
+  },
+  {
+   "id": "72af17d1-9b5b-48df-86b0-dab5e8452b73",
+   "title_en": "Implant cleaning performance of powder abrasive devices: an in-vitro study on the non-surgical and surgical approach."
+  },
+  {
+   "id": "0488d7cb-c56e-4ff9-bf69-f8ec32036d1e",
+   "title_en": "Effect of S-PRG containing coat on the shear bond strength and the prevention of enamel microcrack formation after orthodontic bracket removal: an invitro study."
+  },
+  {
+   "id": "009df0d5-ad7a-4d96-b8ce-def6151ff2c9",
+   "title_en": "Dentition Status and Denture Use in Relation to Later-Life Health Transitions in Older Chinese Adults"
+  },
+  {
+   "id": "6d711fc9-b686-44ad-a6c5-edbf299f3ae1",
+   "title_en": "Reciprocal Synergistic Evolution of Cu‐Co Sites Boosts Electrocatalytic Nitrate Reduction to Ammonia"
+  },
+  {
+   "id": "a35a965e-5e13-4cfe-b325-83bebe0ac839",
+   "title_en": "Nutritional Inequality and Societal Development: Structural Barriers to Food Accessibility in Bangladesh"
+  },
+  {
+   "id": "d6b30e05-cbae-430f-a17c-4a003aad920b",
+   "title_en": "Spider-Web Topological Design of a Microchannel Reactor for Ammonia Decomposition"
+  },
+  {
+   "id": "4c0d297e-92e0-4424-9d50-3fc14846bf93",
+   "title_en": "Type I Interferonopathies: Fifteen Years On, From Concept to Therapeutic Perspectives"
+  },
+  {
+   "id": "c3136f25-8fac-4890-ab3a-7866db651991",
+   "title_en": "Methanol Production from CO2 Emissions: Simulation and Optimization via Hysys"
+  },
+  {
+   "id": "90e6ee6a-8b38-4123-b522-acbd014b881a",
+   "title_en": "SERUM IL-35, PENTRAXIN-3, GALECTIN-3 AND HMGB1 IN RECURRENT PREGNANCY LOSS STRATIFIED BY CYTOMEGALOVIRUS SEROSTATUS: A CASE–CONTROL STUDY OF IRAQI WOMEN"
+  },
+  {
+   "id": "c23f3934-cf9a-4b96-9b4c-5f6302ee903d",
+   "title_en": "Integrated Sewerage Optimization Model (ISOM) for Performance Assessment of Urban Sewerage Networks: A Capacity, Reliability and Sustainability Framework Validated on Mwanza, Tanzania"
+  },
+  {
+   "id": "bc5be13b-838a-42d7-8791-7a8d0a19987f",
+   "title_en": "Spleen-associated macrophage alterations and embryo viability in a murine model of recurrent spontaneous abortion."
+  },
+  {
+   "id": "b727e381-ebac-4966-a4cc-c7e5951771f4",
+   "title_en": "Zoos and Aquariums as Socio-Ecological Testbeds: Technological Pathways for Climate Change Mitigation and Sustainable Development in Indian and Global Contexts"
+  },
+  {
+   "id": "031d7593-6748-4157-8ce9-02a976b7ba5d",
+   "title_en": "Prevalence and zoonotic transmission of Opisthorchis viverrini in animal reservoir: a systematic review and meta-analysis in the greater Mekong Subregion"
+  },
+  {
+   "id": "46b28347-a6dd-4e6b-8a8f-34da005d64e5",
+   "title_en": "Dietary anti- Escherichia coli K88 IgY enhances immune response and intestinal barrier function in piglets challenged with Escherichia coli K88"
+  },
+  {
+   "id": "1e3ae64a-9c57-4a1c-bb16-0246d539a80d",
+   "title_en": "Self-Medication Practices Among Women with Vaginal Discharge: A Cross-Sectional Study"
+  },
+  {
+   "id": "c189f5fc-66eb-4a1b-a074-98ca2175d090",
+   "title_en": "Psychometric validation of the Turkish Illness Identity Questionnaire (IIQ-TR)."
+  },
+  {
+   "id": "e5550cab-d1cc-45fb-929e-da1cd48f272c",
+   "title_en": "Cemiplimab: post-market safety profile examined"
+  },
+  {
+   "id": "a055867f-99b8-49d5-88ea-608f10809a14",
+   "title_en": "Transcription Factors in Breast Cancer Oncogenesis and Progression."
+  },
+  {
+   "id": "2f5acd0e-b1d3-4789-9cc6-64c2f33c65eb",
+   "title_en": "Correction: Characterization of Mast2 kinase defines structural features, regulation, and substrates"
+  },
+  {
+   "id": "b1877f53-d08c-4a4d-a4df-64f0f2134dc1",
+   "title_en": "The Clinical Mentorship Program: a mixed-methods evaluation of a community-based medical education pathway program for high school students."
+  },
+  {
+   "id": "9c0def69-5cff-477e-b40d-1d36750f84d2",
+   "title_en": "Pentraxin 3 is an inflammation-related biomarker that distinguishes early-stage from mid-advanced cardiovascular-kidney-metabolic syndrome"
+  },
+  {
+   "id": "430b87a6-6a5a-4b6f-8d42-4f457b01d7d8",
+   "title_en": "Potential effects of neotame on human health: a review"
+  },
+  {
+   "id": "4630eada-78fb-477f-8fd5-ad0ac90c3c11",
+   "title_en": "Exploring Emulgel as a Modern Approach to Topical Drug Delivery: A Comprehensive Review"
+  },
+  {
+   "id": "6413f5bf-4dd6-4976-8617-85fc297e4192",
+   "title_en": "Evaluation Parameters of Gel Formulation: A Comprehensive Review"
+  },
+  {
+   "id": "a44452f5-558a-41d0-beba-2ad7c8a27d3d",
+   "title_en": "Phyto-profiling of Bergenia ligulata rhizome extract and it’s in vitro antioxidative, anti-inflammatory and immunomodulatory potential: mechanistic insights from differential gene expression in acute inflammatory model of chicken splenocytes"
+  },
+  {
+   "id": "31cc4a77-e6e1-4db1-9709-cc9ece50a01f",
+   "title_en": "Modern Phyto-Emulgel Platforms of Lemongrass oil for Rheumatoid Arthritis"
+  },
+  {
+   "id": "7f847b93-430e-4209-8129-c3d540bf79e5",
+   "title_en": "Design and development of anti-inflammatory poly herbal emulgel for multipurpose therapy"
+  },
+  {
+   "id": "97ad25ae-a1e3-4e07-b3a6-44f07d76278f",
+   "title_en": "Formulation development of Sertaconazole loaded nanoemulsion and gel for the management of deep skin fungal infection: in vitro, ex-vivo and in vivo characterizations"
+  },
+  {
+   "id": "a924fc15-23c0-4c83-bdda-e14ecb6e2b8f",
+   "title_en": "Ethosomal Drug Delivery Systems for Superficial and Systemic Fungal Infections: Formulation Strategies, Mechanistic Insights, and Translational Advances"
+  },
+  {
+   "id": "fc36fbef-de91-4128-8412-f8548dd661f3",
+   "title_en": "Ginger essential oil nanoemulsions outperform ginger extract nanoemulsions in extending the shelf life of tilapia fillets."
+  },
+  {
+   "id": "462c4620-6505-4566-b4c5-f4042ecc7ca2",
+   "title_en": "Synergistic Effects of Co Administration of Aqueous Ginger Extract and Glibenclamide on Glycaemic Status and Antioxidant Defence in Alloxan Induced Diabetic Wistar Rats"
+  },
+  {
+   "id": "0ed9dac8-1623-418c-8953-8e9345a5812b",
+   "title_en": "Recent Progress in Niosomes for Enhanced Bioavailability and Site-Specific Drug Delivery"
+  },
+  {
+   "id": "f6b1ee73-3ec0-4cd1-9875-b22c7e011c10",
+   "title_en": "Comparison of a pharmacovigilance screening heuristic with expert clinical consensus for adverse drug reaction signal classification at a Pakistani tertiary care hospital"
+  },
+  {
+   "id": "3557b0ac-d35b-4f1f-9031-dc70e5e39399",
+   "title_en": "Stereospecific Rhodium-Catalyzed Addition of Carboxylic Acids to gem -Difluoroallenes: Access to cis -1,1-Difluoroallyl Esters"
+  },
+  {
+   "id": "d0bc183b-84d9-4d46-9730-0820f61c9c85",
+   "title_en": "Design and Characterization of a Novel Nanocarrier System for Enhanced Dissolution and Bioavailability of Efinaconazole"
+  },
+  {
+   "id": "ffced193-401c-4355-a0db-022e44f0b82c",
+   "title_en": "Preparation, characterization, and ex vivo mucoadhesive studies of triamcinolone acetonide-impregnated Chitosan/PLGA nanocomposite buccal film for oral mucosa ulcer"
+  },
+  {
+   "id": "2807a2e7-d677-433b-be53-6538ccfcc91a",
+   "title_en": "Childhood Diarrhoea in Urban Kenya: A Systematic Review (1995–2025)"
+  },
+  {
+   "id": "14dfc0ba-947c-414c-a16a-8c9b8e0da30e",
+   "title_en": "Comparison of apical transportation and centering ratio between Bassi Logic and Protaper-Next NiTi rotary systems in curved canal by cone beam computed tomography: an in vitro study."
+  },
+  {
+   "id": "0a55f257-2b96-4428-b496-e9988cfbf558",
+   "title_en": "QANDLI DIABET BILAN OG'RIGAN BEMORLARDA PERIODONTAL XAVF OMILLARINI ERTA ANIQLASHNING AHAMIYATI"
+  },
+  {
+   "id": "39681d54-bb2c-4470-8230-0b47fb554a0c",
+   "title_en": "Validation of the Zygomatic Implant Success Index (ZIS Index): A Multidimensional Outcome Assessment Tool—A Retrospective Cohort Study on 186 Patients"
+  },
+  {
+   "id": "7f5b41ae-0951-4c8a-9e06-2a285a90efc4",
+   "title_en": "Integrated Sewerage Optimization Model (ISOM) for Performance Assessment of Urban Sewerage Networks: A Capacity, Reliability and Sustainability Framework Validated on Mwanza, Tanzania"
+  },
+  {
+   "id": "1bf3e6ec-b07e-44a2-a6e2-8febfa35eeb2",
+   "title_en": "Evaluation of Two Different Intraorifice Barrier Materials on Fracture Resistance of Obturated Teeth: An In Vitro Study"
+  },
+  {
+   "id": "da8327cc-0415-4e16-8c24-5630be636104",
+   "title_en": "Oral Focal Mucinosis in a Patient From Hail, Saudi Arabia: A Case Report of a Rare Gingival Lesion"
+  },
+  {
+   "id": "14681861-9fc3-42e9-b3e7-5ff5d0fc47f4",
+   "title_en": "Part 2: Insights on dental bridges (Article Series), Futile approach considering management of tilted Titanium implants' abutment. Split bridge design, an entity that should be kicked out of dentistry"
+  },
+  {
+   "id": "b0985757-6be0-4191-bf20-795fb8a271a1",
+   "title_en": "PEMBERDAYAAN KELUARGA MELALUI EDUKASI 1000 HARI PERTAMA KEHIDUPAN SEBAGAI UPAYA PENCEGAHAN STUNTING DIKECAMATAN CEMPAGA KABUPATEN KOTAWARINGIN TIMUR"
+  },
+  {
+   "id": "163162f0-4bd1-44df-b5c4-2155fb02952c",
+   "title_en": "Association between dental plaque index and COVID-19 severity: a cross-sectional study in a conflict-affected humanitarian setting"
+  },
+  {
+   "id": "03b52206-95c9-4d9a-8ba4-9595976dad66",
+   "title_en": "ENDODONTIK DAVOLASHDA ZAMONAVIY BIOMATERIALLARDAN FOYDALANISH SAMARADORLIGI"
+  },
+  {
+   "id": "8c54c05e-d37f-4b63-bf35-88da0b797e63",
+   "title_en": "Evaluation of Two Different Intraorifice Barrier Materials on Fracture Resistance of Obturated Teeth: An In Vitro Study"
+  },
+  {
+   "id": "3cde2954-6bdd-4ac9-8fbc-e7f913f71cba",
+   "title_en": "Eggshell calcification of the urinary bladder in chronic Schistosoma haematobium infection: A radiologic-pathologic case report"
+  },
+  {
+   "id": "e299420e-261e-415e-ac6b-04c5118c252c",
+   "title_en": "Comment on “Malignant transformation of verrucous oral potentially malignant disorders at a tertiary referral centre: A retrospective cohort study”"
+  },
+  {
+   "id": "6b4f2047-f83b-4acd-bf08-b38f2c49decb",
+   "title_en": "Immunometabolism in Cardiovascular Disease: Linking Metabolic Reprogramming to Inflammation, Atherothrombosis, and Clinical Outcomes"
+  },
+  {
+   "id": "89ab9835-f613-40ca-95b1-073496adcc64",
+   "title_en": "Surface SO x Species Stabilized Metal–Oxygen Bonds in PtNi Nanoalloy for Highly Efficient and Durable Seawater Hydrogen Production"
+  },
+  {
+   "id": "011805fd-13eb-42d6-8943-76c55961fa53",
+   "title_en": "A dual-strain compartmental model for Mycoplasma pneumoniae transmission dynamics with vulnerability stratification and optimal control strategies."
+  },
+  {
+   "id": "73d42069-b294-4a54-957e-aa1ad0d2f059",
+   "title_en": "Multi-Phase Linear Induction Motor-Driven Reciprocating Pump for Advanced Photovoltaic System"
+  },
+  {
+   "id": "27c06675-6c15-4dbc-8629-a49157a5a150",
+   "title_en": "EEMD-based modes reconstruction for PV power prediction using LSTM with self-attention"
+  },
+  {
+   "id": "a3360053-90f4-4a0e-8242-8fa969eba78f",
+   "title_en": "Ampere-Level Acetylene-to-Ethylene Electrosynthesis by a Spillover-Storage-Relaxation Hydrogenation Mechanism to Overcome the Activity-Selectivity Constraint"
+  },
+  {
+   "id": "5a5896f7-587f-4e0b-82d5-5b425b26513e",
+   "title_en": "Magnetic Field-Assisted Oxygen Evolution Reaction by the Spin Polarization in Medium-Entropy Selenides"
+  },
+  {
+   "id": "c90fff46-27ff-406f-90f8-f2c56c468841",
+   "title_en": "Collaborative Optimization of Capacity and Operation Strategy for an Air-Source and Ground-Source Heat Pump Coupled Heating System"
+  },
+  {
+   "id": "22274fa1-55bd-4e55-b2cd-37d041441c4c",
+   "title_en": "High Lateral Mobility of Chemisorbed Ions at the Metal–Electrolyte Interface"
+  },
+  {
+   "id": "73ce07ad-578d-498f-9f75-8e95ea00dfa1",
+   "title_en": "Fabrication and Characterization of ZnO/TiO₂ Nanocomposites for Enhanced Photocatalytic Degradation of Organic Pollutants"
+  },
+  {
+   "id": "7612c934-f9ae-4cc3-99d3-07c9473501d9",
+   "title_en": "Self-Accommodated Electronic Metal−Support Interaction on a Platinum-Anchored Nickel−Molybdenum Nitride Catalyst for Energy-Saving Overall Hydrazine Splitting"
+  },
+  {
+   "id": "cc99c451-7399-4146-85c0-ec25f5eaa1e0",
+   "title_en": "Risk-based screening of green hydrogen investability: Tariffs, network charges, and de-risking in Costa Rica and the UK"
+  },
+  {
+   "id": "04f7b8dd-3f2c-44d7-b869-e2ffe80efd4f",
+   "title_en": "Functional poly (acrylamide-co-acrylic acid) super hydrogels integrated with silver-decorated recycled nano tungsten oxide: a robust, leach-free for advanced wastewater decontamination."
+  },
+  {
+   "id": "90c61757-d52f-40f6-aa7d-27b37eb00578",
+   "title_en": "Advancing the microalgal blue bioeconomy through technological and analytical integration"
+  },
+  {
+   "id": "da794390-5a68-431f-8dcf-ba39cf395077",
+   "title_en": "Anthropogenic Forcing on Riverine Particulate Iron Dynamics in a Human-Impacted Subtropical Watershed: Insights from Iron Isotopes and Bayesian Modeling"
+  },
+  {
+   "id": "9217a087-77d0-4da4-bac4-1eca32ce6f64",
+   "title_en": "Interface Engineering Triggered Electron Transfer Channels and Enhanced p–p Orbital Coupling: Boosting CO 2 Electroreduction to Formate Over Heterostructured CuS@SnO 2"
+  },
+  {
+   "id": "90d99590-f91a-447f-803c-e4c40d108f7f",
+   "title_en": "Integrated Solar and Wind Energy Systems for Domestic Power Generation and CO 2 Emissions Reduction"
+  },
+  {
+   "id": "ac044b57-7346-4ba7-b959-e127e61081f2",
+   "title_en": "Ordered Hydrogen Bond Network Regulates Synergistic H and OH Spillover to Promote Alkaline Hydrogen Evolution"
+  },
+  {
+   "id": "38c04132-4aa4-4274-994f-e56062691364",
+   "title_en": "Atomic-Scale Insights into the FeO-Mediated Oxide Growth during Iron Oxidation"
+  },
+  {
+   "id": "79875e3a-0607-4515-b902-d6f9af480b61",
+   "title_en": "Transitioning from hydroxides to sulfides: enhancing the catalytic activity of NiAl-layered double hydroxide for improved water oxidation efficiency"
+  },
+  {
+   "id": "2378c4cc-8b05-4c1e-be05-a3d7aa2d133e",
+   "title_en": "Study on mannitol-enhanced visible light photocatalytic degradation of mixed pollutants by BiOX"
+  },
+  {
+   "id": "46d00a11-661d-40fe-933a-d43cde983267",
+   "title_en": "Electrosynthesis of C 6 Chemicals by Propylene Oxidative Coupling on Au Surface"
+  },
+  {
+   "id": "babcf779-cdf0-4529-b12d-3d497c74434d",
+   "title_en": "Fabrication and Characterization of ZnO/TiO₂ Nanocomposites for Enhanced Photocatalytic Degradation of Organic Pollutants"
+  },
+  {
+   "id": "311f9683-1fe2-4905-81b8-f10dc4533ae5",
+   "title_en": "Ridge catalysis unlocking water oxidation activity of pentlandite."
+  },
+  {
+   "id": "92f160fc-4ee8-421b-94b6-abc4b4bd53b6",
+   "title_en": "Prevalence and Prognostic Significance of Untreated, Uncontrolled and Resistant Hypertension among American Adults with Prediabetes."
+  },
+  {
+   "id": "00b47889-8d5c-4a58-8da1-4b77fa3c4e0a",
+   "title_en": "Pilot‐scale photocatalytic treatment of textile wastewater using Cr–N–C– TiO 2 nanocomposite: Effects of oxygenation patterns"
+  },
+  {
+   "id": "2254c503-b946-4fdb-9b6f-1200ab8b9918",
+   "title_en": "Anthropogenic Forcing on Riverine Particulate Iron Dynamics in a Human-Impacted Subtropical Watershed: Insights from Iron Isotopes and Bayesian Modeling"
+  },
+  {
+   "id": "37d179db-59ed-484c-a8c3-19e1f34d416c",
+   "title_en": "Nano-Enhanced Phase Change Materials for Thermal Management in Photovoltaic Systems: A Comprehensive Review"
+  },
+  {
+   "id": "eb5a32d6-c6ed-4aa4-ac09-1cc5f454e2a9",
+   "title_en": "BiOCl with multiple active sites for CO2 reduction under visible light"
+  },
+  {
+   "id": "8530228f-40b6-42a6-8353-7fe529dd1060",
+   "title_en": "SUSTAINABLE ENERGY SECURITY AND COMMUNITY DEVELOPMENT: THE ROLE OF STUDENTS IN SHAPING THE FUTURE OF THE OIL AND GAS SECTOR IN NIGERIA. PAPER PRESENTED AT THE NATIONAL ASSOCIATION OF NIGERIAN STUDENTS CONFERENCE, HELD AT THE NYESOM WIKE SENATE BUILDING, RIVERS STATE UNIVERSITY, NKPOLU OROWORUKWO, PORT HARCOURT, WITH THE THEME: SUSTAINABLE ENERGY SECURITY AND COMMUNITY DEVELOPMENT: THE ROLE OF STUDENTS IN SHAPING THE FUTURE OF THE OIL AND GAS SECTOR IN NIGERIA, JUNE 12, 2025"
+  },
+  {
+   "id": "257b5801-2bbb-4445-8ecc-eeeff2e18449",
+   "title_en": "Dual-interface stabilization of low-iridium anodes for durable proton exchange membrane water electrolysis."
+  },
+  {
+   "id": "2bf4b2fc-8da3-4665-8e4e-5f0871e51720",
+   "title_en": "Sustainable Hot-Water-Assisted Low-Temperature Crystallization of Pure TiO2 Thin Films: A Route to Stable and Reusable Photocatalysts for Water Treatment"
+  },
+  {
+   "id": "02bc12a3-fbf7-42e7-a279-ef52ee77e1b1",
+   "title_en": "Efficient CO2 conversion accelerated by rare-earth elements in MOF-based materials"
+  },
+  {
+   "id": "23965f2c-4231-4f10-ad8c-7ee5d8ec98ca",
+   "title_en": "IMPACTO DE ESPECTROS LED EN FOTOBIORREACTORES SOBRE LA PRODUCTIVIDAD BIOTECNOLÓGICA DE BIOMASA Y FICOCIANINA A PARTIR DE Arthrospira platensis"
+  },
+  {
+   "id": "043b47c6-7486-4b4b-a85c-24faed3502c4",
+   "title_en": "IMPACTO DE ESPECTROS LED EN FOTOBIORREACTORES SOBRE LA PRODUCTIVIDAD BIOTECNOLÓGICA DE BIOMASA Y FICOCIANINA A PARTIR DE Arthrospira platensis"
+  },
+  {
+   "id": "a402e9f7-1043-4151-9513-a3f38cd97bd4",
+   "title_en": "Tailoring Oxygen‐Bridged Asymmetric Active Sites for Oxygen Reduction Reaction in Seawater"
+  },
+  {
+   "id": "a934b325-cf8c-45a1-923d-f1fe73da1c68",
+   "title_en": "The porous structure and multi-site synergistic enhancement of Rux/CoCu-LDH@CF for high-efficiency for all-pH overall water splitting"
+  },
+  {
+   "id": "3c6034d4-9f31-4384-87a8-8df957d0736f",
+   "title_en": "Additional file 1 of Yeast β-glucan selenium nanoparticles enhance meat quality in heat-stressed broilers via SelO-mediated mitochondrial biogenesis and oxidative myofiber remodeling"
+  },
+  {
+   "id": "10d667cf-90ee-4a24-b3d3-f90af635db50",
+   "title_en": "Targeting the cGAS-STING pathway alleviates neuroinflammation and cognitive impairment induced by chronic infection of Toxoplasma gondii."
+  },
+  {
+   "id": "733c6845-d7c6-4a73-a0ab-561fb9f1ece5",
+   "title_en": "Herbal Cosmetics: Phytochemical Insights and Therapeutic Applications"
+  },
+  {
+   "id": "8809800b-4a31-42fd-b9a3-d4a1ebc8516b",
+   "title_en": "DORI VOSITALARI CHAQIRADIGAN GEPATOTOKSIKLIK: RIVOJLANISH MEXANIZMLARI, XAVF OMILLARI VA PROFILAKTIKASI"
+  },
+  {
+   "id": "88395101-29ef-425a-ba38-b4c3321490c5",
+   "title_en": "DORI VOSITALARI CHAQIRADIGAN GEPATOTOKSIKLIK: RIVOJLANISH MEXANIZMLARI, XAVF OMILLARI VA PROFILAKTIKASI"
+  },
+  {
+   "id": "961db70e-886c-4cb0-b84a-01eac1db051f",
+   "title_en": "Unraveling the genomic structures, conserved functional domains and evolutionary dynamics of beta-defensins in Bubalus bubalis and Ovis aries"
+  },
+  {
+   "id": "a4868e94-afd7-433e-be5b-cee32612138e",
+   "title_en": "Efficacy of dietary Artemisia annua against chronic carbendazim exposure in Nile tilapia: growth, antioxidant capacity, intestinal morphology, inflammatory/apoptotic genes"
+  },
+  {
+   "id": "3e3f5221-9c90-4f2a-8448-b2b804f621f1",
+   "title_en": "Natural Polymers for Buccal Adhesive Tablet Formulations: A Comprehensive Review"
+  },
+  {
+   "id": "c959028d-7d84-44e4-bc70-b2aeedf4feda",
+   "title_en": "Development and Evaluation of Rivastigmine Transdermal Patches for Sustained Drug Delivery in Alzheimer's Disease"
+  },
+  {
+   "id": "32796127-e15b-4cb8-a1cd-bce43a6b6ccd",
+   "title_en": "Integrated comparative genomic and transcriptomic analysis reveals a wsv249 mutation drives enhanced pathogenicity in white spot syndrome virus."
+  },
+  {
+   "id": "10aeb447-d9d3-4199-8884-f92b36673e92",
+   "title_en": "Development and Evaluation of Rivastigmine Transdermal Patches for Sustained Drug Delivery in Alzheimer's Disease"
+  },
+  {
+   "id": "c9b822f4-cc34-42fd-a45c-6de1155f2685",
+   "title_en": "Design and Characterization of a Novel Nanocarrier System for Enhanced Dissolution and Bioavailability of Efinaconazole"
+  },
+  {
+   "id": "32d8bcc3-ad00-48bd-8738-1db32ecde6dc",
+   "title_en": "Herbal Cosmetics: Phytochemical Insights and Therapeutic Applications"
+  },
+  {
+   "id": "6b7e4b51-9248-4194-81dc-941486c6a9c2",
+   "title_en": "Effect of African Yam Bean and Orange Albedo Flour Inclusion on Functional, Proximate, Physical and Sensory Quality of Wheat Bread"
+  },
+  {
+   "id": "f52f95c9-cf40-4817-88f5-5d5bccbf51ff",
+   "title_en": "PENGUATAN PERAN KELUARGA DALAM PENCEGAHAN STUNTING PADA ANAK MELALUI PENDEKATAN PROMOTIF DAN PREVENTIF"
+  },
+  {
+   "id": "794d95d1-d222-4607-a8b4-9b3071a68092",
+   "title_en": "Formulation and Evaluation of Polyherbal Gel Containing Eucalyptus Oil and Amla Extraction for Antibacterial Activity: A Comprehensive Review"
+  },
+  {
+   "id": "de7548cf-cac5-4937-ac0f-ccc59ba22e04",
+   "title_en": "3 Core Concepts"
+  },
+  {
+   "id": "2d28b740-f230-41a8-9659-45664a872c80",
+   "title_en": "Chronic refractory ulcer caused by Edwardsiella tarda: a case report and literature review."
+  },
+  {
+   "id": "5ac5cb62-bfc0-411a-a5ff-f969effb2f45",
+   "title_en": "\"Effectiveness of a Nutrition Education Package on Mothers' Knowledge and Infant and Young Child Feeding (IYCF) Practices for Prevention of Protein Energy Malnutrition Among Under-Five Children in Madhya Pradesh\""
+  },
+  {
+   "id": "f6a273ca-57b5-4bcd-b99d-cee4f6b4a412",
+   "title_en": "Synergistic Effects of Co Administration of Aqueous Ginger Extract and Glibenclamide on Glycaemic Status and Antioxidant Defence in Alloxan Induced Diabetic Wistar Rats"
+  },
+  {
+   "id": "751c3eed-6bbf-495f-b64f-3d80fd98e914",
+   "title_en": "Khat-induced intravesical coiling of a self-inserted urethral serum set: a rare cause of acute urinary retention requiring open bladder surgery."
+  },
+  {
+   "id": "c5b05cbc-25f9-4483-a17b-a54cbb1ba39a",
+   "title_en": "Dopamine signaling reprograms macrophage FAO to alleviate acute lung injury by inhibiting NETosis via the CXCL10-CXCR3 axis."
+  },
+  {
+   "id": "691e5a41-a3e7-45b2-92c3-741c0db1cd7c",
+   "title_en": "How does icosapent ethyl compare to placebo in reducing major adverse cardiovascular events in high-risk cardiovascular patients?"
+  },
+  {
+   "id": "d708a59e-9c7f-4aec-bc29-c5309628ef81",
+   "title_en": "Loganin Alleviates CCl4-Induced Acute Liver Injury by Promoting Mitophagy and Inhibiting NLRP3 Inflammasome"
+  },
+  {
+   "id": "60a2267d-895d-468a-8430-affb6c69dabf",
+   "title_en": "Thymol encapsulated in β-cyclodextrin nanocavities for enhanced bio-efficacies and subsequent binding with DNA"
+  },
+  {
+   "id": "86758dd0-473f-414d-a67b-be1c1af7e1c5",
+   "title_en": "Evaluation of the diagnostic performance of a commercial ELISA based on two recombinant antigens for the diagnosis of Strongyloides stercoralis infection."
+  },
+  {
+   "id": "0e5577ef-7f11-4dfe-b4a3-7d9d4bc239a2",
+   "title_en": "Evaluation Parameters of Gel Formulation: A Comprehensive Review"
+  },
+  {
+   "id": "6c323be7-8a3f-40d4-8120-6231cb46f0e6",
+   "title_en": "3 Core Concepts"
+  },
+  {
+   "id": "bd8fe937-8c41-4515-a9f0-5a9dbed8865c",
+   "title_en": "Formulation and Evaluation of Polyherbal Gel Containing Eucalyptus Oil and Amla Extraction for Antibacterial Activity: A Comprehensive Review"
+  },
+  {
+   "id": "8569f1ac-0810-4aae-ab67-c1f7ba4e9d85",
+   "title_en": "Reproductive tract and follicular fluid microbiota and probiotic interventions in IVF/ICSI outcomes: a systematic review."
+  },
+  {
+   "id": "67af555f-3fcd-42e3-a92f-d767a0e10a9a",
+   "title_en": "How does icosapent ethyl compare to placebo in reducing major adverse cardiovascular events in high-risk cardiovascular patients?"
+  },
+  {
+   "id": "feb88dfe-5344-4c91-affc-1dbc330fc22c",
+   "title_en": "Oral Frailty and General Frailty : A Bidirectional Approach for Family Physicians and Health Care Personnel"
+  },
+  {
+   "id": "60ad8d75-9429-461f-b747-631870bcc7f9",
+   "title_en": "3D-driven alveolar ridge augmentation based on reverse planning: a retrospective case series study."
+  },
+  {
+   "id": "6594827c-89cb-493d-9cf0-c1f29b5cb3be",
+   "title_en": "Protective effects of dietary Ocimum basilicum and Thymus vulgaris essential oils on growth performance, immune response, and disease resistance following challenge with Aeromonas hydrophila in Nile Tilapia (Oreochromis niloticus)"
+  },
+  {
+   "id": "18d275c7-089f-44a3-9f32-af3a7751062a",
+   "title_en": "Collagen for the Management of Oral Submucous Fibrosis – A Case Report"
+  },
+  {
+   "id": "aae441ec-c844-444c-8e61-c7f582105da0",
+   "title_en": "Fracture resistance of maxillary lateral incisors: effects of fiber post dimensions, material, and surface treatment."
+  },
+  {
+   "id": "9cce57b5-1f80-454b-9446-2e36bfc761a0",
+   "title_en": "Cardiovascular and anti‐inflammatory effects of periodontal therapy: A systematic review and meta‐analysis of randomized trials"
+  },
+  {
+   "id": "f88a924b-f62e-404c-a9f2-4ddbd5acf0fa",
+   "title_en": "Sevoflurane does not restore alveolar fluid clearance in a murine model of endotoxin-induced acute lung injury."
+  },
+  {
+   "id": "300bc177-dfb8-4fc0-a33b-49815894cc95",
+   "title_en": "Association of wheatgrass (Triticum aestivum) preparation in regulation of antigen presentation through the immunomodulation and epigenetic modification in acute leukemia"
+  },
+  {
+   "id": "c7a091e6-e3f2-4728-ad2e-b139e979fa95",
+   "title_en": "Heart failure promotes gingival inflammation and impairs periodontal remodeling."
+  },
+  {
+   "id": "b330891d-50a2-44b1-9236-b7b0acbafa94",
+   "title_en": "Antimicrobial effect and biofilm inhibition of biosurfactant as an irrigante against root canal bacteria with and without laser irradiation"
+  },
+  {
+   "id": "af37d624-2758-488f-a04c-849757a8fc1c",
+   "title_en": "IL-22 modulates STAT3/β-catenin/let-7a signaling and hepatic granulomas in Schistosoma mansoni infection: versus praziquantel and combination treatment"
+  },
+  {
+   "id": "2a9c9ca3-2938-42a5-b9d3-edf3ddb9a64f",
+   "title_en": "Can systemic resveratrol improve periodontal treatment outcomes in smokers?"
+  },
+  {
+   "id": "ec6f26dd-4edd-4415-b2b1-5cea720b0ec8",
+   "title_en": "Integrated Bracket Holder with LED Curing Light for Orthodontic Bonding"
+  },
+  {
+   "id": "0801ddd1-818d-48cf-bf1f-b3d306aedc19",
+   "title_en": "Oral Frailty and General Frailty : A Bidirectional Approach for Family Physicians and Health Care Personnel"
+  },
+  {
+   "id": "6aca4435-e536-415e-b8ab-0025b03db737",
+   "title_en": "Seroprevalence of Toxoplasma gondii and Feline Immunodeficiency Virus in Domestic Cats and Their Associations with Clinical Signs"
+  },
+  {
+   "id": "2c4d52ad-373a-4197-a35f-129525116629",
+   "title_en": "Jackfruit seed starch (JFSS): extraction, structural properties, functional modifications, and applications in food systems—a review"
+  },
+  {
+   "id": "c0ae5445-7fc2-45ab-94ee-caf14258374b",
+   "title_en": "Nanoscale Organization of Membrane Tension during Neutrophil Extracellular Trap Formation Revealed by Fluorescence Lifetime Imaging"
+  },
+  {
+   "id": "63f3bd1f-9567-47ea-92fc-efa47117bb88",
+   "title_en": "Global Research Trends in the Radiographic Evaluation of Impacted Teeth: A Bibliometric Analysis"
+  },
+  {
+   "id": "29385f92-8ce5-43e7-bfb9-0fedd2e942f8",
+   "title_en": "Engineering Interferon-γ-Enhanced Chimeric Antigen Receptor Macrophages via Lipid-Assisted Polymeric Nanoparticles for Cancer Immunotherapy"
+  },
+  {
+   "id": "47a570fb-6423-41a1-98a9-1ba803e3eaf5",
+   "title_en": "Prior Periodontal Treatment Experience and Autonomy Preference in Stage III/IV Periodontitis: A Cross-Sectional, Questionnaire-Based Observational Study"
+  },
+  {
+   "id": "ad16c5df-dcac-4c76-ac20-f8e73a169c67",
+   "title_en": "Clinical cross-sectional diagnostic accuracy study of DIAGNOdent Pen and QrayCam Pro quantitative fluorescence for occlusal caries detection and ICDAS II-derived lesion categorization in permanent posterior teeth."
+  },
+  {
+   "id": "9074d720-326b-475a-97f0-671b22f71372",
+   "title_en": "Salivary Lipid Profile and Malondialdehyde Levels in Clinically Healthy and Periodontally Diseased Individuals"
+  },
+  {
+   "id": "b0bcb7e3-d384-4ed8-91c1-cd5a7d8f7782",
+   "title_en": "Techno‐Economic and Quasi‐Dynamic Load Flow Analysis of a Hybrid Renewable Microgrid for Coastal Industrial Loads"
+  },
+  {
+   "id": "0f0bda9d-7ab9-4397-8001-b2353ed081c8",
+   "title_en": "Synergistic SGLT2 and GLP-1R targeting alleviates systemic inflammation-induced and M1 monocyte-driven endothelial dysfunction in coronary artery disease."
+  },
+  {
+   "id": "06b82e35-66d3-47eb-9c2e-1014f0dabc28",
+   "title_en": "AI-Driven Parametric Mashrabiya and Nano-Coatings AI-Driven Parametric Mashrabiya Integrated with Functional Nanocoatings for Climate-Responsive Facade Systems in Hot-Arid Environments"
+  },
+  {
+   "id": "34c2296c-7960-4191-ab0b-5d5120bdf14b",
+   "title_en": "Knowledge, attitudes, practices and clinical preparedness regarding porcelain laminate veneers among dental interns."
+  },
+  {
+   "id": "4979ab42-7010-43d9-a549-23d5b94d25e0",
+   "title_en": "Hybrid particle swarm optimization–genetic algorithm framework for multi-objective optimization of solar photovoltaic–battery systems"
+  },
+  {
+   "id": "7048f227-67d6-4899-b82f-0ae8db1cfded",
+   "title_en": "Incidence, associated factors, and short adverse outcomes of diarrhea among children aged 6–59 months admitted with Severe Acute Malnutrition at Mubende Regional Referral Hospital, Uganda"
+  },
+  {
+   "id": "c81af277-917c-49b9-b09f-6af507d1b7ad",
+   "title_en": "Additional file 2 of Yeast β-glucan selenium nanoparticles enhance meat quality in heat-stressed broilers via SelO-mediated mitochondrial biogenesis and oxidative myofiber remodeling"
+  },
+  {
+   "id": "f821c918-4c50-40b1-9c3d-c561bfd8cc92",
+   "title_en": "Blood heavy metal and trace element levels in newly diagnosed cases of inflammatory bowel disease"
+  },
+  {
+   "id": "2371131a-bb1f-464b-84d4-8c9c07c1f880",
+   "title_en": "Additional file 1 of Yeast β-glucan selenium nanoparticles enhance meat quality in heat-stressed broilers via SelO-mediated mitochondrial biogenesis and oxidative myofiber remodeling"
+  },
+  {
+   "id": "ca867637-cb78-4de2-b220-cab3de6fef15",
+   "title_en": "Quand la clinique rencontre la taxonomie: Classifications et transmission tutorale en soins infirmiers"
+  },
+  {
+   "id": "2ce750a8-ddf5-4e06-812b-f6d7bcc0e0bf",
+   "title_en": "\"Effectiveness of a Nutrition Education Package on Mothers' Knowledge and Infant and Young Child Feeding (IYCF) Practices for Prevention of Protein Energy Malnutrition Among Under-Five Children in Madhya Pradesh\""
+  },
+  {
+   "id": "0c5dfb63-e4c4-485f-8dd3-9a3f17613758",
+   "title_en": "Quand la clinique rencontre la taxonomie: Classifications et transmission tutorale en soins infirmiers"
+  },
+  {
+   "id": "f3f57181-dd7d-4e25-b07a-a49ff5881b25",
+   "title_en": "Closing the dietary fibre gap - developing a novel dietary fibre screening tool (SCREEN-IT) for the UK population: validity, reproducibility and usability insights"
+  },
+  {
+   "id": "27d885ad-e3e4-44e7-b230-115671522e7a",
+   "title_en": "Bioactive lipids from grains and their effects on intestinal homeostasis: a review"
+  },
+  {
+   "id": "4952c9c8-5023-4060-a524-f3e2ca5c2cff",
+   "title_en": "Additional file 2 of Yeast β-glucan selenium nanoparticles enhance meat quality in heat-stressed broilers via SelO-mediated mitochondrial biogenesis and oxidative myofiber remodeling"
+  },
+  {
+   "id": "42b651c7-8cc1-442c-a3e2-61437956db6c",
+   "title_en": "Synergistic Regulation of Metabolic and Photosynthetic Pathways by Selenium Engineered Nanomaterials for Yield and Nutritional Improvement in Cherry Radishes"
+  },
+  {
+   "id": "9795b4b5-1312-4223-b653-fd10c2c3d4ff",
+   "title_en": "ASSESSMENT OF HEAD NURSES’ ATTITUDES AND DELEGATION PRACTICES IN HOSPITAL SETTINGS"
+  },
+  {
+   "id": "1a4d3850-8a43-4a91-96a8-c80569846c06",
+   "title_en": "Conflicts of interest as a barrier to the development of health technology assessment in Iran: a qualitative study."
+  }
+ ],
+ "abstracts": [],
+ "remaining_titles": 5750,
+ "remaining_abstracts": 4059
+}
